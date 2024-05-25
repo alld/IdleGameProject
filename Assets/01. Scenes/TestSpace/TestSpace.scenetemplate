@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: TestSpace
+  m_EditorClassIdentifier: 
+  templateScene: {fileID: 102900000, guid: 1df0d57eef8934a4382580717c5f6306, type: 3}
+  templateName: TestSpace
+  description: "\uD14C\uC2A4\uD2B8\uB97C \uC704\uD55C \uACF5\uAC04\uC785\uB2C8\uB2E4.
+    \uAE30\uBCF8 \uAC8C\uC784\uC5D0\uB300\uD55C \uC720\uC0AC\uACF5\uAC04\uC744 \uC81C\uACF5\uD569\uB2C8\uB2E4. "
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 2800000, guid: 3028dc075ba8c584d9bc7d1e0255e038, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2847970657547929615, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 8030422791575634975, guid: c1289b907bb553548a1865c13f6c8468, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+    instantiationMode: 1
+  templatePipeline: {fileID: 0}
+  badge: {fileID: 0}
+  addToDefaults: 0
