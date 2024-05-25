@@ -1,3 +1,6 @@
+using IdleGame.Core.Procedure;
+using System.Collections;
+
 namespace IdleGame.Core
 {
     /// <summary>
@@ -6,6 +9,49 @@ namespace IdleGame.Core
     /// </summary>
     public class Base_ScenePanel : Base_Panel
     {
+        private void Awake()
+        {
+            System_Init();
+        }
 
+        /// <summary>
+        /// [초기화] GameMaster가 설정이 완료될때까지 대기한후 자신을 등록합니다.
+        /// </summary>
+        private void System_Init()
+        {
+            Base_Engine.Logic_SetPanel(this);
+        }
+
+        /// <summary>
+        /// [초기화] 해당 씬에서 필요한 초기화가 진행됩니다.
+        /// </summary>
+        internal IEnumerator System_Setting()
+        {
+            yield return Logic_InitStart_Custom();
+        }
+
+        /// <summary>
+        /// [초기화] 해당 씬이 호출된 직후 패널에서 실행시켜야할 기본 로직을 시작합니다. 
+        /// </summary>
+        protected virtual IEnumerator Logic_InitStart_Custom()
+        {
+            yield break;
+        }
+
+        /// <summary>
+        /// [기능] 해당 씬에서 사용된 로직들을 정리합니다. 
+        /// </summary>
+        internal IEnumerator System_Clear()
+        {
+            yield return Logic_Clear_Custom();
+        }
+
+        /// <summary>
+        /// [기능] 해당 씬에서 사용된 기능들을 정리하는 로직을 시작합니다. 
+        /// </summary>
+        protected virtual IEnumerator Logic_Clear_Custom()
+        {
+            yield break;
+        }
     }
 }
