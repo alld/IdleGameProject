@@ -9,7 +9,10 @@ namespace IdleGame.Core
     /// </summary>
     public class Base_ScenePanel : Base_Panel
     {
-        private void Awake()
+        /// <summary>
+        /// [기능] 베이스 패널의 기능을 제한하고 씬 패널은 별도로 관리되어야 하기때문에 기존 기능을 상속하지 않습니다.
+        /// </summary>
+        protected override void Awake()
         {
             System_Init();
         }

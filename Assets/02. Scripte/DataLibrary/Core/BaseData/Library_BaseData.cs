@@ -1,10 +1,29 @@
 
 namespace IdleGame.Data.Base
 {
+    #region 대리자 선언
     /// <summary>
-    /// [델리게이트] 게임내에서 가장 기본적으로 사용되는 통용 액션입니다. 
+    /// [대리자] 게임내에서 가장 기본적으로 사용되는 통용 액션입니다. 
     /// </summary>
     public delegate void Dele_Action();
+    /// <summary>
+    /// [대리자] 매개변수가 없는 이벤트 타입입니다.
+    /// </summary>
+    public delegate void Dele_EventFunc();
+    /// <summary>
+    /// [대리자] 매개변수가 한개인 이벤트 타입입니다.
+    /// </summary>
+    public delegate void Dele_EventFunc<T>(T param1);
+    /// <summary>
+    /// [대리자] 매개변수가 두개인 이벤트 타입입니다.
+    /// </summary>
+    public delegate void Dele_EventFunc<T1, T2>(T1 param1, T2 param2);
+    /// <summary>
+    /// [대리자] 매개변수가 세개인 이벤트 타입입니다.
+    /// </summary>
+    public delegate void Dele_EventFunc<T1, T2, T3>(T1 param1, T2 param2, T3 param3);
+    #endregion
+
 
     namespace Language
     {
