@@ -7,6 +7,7 @@ namespace IdleGame.Core.Procedure
     /// <summary>
     /// [기능] 게임의 전반적인 진행을 통제하는 로직을 담고 있습니다. 
     /// </summary>
+    [DefaultExecutionOrder(-1)]
     public abstract class Base_Engine : MonoBehaviour
     {
         /// <summary>
