@@ -22,7 +22,7 @@ namespace IdleGame.Data.Common.Log
         /// <summary>
         /// [데이터] 최종적으로 기록되는 로그 내용입니다. 
         /// </summary>
-        public string text;
+        public string content;
 
         /// <summary>
         /// [종류] 선택된 타입에 따라서 저장되는 경로나 환경이 달라집니다. 
@@ -41,7 +41,7 @@ namespace IdleGame.Data.Common.Log
 
             if (string.IsNullOrEmpty(m_tag))
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -52,7 +52,7 @@ namespace IdleGame.Data.Common.Log
             }
             else
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -75,7 +75,7 @@ namespace IdleGame.Data.Common.Log
 
             if (string.IsNullOrEmpty(m_tag))
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -88,7 +88,7 @@ namespace IdleGame.Data.Common.Log
             }
             else
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -113,7 +113,7 @@ namespace IdleGame.Data.Common.Log
 
             if (string.IsNullOrEmpty(m_tag))
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -124,7 +124,7 @@ namespace IdleGame.Data.Common.Log
             }
             else
             {
-                text =
+                content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -147,7 +147,7 @@ namespace IdleGame.Data.Common.Log
 
             if (string.IsNullOrEmpty(m_tag))
             {
-                text =
+                content =
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
@@ -159,7 +159,7 @@ namespace IdleGame.Data.Common.Log
             }
             else
             {
-                text =
+                content =
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Application.version + "v\n" +

@@ -71,7 +71,7 @@ namespace IdleGame.Core.Panel.LogCollector
             {
                 www.SetRequestHeader("Content-Type", "application/json");
 
-                var json = JsonUtility.ToJson(m_log.text);
+                var json = JsonUtility.ToJson(m_log);
                 byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
                 www.uploadHandler = new UploadHandlerRaw(bodyRaw);
 

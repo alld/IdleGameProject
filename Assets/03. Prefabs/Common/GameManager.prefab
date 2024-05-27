@@ -98,8 +98,8 @@ MonoBehaviour:
     type: 1
     procedure: 0
   _isLocalSave: 0
-  exportPath_Error: 
-  exportPath_Client: 
+  exportPath_Error: https://discord.com/api/webhooks/1244629991766102110/uGAr4xuMfGWzcnmxxDyssTEa7X3UMRUWlFtHYRp7kWW_au1obwxeEIlKfx6oViUKXZrT
+  exportPath_Client: https://discord.com/api/webhooks/1244629991766102110/uGAr4xuMfGWzcnmxxDyssTEa7X3UMRUWlFtHYRp7kWW_au1obwxeEIlKfx6oViUKXZrT
 --- !u!1 &4770545038441695642
 GameObject:
   m_ObjectHideFlags: 0

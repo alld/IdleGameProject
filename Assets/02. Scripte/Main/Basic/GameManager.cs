@@ -1,5 +1,6 @@
 using IdleGame.Core.Module.EventSystem;
 using IdleGame.Core.Module.Scene;
+using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Event;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace IdleGame.Main
         /// </summary>
         public static Module_EventSystem<eGlobalEventType> Event = new Module_EventSystem<eGlobalEventType>();
 
+        public static Panel_LogCollector Log;
+
         /// <summary>
         /// [기능] 씬의 전환을 절차적 과정을 통해서 전환이 되도록 통제하는 씬 매니저입니다. 
         /// </summary>
@@ -36,6 +39,8 @@ namespace IdleGame.Main
             {
                 Main = this;
                 DontDestroyOnLoad(this);
+
+                Log = GetComponentInChildren<Panel_LogCollector>();
             }
             else
             {
