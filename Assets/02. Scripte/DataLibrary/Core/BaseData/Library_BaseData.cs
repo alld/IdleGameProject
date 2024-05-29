@@ -42,6 +42,27 @@ namespace IdleGame.Data.Base
     }
 
 
+    namespace Scene
+    {
+        /// <summary>
+        /// [종류] 현재 게임에 적용된 씬의 종류를 나타냅니다.
+        /// <br> 해당 씬의 이름은 씬과 동일해야합니다. </br>
+        /// </summary>
+        public enum eSceneKind
+        {
+            None = -1,
+            /// <summary> [종류] 로드 씬 </summary>
+            Load,
+            /// <summary> [종류] 인트로 씬 </summary>
+            Intro,
+
+
+            /// <summary> [종류] 로딩 씬 </summary>
+            Loading = 50,
+        }
+    }
+
+
     /// <summary>
     /// [정보] 로직의 대한 정보가 담겨 있습니다.
     /// </summary>

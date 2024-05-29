@@ -14,7 +14,6 @@ namespace IdleGame.Data.Common.Event
     /// </summary>
     public enum eSceneEventType_Load
     {
-
     }
 
     /// <summary>

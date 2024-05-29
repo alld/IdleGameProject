@@ -12,7 +12,7 @@ namespace IdleGame.Core
         /// <summary>
         /// [기능] 베이스 패널의 기능을 제한하고 씬 패널은 별도로 관리되어야 하기때문에 기존 기능을 상속하지 않습니다.
         /// </summary>
-        protected override void Awake()
+        protected sealed override void Awake()
         {
             System_Init();
         }
@@ -23,6 +23,11 @@ namespace IdleGame.Core
         private void System_Init()
         {
             Base_Engine.Logic_SetPanel(this);
+
+
+            // Todo :: 임시로 들어감..
+
+            StartCoroutine(System_Setting());
         }
 
         /// <summary>
@@ -30,14 +35,10 @@ namespace IdleGame.Core
         /// </summary>
         internal IEnumerator System_Setting()
         {
-            yield return Logic_InitStart_Custom();
-        }
+            Logic_Init_Custom();
 
-        /// <summary>
-        /// [초기화] 해당 씬이 호출된 직후 패널에서 실행시켜야할 기본 로직을 시작합니다. 
-        /// </summary>
-        protected virtual IEnumerator Logic_InitStart_Custom()
-        {
+            Logic_RegisterEvent_Custom();
+
             yield break;
         }
 
@@ -46,15 +47,14 @@ namespace IdleGame.Core
         /// </summary>
         internal IEnumerator System_Clear()
         {
-            yield return Logic_Clear_Custom();
+            Logic_Clear_Custom();
+
+            yield break;
         }
 
         /// <summary>
         /// [기능] 해당 씬에서 사용된 기능들을 정리하는 로직을 시작합니다. 
         /// </summary>
-        protected virtual IEnumerator Logic_Clear_Custom()
-        {
-            yield break;
-        }
+        protected virtual void Logic_Clear_Custom() { }
     }
 }

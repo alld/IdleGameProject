@@ -7,6 +7,10 @@ namespace IdleGame.Core.Module
     /// </summary>
     public abstract class Base_Module
     {
-
+        /// <summary>
+        /// [초기화] 모듈을 초기화시킵니다.
+        /// <br> 해당 로직은 외부에서 초기화를 시켜줘야합니다. </br>
+        /// </summary>
+        public virtual void Logic_Init() { }
     }
 }

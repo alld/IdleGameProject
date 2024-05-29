@@ -1,3 +1,4 @@
+using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Data.Base;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace IdleGame.Core.Procedure
     /// <summary>
     /// [기능] 게임의 전반적인 진행을 통제하는 로직을 담고 있습니다. 
     /// </summary>
+    [DefaultExecutionOrder(-1)]
     public abstract class Base_Engine : MonoBehaviour
     {
         /// <summary>
@@ -20,6 +22,12 @@ namespace IdleGame.Core.Procedure
         /// </summary>
         public static Base_ScenePanel Panel { get { return _Panel; } }
         private static Base_ScenePanel _Panel;
+
+        /// <summary>
+        /// [캐시] 로그를 관리하는 기능입니다.
+        /// </summary>
+        public static Panel_LogCollector Log;
+
 
         /// <summary>
         /// [상태] 지속적인 호출을 제한하기위해서 최초 실행 유무를 판단합니다.
