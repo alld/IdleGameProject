@@ -13,7 +13,7 @@ namespace IdleGame.Core
         /// [정보] 로직에대한 기초 정보를 담고 있습니다.
         /// </summary>
         [Header("BasicInfo")]
-        [SerializeField] private TagInfo _tag;
+        [SerializeField] protected TagInfo _tag;
 
         protected virtual void Awake()
         {

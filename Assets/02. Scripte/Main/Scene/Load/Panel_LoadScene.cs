@@ -1,5 +1,6 @@
 using IdleGame.Core;
 using IdleGame.Core.Module.EventSystem;
+using IdleGame.Data.Base.Scene;
 using IdleGame.Data.Common.Event;
 namespace IdleGame.Main.Scene.Load
 {
@@ -12,13 +13,7 @@ namespace IdleGame.Main.Scene.Load
 
         protected override void Logic_Init_Custom()
         {
-            //GameManager.Scene.Logic_TryChangeScene(eSceneKind.Intro);
-        }
-
-        private void Start()
-        {
-
-            GameManager.Log.Logic_PutLog(new Data.Common.Log.Data_Log("test Log 디스코드 전송"));
+            GameManager.Scene.Logic_TryChangeScene(eSceneKind.Intro);
         }
     }
 }

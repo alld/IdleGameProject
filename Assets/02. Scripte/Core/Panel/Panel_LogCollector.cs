@@ -24,7 +24,25 @@ namespace IdleGame.Core.Panel.LogCollector
         [SerializeField]
         private string exportPath_Client = string.Empty;
 
+        protected override void Logic_Init_Custom()
+        {
+            Application.logMessageReceived += ExceptionLog;
+        }
 
+        private void OnDestroy()
+        {
+            Application.logMessageReceived -= ExceptionLog;
+
+        }
+
+        /// <summary>
+        /// [기능] 예외에 따른 에러 로그 발생시 송출하는 로그 핸들러입니다.
+        /// </summary>
+        public void ExceptionLog(string m_log, string m_stack, LogType m_type)
+        {
+            if (m_type == LogType.Exception)
+                Logic_PutLog(new Data_Log(m_stack, m_log, eLogType.Error));
+        }
 
 
         /// <summary>
