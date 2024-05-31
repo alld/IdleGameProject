@@ -5,7 +5,20 @@ namespace IdleGame.Data.Common.Event
     /// </summary>
     public enum eGlobalEventType
     {
+        #region 공용 팝업 & 팝업 기능
+        /// <summary> [공용팝업] 버튼이 한개(확인)인 팝업창을 엽니다. </summary>
+        CommonPopup_OneBt_Open,
+        /// <summary> [공용팝업] 버튼이 두개(확인, 취소)인 팝업창을 엽니다. </summary>
+        CommonPopup_TwoBt_Open,
+        /// <summary> [공용팝업] 버튼이 없는 팝업창을 엽니다. </summary>
+        CommonPopup_NoBt_Open,
 
+
+        /// <summary> [공용팝업] 모든 팝업창을 끕니다. </summary>
+        Act_AllClosePopup,
+        /// <summary> [공용팝업] 가장 최근에 연 팝업창을 끕니다. </summary>
+        Act_ClosePopup,
+        #endregion
     }
 
     /// <summary>

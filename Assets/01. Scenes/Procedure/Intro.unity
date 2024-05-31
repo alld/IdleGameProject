@@ -170,10 +170,16 @@ MonoBehaviour:
     tag: PanelTest
     type: 1
     procedure: 0
-  _obj_graphic: {fileID: 0}
-  _i_dim: {fileID: 0}
-  _b_inputBlock: {fileID: 0}
-  _usedInputClose: 0
+  _component:
+    obj_graphic: {fileID: 0}
+    i_dim: {fileID: 0}
+    b_inputBlock: {fileID: 0}
+    usedInputClose: 0
+  _aniComponent:
+    aniType_in: 0
+    aniType_out: 0
+    duration_appearance: 0.01
+    duration_extinction: 0.01
 --- !u!1001 &1698268669
 PrefabInstance:
   m_ObjectHideFlags: 0
