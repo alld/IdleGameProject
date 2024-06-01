@@ -8,11 +8,10 @@ namespace IdleGame.Core.Popup
     public class Base_CommonPopup : Base_AnimationPopup
     {
         /// <summary>
-        /// [기능] 팝업에 대한 데이터를 설정합니다. 
+        /// [설정] 팝업에 대한 데이터를 설정합니다. 
         /// </summary>
         protected virtual void Logic_SetPopupData(Data_Popup _data)
         {
-
         }
 
         /// <summary>

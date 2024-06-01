@@ -37,6 +37,16 @@ namespace IdleGame.Core.Popup
         protected bool _isShowPopup = false;
 
         /// <summary>
+        /// [상태] 외부에서 팝업의 상태를 확인할때 사용됩니다.
+        /// </summary>
+        public bool Logic_GetIsShowPopup() => _isShowPopup;
+
+        /// <summary>
+        /// [상태] 팝업 매니저와 같이 외부에서 팝업창을 강제할수 없도록 보호합니다.
+        /// </summary>
+        protected bool _isProtected = false;
+
+        /// <summary>
         /// [상태] 팝업 매니저에서 관리되는 인덱스 번호입니다. 
         /// </summary>
         protected int _activeIndex = -1;
@@ -79,7 +89,7 @@ namespace IdleGame.Core.Popup
             if (_component.i_dim != null)
             {
                 _component.i_dim.gameObject.SetActive(false);
-                _component.i_dim.color = new Color(1, 1, 1, 0.5f);
+                _component.i_dim.color = new Color(0, 0, 0, 0.5f);
             }
 
 
@@ -100,6 +110,7 @@ namespace IdleGame.Core.Popup
         {
             Logic_FadeInDim();
 
+            _component.obj_graphic.SetActive(true);
             _isShowPopup = true;
 
             Logic_OpenComplate();
@@ -110,6 +121,9 @@ namespace IdleGame.Core.Popup
         /// </summary>
         private void Logic_OpenComplate()
         {
+            if (!_isProtected)
+                _activeIndex = Base_Engine.Popup.Logic_ReigsterPopup(this);
+
             Logic_OpenComplate_Custom();
         }
 
@@ -128,6 +142,7 @@ namespace IdleGame.Core.Popup
         {
             Logic_FadeOutDim();
 
+            _component.obj_graphic.SetActive(false);
             _isShowPopup = false;
 
             Logic_CloseComplate();
@@ -148,8 +163,12 @@ namespace IdleGame.Core.Popup
         /// </summary>
         private void Logic_CloseComplate()
         {
-            Logic_CloseComplate_Custom();
+            if (!_isProtected)
+                Base_Engine.Popup.Logic_RemovePopup(_activeIndex);
 
+            _activeIndex = -1;
+
+            Logic_CloseComplate_Custom();
         }
 
         /// <summary>
@@ -199,7 +218,27 @@ namespace IdleGame.Core.Popup
             _component.b_inputBlock.gameObject.SetActive(m_active);
         }
 
+        /// <summary>
+        /// [기능] 팝업 매니저에서 관리되는 함수입니다. 팝업창을 닫습니다.
+        /// </summary>
+        internal bool Module_ClosePopup()
+        {
+            if (_isProtected) return false;
+
+            Logic_Close_Base();
+
+            return true;
+        }
+
         #region 버튼콜백
+        /// <summary>
+        /// [버튼콜백] 팝업창을 엽니다.
+        /// </summary>
+        public virtual void OnClickOpen_Base()
+        {
+            Logic_Open_Base();
+        }
+
         /// <summary>
         /// [버튼콜백] 팝업창을 닫습니다.
         /// </summary>
