@@ -1,8 +1,6 @@
-using IdleGame.Core.Module.EventSystem;
-using IdleGame.Core.Module.Scene;
 using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Core.Procedure;
-using IdleGame.Data.Common.Event;
+using IdleGame.Main.GameLogic;
 using UnityEngine;
 
 namespace IdleGame.Main
@@ -19,14 +17,18 @@ namespace IdleGame.Main
         public static GameManager Main = null;
 
         /// <summary>
-        /// [기능] 게임매니저가 관리하는 이벤트 시스템입니다. 씬에 구속되지않고 글로벌 단위로 사용되어지는 이벤트타입만 관리됩니다.
+        /// [캐시] 스테이지를 구성하고 진행상황을 추적, 저장하는 기능을 하는 스테이지 매니저입니다.
         /// </summary>
-        public static Module_EventSystem<eGlobalEventType> Event = new Module_EventSystem<eGlobalEventType>();
+        [Header("GameManager")]
+        [SerializeField]
+        private Panel_StageManager _stage;
 
         /// <summary>
-        /// [기능] 씬의 전환을 절차적 과정을 통해서 전환이 되도록 통제하는 씬 매니저입니다. 
+        /// [캐시] 게임 진행 상황을 기록하고 별도로 측정을 하는 시간 매니저입니다.
         /// </summary>
-        public static Module_SceneManager Scene = new Module_SceneManager();
+        [SerializeField]
+        private Panel_TimeManager _time;
+
 
         protected override void Awake()
         {

@@ -42,6 +42,29 @@ namespace IdleGame.Data.Base
     }
 
 
+    namespace BottomPage
+    {
+        /// <summary>
+        /// [종류] 인게임 내에서 사용되는 하단 UI 페이지 리스트입니다.
+        /// </summary>
+        public enum eBottomUIPage
+        {
+            /// <summary> [패널] 스킬 강화 </summary>
+            AbilityUpgrade = -1,
+            /// <summary> [패널] 캐릭터 정보 </summary>
+            Character = 0,
+            /// <summary> [패널] 파티 정보 </summary>
+            Party = 1,
+            /// <summary> [패널] 던전 정보</summary>
+            Dungeon = 2,
+            /// <summary> [패널] 광산 정보 </summary>
+            Mine = 3,
+            /// <summary> [패널] 상점 정보 </summary>
+            Shop = 4,
+        }
+    }
+
+
     namespace Scene
     {
         /// <summary>
@@ -55,6 +78,8 @@ namespace IdleGame.Data.Base
             Load,
             /// <summary> [종류] 인트로 씬 </summary>
             Intro,
+            /// <summary> [종류] 메인게임 씬 </summary>
+            MainGame,
 
 
             /// <summary> [종류] 로딩 씬 </summary>

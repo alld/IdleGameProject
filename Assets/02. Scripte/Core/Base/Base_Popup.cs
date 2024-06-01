@@ -1,8 +1,9 @@
+using DG.Tweening;
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
+using IdleGame.Data.Popup;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace IdleGame.Core.Popup
 {
@@ -12,29 +13,10 @@ namespace IdleGame.Core.Popup
     public abstract class Base_Popup : Base_Panel
     {
         /// <summary>
-        /// [캐시] 팝업창의 내용에 해당하는 오브젝트입니다. 
+        /// [캐시&설정] 팝업을 구성하는 기본 요소들을 담고 있습니다.
         /// </summary>
         [Header("BasePopup")]
-        [SerializeField]
-        private GameObject _obj_graphic = null;
-
-        /// <summary>
-        /// [캐시] 팝업창이 활성화 되었을때 배경을 어둡게해서 팝업창을 강조하는 암막효과입니다.
-        /// </summary>
-        [SerializeField]
-        private CanvasGroup _i_dim = null;
-
-        /// <summary>
-        /// [캐시] 팝업창이 활성화 되었을때 팝업창 너머로 클릭을 하지못하도록 막는 역할을 합니다. 
-        /// </summary>
-        [SerializeField]
-        private Button _b_inputBlock = null;
-
-        /// <summary>
-        /// [설정] 입력 방지를 하는 오브젝트를 클릭했을때 팝업창이 닫히도록 하는 역할을 합니다. 
-        /// </summary>
-        [SerializeField]
-        private bool _usedInputClose = false;
+        [SerializeField] private Data_PopupComponent _component;
 
         /// <summary>
         /// [캐시] 그래픽에 할당된 캔버스 그룹입니다. 입력 제한 및 일부 페이드 연출등에 사용됩니다.
@@ -46,12 +28,28 @@ namespace IdleGame.Core.Popup
         /// </summary>
         protected Dele_Action _callback_OK;
 
+        protected const float _Duration_fadeDim = 0.5f;
 
         /// <summary>
         /// [상태] 현재 팝업창이 활성화 되어있는지 유무를 나타냅니다. 
         /// </summary>
         [Tooltip("\nTrue : 팝업창이 활성화됨 \nFalse : 팝업창이 닫혀있음")]
         protected bool _isShowPopup = false;
+
+        /// <summary>
+        /// [상태] 외부에서 팝업의 상태를 확인할때 사용됩니다.
+        /// </summary>
+        public bool Logic_GetIsShowPopup() => _isShowPopup;
+
+        /// <summary>
+        /// [상태] 팝업 매니저와 같이 외부에서 팝업창을 강제할수 없도록 보호합니다.
+        /// </summary>
+        protected bool _isProtected = false;
+
+        /// <summary>
+        /// [상태] 팝업 매니저에서 관리되는 인덱스 번호입니다. 
+        /// </summary>
+        protected int _activeIndex = -1;
 
         protected sealed override void Logic_Init_Custom()
         {
@@ -75,41 +73,46 @@ namespace IdleGame.Core.Popup
         private void Logic_BasePopupSetting()
         {
             // 역할 :: 팝업에는 무조건 내용에 해당하는 그래픽이 존재해야합니다.
-            if (_obj_graphic == null)
+            if (_component.obj_graphic == null)
             {
                 Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, _tag.tag));
                 return;
             }
             else
             {
-                _obj_graphic.SetActive(false);
+                _component.obj_graphic.SetActive(false);
             }
 
             TryGetComponent<CanvasGroup>(out _cg_graphicCG);
 
             // 역할 :: 암막 이미지가 존재 할 경우에 대한 처리
-            if (_i_dim != null)
+            if (_component.i_dim != null)
             {
-                _i_dim.gameObject.SetActive(false);
-                _i_dim.alpha = 0;
+                _component.i_dim.gameObject.SetActive(false);
+                _component.i_dim.color = new Color(0, 0, 0, 0.5f);
             }
 
 
             // 역할 :: 입력 방지가 존재 할 경우에대한 처리
-            if (_b_inputBlock != null)
+            if (_component.b_inputBlock != null)
             {
-                _b_inputBlock.gameObject.SetActive(false);
+                _component.b_inputBlock.gameObject.SetActive(false);
 
-                if (_usedInputClose)
-                    _b_inputBlock.onClick.AddListener(OnClickClose_Base);
+                if (_component.usedInputClose)
+                    _component.b_inputBlock.onClick.AddListener(OnClickClose_Base);
             }
         }
 
         /// <summary>
         /// [기능] 팝업창을 엽니다.
         /// </summary>
-        protected virtual void Logic_OpenPopup_Base()
+        protected virtual void Logic_Open_Base()
         {
+            Logic_FadeInDim();
+
+            _component.obj_graphic.SetActive(true);
+            _isShowPopup = true;
+
             Logic_OpenComplate();
         }
 
@@ -118,6 +121,9 @@ namespace IdleGame.Core.Popup
         /// </summary>
         private void Logic_OpenComplate()
         {
+            if (!_isProtected)
+                _activeIndex = Base_Engine.Popup.Logic_ReigsterPopup(this);
+
             Logic_OpenComplate_Custom();
         }
 
@@ -132,17 +138,22 @@ namespace IdleGame.Core.Popup
         /// <summary>
         /// [기능] 팝업창을 닫습니다.
         /// </summary>
-        protected virtual void Logic_ClosePopup_Base()
+        protected virtual void Logic_Close_Base()
         {
+            Logic_FadeOutDim();
+
+            _component.obj_graphic.SetActive(false);
+            _isShowPopup = false;
+
             Logic_CloseComplate();
         }
 
         /// <summary>
         /// [기능] 팝업창을 닫은 후 콜백함수를 실행시킵니다. 
         /// </summary>
-        protected virtual void Logic_ClosePopup_Callback()
+        protected virtual void Logic_Close_Callback()
         {
-            Logic_ClosePopup_Base();
+            Logic_Close_Base();
 
             _callback_OK?.Invoke();
         }
@@ -152,8 +163,12 @@ namespace IdleGame.Core.Popup
         /// </summary>
         private void Logic_CloseComplate()
         {
-            Logic_CloseComplate_Custom();
+            if (!_isProtected)
+                Base_Engine.Popup.Logic_RemovePopup(_activeIndex);
 
+            _activeIndex = -1;
+
+            Logic_CloseComplate_Custom();
         }
 
         /// <summary>
@@ -164,13 +179,72 @@ namespace IdleGame.Core.Popup
 
         }
 
+
+        /// <summary>
+        /// [기능] 암막 오브젝트를 페이드인으로 활성화 시킵니다.
+        /// </summary>
+        private void Logic_FadeInDim()
+        {
+            Logic_ActiveBlocker(true);
+            if (_component.i_dim == null) return;
+
+            _component.i_dim.gameObject.SetActive(true);
+            _component.i_dim.DOKill();
+            _component.i_dim.DOFade(0.5f, _Duration_fadeDim);
+        }
+
+        /// <summary>
+        /// [기능] 암막 오브젝트를 페이드아웃으로 비활성화 시킵니다.
+        /// </summary>
+        private void Logic_FadeOutDim()
+        {
+            if (_component.i_dim == null) return;
+
+            _component.i_dim.DOKill();
+            _component.i_dim.DOFade(0, _Duration_fadeDim).OnComplete(() =>
+            {
+                _component.i_dim.gameObject.SetActive(false);
+                Logic_ActiveBlocker(false);
+            });
+        }
+
+        /// <summary>
+        /// [기능] 입력 방지 기능의 활성화 유무를 지정합니다. 
+        /// </summary>
+        private void Logic_ActiveBlocker(bool m_active)
+        {
+            if (_component.b_inputBlock == null) return;
+
+            _component.b_inputBlock.gameObject.SetActive(m_active);
+        }
+
+        /// <summary>
+        /// [기능] 팝업 매니저에서 관리되는 함수입니다. 팝업창을 닫습니다.
+        /// </summary>
+        internal bool Module_ClosePopup()
+        {
+            if (_isProtected) return false;
+
+            Logic_Close_Base();
+
+            return true;
+        }
+
         #region 버튼콜백
+        /// <summary>
+        /// [버튼콜백] 팝업창을 엽니다.
+        /// </summary>
+        public virtual void OnClickOpen_Base()
+        {
+            Logic_Open_Base();
+        }
+
         /// <summary>
         /// [버튼콜백] 팝업창을 닫습니다.
         /// </summary>
         public virtual void OnClickClose_Base()
         {
-            Logic_ClosePopup_Base();
+            Logic_Close_Base();
         }
 
         /// <summary>
@@ -178,7 +252,7 @@ namespace IdleGame.Core.Popup
         /// </summary>
         public virtual void OnClickOk_Base()
         {
-            Logic_ClosePopup_Callback();
+            Logic_Close_Callback();
         }
         #endregion
     }
