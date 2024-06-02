@@ -13,14 +13,21 @@ namespace IdleGame.Data.Common.Event
         /// <summary> [공용팝업] 버튼이 없는 팝업창을 엽니다. </summary>
         CommonPopup_NoBt_Open,
 
-        /// <summary> [타이머] 5초 간격으로 실행되는 이벤트입니다. </summary>
-        UpdateTime_5_00f,
-
-
         /// <summary> [공용팝업] 모든 팝업창을 끕니다. </summary>
         Act_AllClosePopup,
         /// <summary> [공용팝업] 가장 최근에 연 팝업창을 끕니다. </summary>
         Act_ClosePopup,
+        #endregion
+
+        #region 시간 이벤트
+        /// <summary> [타이머] 5초 간격으로 실행되는 이벤트입니다. </summary>
+        UpdateTime_5_00f,
+        #endregion
+
+        #region 데이터 테이블
+        /// <summary> [웹응답] 웹서버로부터 데이터 응답이 온경우 호출됩니다. </summary>
+        OnResponseData_Table
+
         #endregion
     }
 

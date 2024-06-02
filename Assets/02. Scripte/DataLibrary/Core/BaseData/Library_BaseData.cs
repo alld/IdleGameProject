@@ -185,5 +185,11 @@ namespace IdleGame.Data.Base
         /// [상태] 미사용중인 기능입니다.
         /// </summary>
         NotUsed = -10,
+
+
+        /// <summary>
+        /// [상태] 해당 프로시저는 사용이 만료된 상태입니다. 
+        /// </summary>
+        Exhaustion = 99
     }
 }
