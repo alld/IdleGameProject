@@ -39,14 +39,11 @@ namespace IdleGame.Core.Module.DataTable
                 case eDataTableType.GameInfo:
                     return URL_googleCommon + gameInfoSheetsURL + "&range=" + "A2:U2";
                 case eDataTableType.Stage:
-                case eDataTableType.Monsters:
-                case eDataTableType.Weapon:
-                case eDataTableType.Character:
                     return URL_googleCommon + settingData.dataTableList[m_type].Item2 + "&range=" + settingData.dataTableList[m_type].Item1;
                 case eDataTableType.BasicText:
-                //return URL_googleCommon + settingData.basicTextTableURL + "&range=" + Global_Data.GetLanguageChar() + settingData.basicTextTableCount[0] + ":" + Global_Data.GetLanguageChar() + settingData.basicTextTableCount[1];
+                    return URL_googleCommon + settingData.basicTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.basicTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.basicTextTableCount[1];
                 case eDataTableType.CommonText:
-                //return URL_googleCommon + settingData.commonTextTableURL + "&range=" + Global_Data.GetLanguageChar() + settingData.commonTextTableCount[0] + ":" + Global_Data.GetLanguageChar() + settingData.commonTextTableCount[1];
+                    return URL_googleCommon + settingData.commonTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.commonTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.commonTextTableCount[1];
 
                 default:
                     return null;
