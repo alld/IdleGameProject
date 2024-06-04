@@ -1,4 +1,5 @@
 using IdleGame.Core.GameInfo;
+using IdleGame.Data.DataTable;
 using System;
 using UnityEngine;
 
@@ -43,7 +44,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -54,7 +55,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -77,7 +78,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -90,7 +91,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -115,7 +116,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -126,7 +127,7 @@ namespace IdleGame.Data.Common.Log
             {
                 content =
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -150,7 +151,7 @@ namespace IdleGame.Data.Common.Log
                 content =
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
@@ -162,7 +163,7 @@ namespace IdleGame.Data.Common.Log
                 content =
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
-                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Application.version + "v\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
                     $"플랫폼 : " + Application.platform + "\n" +
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +

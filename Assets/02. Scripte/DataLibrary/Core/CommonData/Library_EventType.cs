@@ -14,20 +14,25 @@ namespace IdleGame.Data.Common.Event
         CommonPopup_NoBt_Open,
 
         /// <summary> [공용팝업] 모든 팝업창을 끕니다. </summary>
-        Act_AllClosePopup,
+        Popup_Act_AllClose,
         /// <summary> [공용팝업] 가장 최근에 연 팝업창을 끕니다. </summary>
-        Act_ClosePopup,
+        Popup_Act_Close,
         #endregion
 
         #region 시간 이벤트
         /// <summary> [타이머] 5초 간격으로 실행되는 이벤트입니다. </summary>
-        UpdateTime_5_00f,
+        TimeEvent_OnUpdate_5_00f,
         #endregion
 
         #region 데이터 테이블
         /// <summary> [웹응답] 웹서버로부터 데이터 응답이 온경우 호출됩니다. </summary>
-        OnResponseData_Table
+        Table_OnResponseData,
 
+        #endregion
+
+        #region 옵션
+        /// <summary> 언어 설정이 변경된 경우 호출됩니다. </summary>
+        Option_OnChangeLanguage,
         #endregion
     }
 
@@ -67,5 +72,7 @@ namespace IdleGame.Data.Common.Event
         BackSide_On,
         /// <summary> [백사이드] 일반적인 게임 화면으로 다시 전환합니다. </summary>
         BackSide_Off,
+
+        TestA,
     }
 }

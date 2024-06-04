@@ -13,11 +13,6 @@ namespace IdleGame.Core.Panel.DataTable
     /// </summary>
     public class Panel_DataTableManager : Base_Panel
     {
-        /// <summary>
-        /// 데이터 테이블의 전반적인 정보를 담고 있습니다. 파싱하는 과정에서 필요한 데이터입니다. 
-        /// </summary>
-        private Data_DataTableInfo _dataTableInfo = new Data_DataTableInfo();
-
 #if DevelopeMode
         [SerializeField]
         private Module_WebTableLoader _tableLoader;
@@ -28,46 +23,48 @@ namespace IdleGame.Core.Panel.DataTable
 
         protected override void Logic_Init_Custom()
         {
-            transform.GetChild(0).TryGetComponent(out _tableLoader);
-            if (_tableLoader != null) TryLoadData(eDataTableType.GameInfo);
+            if (_tableLoader != null) Logic_TryLoadData(eDataTableType.GameInfo);
         }
 
         protected override void Logic_RegisterEvent_Custom()
         {
-            Base_Engine.Event.RegisterEvent<eDataTableType, string[], int>(eGlobalEventType.OnResponseData_Table, OnResponseData);
-            //Base_Engine.Event.RegisterEvent(eGlobalEventType.SetLanguage, LoadData_TextTable);
+            Base_Engine.Event.RegisterEvent<eDataTableType, string[], int>(eGlobalEventType.Table_OnResponseData, OnResponseData);
+            Base_Engine.Event.RegisterEvent(eGlobalEventType.Option_OnChangeLanguage, Logic_LoadData_TextTable);
         }
 
         /// <summary>
-        /// [기능] 모든 데이터 테이블을 가져와 파싱을 시도합니다.
+        /// [기능] 모든 데이터 테이블을 불러옵니다. 
         /// </summary>
-        public void LoadData()
+        private void Logic_LoadAllData()
         {
-            LoadData_StageTable();
-            LoadData_TextTable();
+            Logic_LoadData_FristInit();
+            Logic_LoadData_TextTable();
         }
 
         /// <summary>
-        /// [기능] 스테이지 테이블을 불러와 Global_Data를 갱신합니다.
+        /// [기능] 게임 전반적으로 구성에 필요한 데이터 테이블을 불러옵니다. 
+        /// <br> 가장 먼저 초기화 되어 추가로 초기화가 이루어질 필요가 없는 데이터 테이블들로 구성됩니다. </br>
         /// </summary>
-        public void LoadData_StageTable()
+        private void Logic_LoadData_FristInit()
         {
-            TryLoadData(eDataTableType.Stage);
+            Logic_TryLoadData(eDataTableType.Stage);
         }
-
 
 
         /// <summary>
-        /// [기능] 몬스터 테이블을 불러와 Global_Data를 갱신합니다.
+        /// [기능] 텍스트 테이블로부터 새로운 텍스트리스트를 받아옵니다.
+        /// <br> 텍스트 테이블은 언어 변경에 따라 반복적으로 호출이 필요할 수 있습니다. </br>
         /// </summary>
-        public void LoadData_TextTable()
+        public void Logic_LoadData_TextTable()
         {
-            TryLoadData(eDataTableType.CommonText);
-            TryLoadData(eDataTableType.BasicText);
+            Logic_TryLoadData(eDataTableType.ShareText);
+            Logic_TryLoadData(eDataTableType.BasicText);
         }
 
-
-        public void TryLoadData(eDataTableType m_kind)
+        /// <summary>
+        /// [기능] 테이블 로더기로부터 특정 타입의 데이터를 읽어오도록 시도합니다. 
+        /// </summary>
+        public void Logic_TryLoadData(eDataTableType m_kind)
         {
             StartCoroutine(_tableLoader.LoadData(m_kind));
         }
@@ -86,12 +83,12 @@ namespace IdleGame.Core.Panel.DataTable
                 case eDataTableType.GameInfo:
                     _tableLoader.LoaderSetting(Convert_GameInfo(m_dataArray));
 
-                    LoadData();
+                    Logic_LoadAllData();
                     break;
                 case eDataTableType.Stage:
                     Convert_StageTable(m_dataArray);
                     break;
-                case eDataTableType.CommonText:
+                case eDataTableType.ShareText:
                     Convert_CommonTextTable(m_dataArray);
                     Global_TextData.OnChangeLanguage();
                     break;
@@ -109,19 +106,22 @@ namespace IdleGame.Core.Panel.DataTable
         private Data_DataTableInfo Convert_GameInfo(string[] m_dataArray)
         {
             string[] resultData = m_dataArray[0].Split("\t");
+            Library_DataTable.Info.isDataExists = true;
 
-            _dataTableInfo.version = resultData[0];
+            Library_DataTable.Info.version = resultData[0];
+            return null;
+            //_dataTableInfo.version = resultData[0];
 
-            for (int i = 1; i < resultData.Length - 4; i += 2)
-            {
-                _dataTableInfo.dataTableList.Add((eDataTableType)((i + 1) / 2), (resultData[i], resultData[i + 1]));
-            }
+            //for (int i = 1; i < resultData.Length - 4; i += 2)
+            //{
+            //    _dataTableInfo.dataTableList.Add((eDataTableType)((i + 1) / 2), (resultData[i], resultData[i + 1]));
+            //}
 
-            GetCountData(resultData[17], out _dataTableInfo.commonTextTableCount);
-            _dataTableInfo.commonTextTableURL = resultData[18];
-            GetCountData(resultData[19], out _dataTableInfo.basicTextTableCount);
-            _dataTableInfo.basicTextTableURL = resultData[20];
-            return _dataTableInfo;
+            //GetCountData(resultData[17], out _dataTableInfo.commonTextTableCount);
+            //_dataTableInfo.commonTextTableURL = resultData[18];
+            //GetCountData(resultData[19], out _dataTableInfo.basicTextTableCount);
+            //_dataTableInfo.basicTextTableURL = resultData[20];
+            //return _dataTableInfo;
         }
 
 

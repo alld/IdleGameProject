@@ -30,8 +30,8 @@ namespace IdleGame.Core.Popup
         /// </summary>
         private void Logic_RegisterEvent()
         {
-            Base_Engine.Event.RegisterEvent(eGlobalEventType.Act_ClosePopup, Logic_CloseLastPopup);
-            Base_Engine.Event.RegisterEvent(eGlobalEventType.Act_AllClosePopup, Logic_AllClosePopup);
+            Base_Engine.Event.RegisterEvent(eGlobalEventType.Popup_Act_Close, Logic_CloseLastPopup);
+            Base_Engine.Event.RegisterEvent(eGlobalEventType.Popup_Act_AllClose, Logic_AllClosePopup);
         }
 
         /// <summary>

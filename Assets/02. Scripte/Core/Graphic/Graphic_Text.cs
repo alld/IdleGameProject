@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(TMP_Text))]
 public class Graphic_Text : MonoBehaviour
 {
     [Header("Base")]

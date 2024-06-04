@@ -41,9 +41,9 @@ namespace IdleGame.Core.Module.DataTable
                 case eDataTableType.Stage:
                     return URL_googleCommon + settingData.dataTableList[m_type].Item2 + "&range=" + settingData.dataTableList[m_type].Item1;
                 case eDataTableType.BasicText:
-                    return URL_googleCommon + settingData.basicTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.basicTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.basicTextTableCount[1];
-                case eDataTableType.CommonText:
-                    return URL_googleCommon + settingData.commonTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.commonTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.commonTextTableCount[1];
+                //return URL_googleCommon + settingData.basicTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.basicTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.basicTextTableCount[1];
+                case eDataTableType.ShareText:
+                // return URL_googleCommon + settingData.commonTextTableURL + "&range=" + /*Global_Data.GetLanguageChar() +*/ settingData.commonTextTableCount[0] + ":" +/* Global_Data.GetLanguageChar() + */settingData.commonTextTableCount[1];
 
                 default:
                     return null;
@@ -83,7 +83,7 @@ namespace IdleGame.Core.Module.DataTable
                             break;
                     }
 
-                    Base_Engine.Event.CallEvent(eGlobalEventType.OnResponseData_Table, m_kind, dataArray, errorCode);
+                    Base_Engine.Event.CallEvent(eGlobalEventType.Table_OnResponseData, m_kind, dataArray, errorCode);
                 }
             }
             #endregion

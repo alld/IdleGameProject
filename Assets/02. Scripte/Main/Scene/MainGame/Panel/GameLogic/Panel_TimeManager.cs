@@ -80,7 +80,7 @@ namespace IdleGame.Main.GameLogic
                 yield return _co_Timer;
                 if (updateCount-- == 0)
                 {
-                    GameManager.Event.CallEvent(eGlobalEventType.UpdateTime_5_00f);
+                    GameManager.Event.CallEvent(eGlobalEventType.TimeEvent_OnUpdate_5_00f);
                     updateCount = 5;
                 }
 
