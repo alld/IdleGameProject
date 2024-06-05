@@ -126,25 +126,36 @@ namespace IdleGame.Core.Panel.DataTable
 
             for (int i = 0; i < m_dataArray.Length; i++)
             {
+                int index = 0;
                 Data_Stage parsingData = new Data_Stage();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                parsingData.index = int.Parse(dataSegment[0]);
-                parsingData.maxWave = int.Parse(dataSegment[1]);
-                parsingData.isMainStory = bool.Parse(dataSegment[2]);
-                Convert_Array(ref parsingData.waveType, dataSegment[3]);
-                parsingData.storyIndex = int.Parse(dataSegment[4]);
-                Convert_Array(ref parsingData.wave_unitKind, dataSegment[5]);
-                Convert_Array(ref parsingData.wave_unitCount, dataSegment[5]);
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.maxWave, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.isMainStory, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.waveType, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.storyIndex, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.wave_unitKind, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.wave_unitCount, dataSegment[index++]);
 
                 Library_DataTable.stage.Add(parsingData.index, parsingData);
             }
         }
 
         /// <summary>
+        /// [변환] 값을 적절하게 파싱해줍니다.
+        /// </summary>
+        private void Convert_ParsingData<T>(ref T m_parsingData, string m_dataSegment)
+        {
+            if (m_dataSegment == "") return;
+
+            m_parsingData = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(m_dataSegment);
+        }
+
+        /// <summary>
         /// [변환] 1차 배열의 값을 적절하게 파싱해줍니다.
         /// </summary>
-        private void Convert_Array<T>(ref T[] m_parsingData, string m_dataSegment)
+        private void Convert_ParsingData<T>(ref T[] m_parsingData, string m_dataSegment)
         {
             if (m_dataSegment == "") return;
 
@@ -159,7 +170,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// <summary>
         /// [변환] 2차 배열의 값을 적절하게 파싱해줍니다.
         /// </summary>
-        private void Convert_Array<T>(ref T[][] m_parsingData, string m_dataSegment)
+        private void Convert_ParsingData<T>(ref T[][] m_parsingData, string m_dataSegment)
         {
             if (m_dataSegment == "") return;
 
