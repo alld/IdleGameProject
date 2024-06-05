@@ -1,7 +1,10 @@
 using IdleGame.Core.Module.DataTable;
 using IdleGame.Core.Procedure;
+using IdleGame.Data;
 using IdleGame.Data.Common.Event;
+using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -15,10 +18,10 @@ namespace IdleGame.Core.Panel.DataTable
     {
 #if DevelopeMode
         [SerializeField]
-        private Module_WebTableLoader _tableLoader;
+        private Module_WebTableLoader _tableLoader = new Module_WebTableLoader();
 #else
         [SerializeField]
-        private Module_TSVConvert _tableLoader;
+        private Module_TSVConvert _tableLoader = new Module_TSVConvert();
 #endif
 
         protected override void Logic_Init_Custom()
@@ -73,15 +76,14 @@ namespace IdleGame.Core.Panel.DataTable
         {
             if (m_errorCode < 0)
             {
-                // TODO :: 에러메시지 출력 (데이터를 불러오는 과정에서 에러가 발생하였습니다.)
-                // m_dataArray[0]에 메시지 타입이 담겨있음.
+                Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
                 return;
             }
 
             switch (m_type)
             {
                 case eDataTableType.GameInfo:
-                    _tableLoader.LoaderSetting(Convert_GameInfo(m_dataArray));
+                    Convert_GameInfo(m_dataArray);
 
                     Logic_LoadAllData();
                     break;
@@ -97,57 +99,81 @@ namespace IdleGame.Core.Panel.DataTable
                     Global_TextData.OnChangeLanguage();
                     break;
                 default:
+                    Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
                     // TODO :: 에러메시지 출력 (설정되지않은 데이터 타입이 지정되었습니다.)
                     break;
             }
         }
 
         #region 데이터 파싱
-        private Data_DataTableInfo Convert_GameInfo(string[] m_dataArray)
+        private void Convert_GameInfo(string[] m_dataArray)
         {
             string[] resultData = m_dataArray[0].Split("\t");
             Library_DataTable.Info.isDataExists = true;
 
             Library_DataTable.Info.version = resultData[0];
-            return null;
-            //_dataTableInfo.version = resultData[0];
 
-            //for (int i = 1; i < resultData.Length - 4; i += 2)
-            //{
-            //    _dataTableInfo.dataTableList.Add((eDataTableType)((i + 1) / 2), (resultData[i], resultData[i + 1]));
-            //}
-
-            //GetCountData(resultData[17], out _dataTableInfo.commonTextTableCount);
-            //_dataTableInfo.commonTextTableURL = resultData[18];
-            //GetCountData(resultData[19], out _dataTableInfo.basicTextTableCount);
-            //_dataTableInfo.basicTextTableURL = resultData[20];
-            //return _dataTableInfo;
+            for (int i = 1; i < resultData.Length; i += 2)
+            {
+                Library_DataTable.Info.dataTableList.Add((eDataTableType)((i + 1) / 2), (resultData[i], resultData[i + 1]));
+            }
         }
 
 
         private void Convert_StageTable(string[] m_dataArray)
         {
-            //Global_Data.stageTable.Clear();
+            Library_DataTable.stage.Clear();
 
-            //for (int i = 0; i < m_dataArray.Length; i++)
-            //{
-            //    Data_Stage parsingData = new Data_Stage();
-            //    string[] dataSegment = m_dataArray[i].Split("\t");
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                Data_Stage parsingData = new Data_Stage();
+                string[] dataSegment = m_dataArray[i].Split("\t");
 
-            //    parsingData.index = int.Parse(dataSegment[0]);
-            //    parsingData.tileKind = (eMapTileKind)Enum.Parse(typeof(eMapTileKind), dataSegment[1]);
+                parsingData.index = int.Parse(dataSegment[0]);
+                parsingData.maxWave = int.Parse(dataSegment[1]);
+                parsingData.isMainStory = bool.Parse(dataSegment[2]);
+                Convert_Array(ref parsingData.waveType, dataSegment[3]);
+                parsingData.storyIndex = int.Parse(dataSegment[4]);
+                Convert_Array(ref parsingData.wave_unitKind, dataSegment[5]);
+                Convert_Array(ref parsingData.wave_unitCount, dataSegment[5]);
 
-            //    tempStringData = dataSegment[16].Split(",");
-            //    parsingData.startEndSpawnDelay = new float[tempStringData.Length];
-            //    for (int j = 0; j < tempStringData.Length; j++)
-            //    {
-            //        parsingData.startEndSpawnDelay[j] = float.Parse(tempStringData[j]);
-            //    }
+                Library_DataTable.stage.Add(parsingData.index, parsingData);
+            }
+        }
 
-            //    parsingData.spawnDelayInterval = float.Parse(dataSegment[17]);
+        /// <summary>
+        /// [변환] 1차 배열의 값을 적절하게 파싱해줍니다.
+        /// </summary>
+        private void Convert_Array<T>(ref T[] m_parsingData, string m_dataSegment)
+        {
+            if (m_dataSegment == "") return;
 
-            //    Global_Data.stageTable.Add(parsingData.index, parsingData);
-            //}
+            string[] arrayData = m_dataSegment.Split(",");
+            m_parsingData = new T[arrayData.Length];
+            for (int i = 0; i < arrayData.Length; i++)
+            {
+                m_parsingData[i] = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(arrayData[i]);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 2차 배열의 값을 적절하게 파싱해줍니다.
+        /// </summary>
+        private void Convert_Array<T>(ref T[][] m_parsingData, string m_dataSegment)
+        {
+            if (m_dataSegment == "") return;
+
+            string[] arrayData = m_dataSegment.Split("//");
+            m_parsingData = new T[arrayData.Length][];
+            for (int i = 0; i < arrayData.Length; i++)
+            {
+                string[] arrayData_N = arrayData[i].Split(",");
+                m_parsingData[i] = new T[arrayData_N.Length];
+                for (int j = 0; j < arrayData_N.Length; j++)
+                {
+                    m_parsingData[i][j] = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(arrayData_N[j]);
+                }
+            }
         }
 
         private void Convert_CommonTextTable(string[] m_dataArray)
