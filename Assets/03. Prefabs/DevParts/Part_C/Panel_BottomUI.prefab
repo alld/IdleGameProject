@@ -60,6 +60,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6832598773321084361}
   - component: {fileID: 108996505090188597}
+  - component: {fileID: 8243046331576013448}
   - component: {fileID: 2564041282062401704}
   m_Layer: 0
   m_Name: T_Shop
@@ -95,6 +96,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857471582813854496}
   m_CullTransparentMesh: 1
+--- !u!114 &8243046331576013448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857471582813854496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 2564041282062401704}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &2564041282062401704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,6 +844,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5972361205654075474}
   - component: {fileID: 1908210937096228777}
+  - component: {fileID: 4118261714135501136}
   - component: {fileID: 8373426858215850656}
   m_Layer: 0
   m_Name: T_Mine
@@ -863,6 +880,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4494660780568144432}
   m_CullTransparentMesh: 1
+--- !u!114 &4118261714135501136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494660780568144432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 8373426858215850656}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &8373426858215850656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1097,6 +1129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7419568058728849276}
   - component: {fileID: 1673421490877752805}
+  - component: {fileID: 6238531197247209870}
   - component: {fileID: 659477671696966869}
   m_Layer: 0
   m_Name: T_Character
@@ -1132,6 +1165,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5931029626724294680}
   m_CullTransparentMesh: 1
+--- !u!114 &6238531197247209870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5931029626724294680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 659477671696966869}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &659477671696966869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1233,6 +1281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7623645115757673331}
   - component: {fileID: 1824643809264617831}
+  - component: {fileID: 4896077618192377318}
   - component: {fileID: 41528770261619312}
   m_Layer: 0
   m_Name: T_Dungeon
@@ -1268,6 +1317,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7117416819591935754}
   m_CullTransparentMesh: 1
+--- !u!114 &4896077618192377318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117416819591935754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 41528770261619312}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &41528770261619312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1444,6 +1508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1286773975648551560}
   - component: {fileID: 2891079686114083229}
+  - component: {fileID: 8493432844567335312}
   - component: {fileID: 7019815971129020489}
   m_Layer: 0
   m_Name: T_Party
@@ -1479,6 +1544,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8977112439120975785}
   m_CullTransparentMesh: 1
+--- !u!114 &8493432844567335312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977112439120975785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 7019815971129020489}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &7019815971129020489
 MonoBehaviour:
   m_ObjectHideFlags: 0

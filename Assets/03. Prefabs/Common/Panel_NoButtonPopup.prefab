@@ -260,8 +260,8 @@ MonoBehaviour:
     aniType_out: 0
     duration_appearance: 0
     duration_extinction: 0
-  _t_title: {fileID: 8899581266189106688}
-  _t_context: {fileID: 1777423482175400775}
+  _t_title: {fileID: 1458185807437575885}
+  _t_context: {fileID: 8849294383400818974}
   _autoCloseTimer: 3
 --- !u!1 &7071929412302923372
 GameObject:
@@ -273,6 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 456151960536326462}
   - component: {fileID: 6191868031644377980}
+  - component: {fileID: 8849294383400818974}
   - component: {fileID: 1777423482175400775}
   m_Layer: 0
   m_Name: T_Context
@@ -308,6 +309,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7071929412302923372}
   m_CullTransparentMesh: 1
+--- !u!114 &8849294383400818974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071929412302923372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 1777423482175400775}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &1777423482175400775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,6 +538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8901825000146641291}
   - component: {fileID: 7655992017749278153}
+  - component: {fileID: 1458185807437575885}
   - component: {fileID: 8899581266189106688}
   m_Layer: 0
   m_Name: T_Title
@@ -557,6 +574,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8745185119625293804}
   m_CullTransparentMesh: 1
+--- !u!114 &1458185807437575885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8745185119625293804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 8899581266189106688}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &8899581266189106688
 MonoBehaviour:
   m_ObjectHideFlags: 0

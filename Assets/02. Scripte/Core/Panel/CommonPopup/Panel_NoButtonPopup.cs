@@ -2,7 +2,6 @@ using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Popup;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 namespace IdleGame.Core.Popup
@@ -14,9 +13,9 @@ namespace IdleGame.Core.Popup
     public class Panel_NoButtonPopup : Base_CommonPopup
     {
         [Header("NoButtonPopup")]
-        [SerializeField] private TMP_Text _t_title;
+        [SerializeField] private Graphic_Text _t_title;
 
-        [SerializeField] private TMP_Text _t_context;
+        [SerializeField] private Graphic_Text _t_context;
 
         [SerializeField] private float _autoCloseTimer = 3f;
 
