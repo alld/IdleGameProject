@@ -1,7 +1,6 @@
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Popup;
-using TMPro;
 using UnityEngine;
 
 namespace IdleGame.Core.Popup
@@ -12,9 +11,9 @@ namespace IdleGame.Core.Popup
     public class Panel_TwoButtonPopup : Base_CommonPopup
     {
         [Header("TwoButtonPopup")]
-        [SerializeField] private TMP_Text _t_title;
+        [SerializeField] private Graphic_Text _t_title;
 
-        [SerializeField] private TMP_Text _t_context;
+        [SerializeField] private Graphic_Text _t_context;
 
         /// <summary>
         /// [상태] 팝업창이 활성화 중인 상태에서 새로운 팝업창이 열린 경우에대한 처리 과정을 확인합니다.
