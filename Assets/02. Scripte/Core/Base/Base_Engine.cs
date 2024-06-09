@@ -30,6 +30,11 @@ namespace IdleGame.Core.Procedure
         private static Base_ScenePanel _Panel;
 
         /// <summary>
+        /// [캐시] 매니저에서 관리되는 패널들을 담고있는 오브젝트 그룹입니다.
+        /// </summary>
+        [SerializeField] private GameObject _obj_logic;
+
+        /// <summary>
         /// [기능] 게임매니저가 관리하는 이벤트 시스템입니다. 씬에 구속되지않고 글로벌 단위로 사용되어지는 이벤트타입만 관리됩니다.
         /// </summary>
         public static Module_EventSystem<eGlobalEventType> Event = new Module_EventSystem<eGlobalEventType>();
@@ -66,6 +71,12 @@ namespace IdleGame.Core.Procedure
         private static bool _IsFirstRun = false;
 
 
+        /// <summary>
+        /// [캐시] 매니저가 관리하는 모든 패널을 담습니다. 
+        /// </summary>
+        private Base_ManagerPanel[] _managerPanels;
+
+
         protected virtual void Awake()
         {
             if (_IsFirstRun == false) _IsFirstRun = true;
@@ -80,6 +91,29 @@ namespace IdleGame.Core.Procedure
         public static void Logic_SetPanel(Base_ScenePanel m_panel)
         {
             _Panel = m_panel;
+        }
+
+        /// <summary>
+        /// [초기화] 게임 매니저가 들고있는 오브젝트들을 탐색해서 적절하게 캐시처리합니다.
+        /// </summary>
+        protected void Logic_RegisterManager()
+        {
+            Log = _obj_logic.GetComponentInChildren<Panel_LogCollector>();
+            Save = _obj_logic.GetComponentInChildren<Panel_SaveEngine>();
+            Table = _obj_logic.GetComponentInChildren<Panel_DataTableManager>();
+
+            _managerPanels = _obj_logic.GetComponentsInChildren<Base_ManagerPanel>();
+        }
+
+        /// <summary>
+        /// [초기화] 게임 매니저가 관리하는 모든 패널들을 초기화시킵니다. 
+        /// </summary>
+        protected void Logic_ManagerInit()
+        {
+            foreach (var panel in _managerPanels)
+            {
+                panel.Logic_Init();
+            }
         }
     }
 }

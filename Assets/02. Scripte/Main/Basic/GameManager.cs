@@ -1,6 +1,3 @@
-using IdleGame.Core.Panel.DataTable;
-using IdleGame.Core.Panel.LogCollector;
-using IdleGame.Core.Panel.SaveEngine;
 using IdleGame.Core.Procedure;
 using IdleGame.Main.GameLogic;
 using UnityEngine;
@@ -31,7 +28,6 @@ namespace IdleGame.Main
         [SerializeField]
         private Panel_TimeManager _time;
 
-
         protected override void Awake()
         {
             base.Awake();
@@ -42,9 +38,8 @@ namespace IdleGame.Main
                 Main = this;
                 DontDestroyOnLoad(this);
 
-                Log = GetComponentInChildren<Panel_LogCollector>();
-                Save = GetComponentInChildren<Panel_SaveEngine>();
-                Table = GetComponentInChildren<Panel_DataTableManager>();
+                Logic_RegisterManager();
+                Logic_ManagerInit();
             }
             else
             {

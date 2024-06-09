@@ -25,6 +25,6 @@ namespace IdleGame.Data.NSave
         /// <summary>
         /// [데이터] 게임에 최초 접속하는 유저인지를 판단합니다. 
         /// </summary>
-        public bool isFirstPlaying = false;
+        public bool isFirstPlaying = true;
     }
 }

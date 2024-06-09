@@ -8,7 +8,7 @@ namespace IdleGame.Core.Panel.LogCollector
     /// <summary>
     /// [모듈] 에러 수집기는 발생한 에러들을 수집하여 처리하는 방법을 정의합니다. 
     /// </summary>
-    public class Panel_LogCollector : Base_Panel
+    public class Panel_LogCollector : Base_ManagerPanel
     {
         /// <summary>
         /// [상태] 해당 에러가 수집되는 장소를 지정합니다. 
