@@ -160,21 +160,13 @@ namespace IdleGame.Core.Intro
 
             GameManager.Table.Logic_TryLoadData(eDataTableType.GameInfo);
             if (GameManager.Save.usedLoadData)
-            {
                 GameManager.Save.Logic_Load();
-
-
-                while (_loadingCount < _LoadMaxStep)
-                {
-                    yield return null;
-                }
-            }
             else
+                _loadingCount += 2;
+            while (_loadingCount < _LoadMaxStep)
             {
-                _i_progressGauge.DOFillAmount(1, 0.8f);
-                yield return new WaitForSeconds(1f);
+                yield return null;
             }
-
 
             Logic_SetActiveLoadingBar(false);
         }

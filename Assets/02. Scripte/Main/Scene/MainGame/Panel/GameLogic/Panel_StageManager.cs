@@ -8,7 +8,7 @@ namespace IdleGame.Main.GameLogic
     /// <summary>
     /// [기능] 스페이지를 구성하고 관리하는 매니저입니다.
     /// </summary>
-    public class Panel_StageManager : Base_Panel
+    public class Panel_StageManager : Base_ManagerPanel
     {
         /// <summary>
         /// [상태] 현재 진행중인 데이터 정보입니다.

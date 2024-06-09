@@ -14,7 +14,7 @@ namespace IdleGame.Core.Panel.DataTable
     /// <summary>
     /// [기능] 데이터 테이블을 구성합니다. 
     /// </summary>
-    public class Panel_DataTableManager : Base_Panel
+    public class Panel_DataTableManager : Base_ManagerPanel
     {
 #if DevelopeMode
         [SerializeField]

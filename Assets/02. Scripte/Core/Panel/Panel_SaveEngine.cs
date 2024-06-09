@@ -9,7 +9,7 @@ namespace IdleGame.Core.Panel.SaveEngine
     /// <summary>
     /// [기능] 세이브와 로드를 전반적으로 통제하는 패널입니다.
     /// </summary>
-    public class Panel_SaveEngine : Base_Panel
+    public class Panel_SaveEngine : Base_ManagerPanel
     {
         /// <summary>
         /// [기능] 세이브의 암호화 로직을 담당합니다.
@@ -82,6 +82,8 @@ namespace IdleGame.Core.Panel.SaveEngine
         public void Editor_DeleteSave()
         {
             _logic.DeleteSaveFile();
+
+            Logic_CheckLoadData();
         }
 
         /// <summary>

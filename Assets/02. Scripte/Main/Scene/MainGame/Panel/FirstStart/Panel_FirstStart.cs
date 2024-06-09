@@ -2,6 +2,8 @@ using DG.Tweening;
 using IdleGame.Core;
 using IdleGame.Data;
 using IdleGame.Data.Common.Event;
+using IdleGame.Data.DataTable;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +27,12 @@ namespace IdleGame.Main.Scene.Main
         [SerializeField]
         private Image _i_fade;
 
+        /// <summary>
+        /// [상태] 테이블 데이터가 얼마나 불렸는지 카운터합니다. 
+        /// <br> 개발 환경에서만 사용되어지는 값입니다.  </br>
+        /// </summary>
+        private int _step = 0;
+
 
         protected override void Logic_Init_Custom()
         {
@@ -40,7 +48,41 @@ namespace IdleGame.Main.Scene.Main
         /// </summary>
         private void Logic_StartFirstGame()
         {
+            // 조건 :: 개발 환경에서 인게임씬으로 바로 진입한 경우
+            if (GameManager.Scene.Logic_ConditionIsEntryScene())
+            {
+                StartCoroutine(Logic_DevelopEntryStart());
+                return;
+            }
 
+            // TODO:: 듀토리얼 같은거..넣어야함..
+            Logic_FadeOutScreen();
+        }
+
+        /// <summary>
+        /// [기능] 개발환경에서 게임을 바로 시작할경우 초기 필요한 기능들을 설정해줍니다.
+        /// <br> 개발환경에서만 사용되어집니다. </br>
+        /// </summary>
+        private IEnumerator Logic_DevelopEntryStart()
+        {
+            GameManager.Save.Logic_Load();
+
+            GameManager.Event.RegisterEvent(eGlobalEventType.Save_OnResponseStep, Logic_LoadCount);
+            GameManager.Table.Logic_TryLoadData(eDataTableType.GameInfo);
+
+            while (_step < Library_DataTable.DataTableCount)
+                yield return new WaitForSeconds(0.5f);
+
+            Logic_FadeOutScreen();
+        }
+
+        /// <summary>
+        /// [기능] 테이블로드가 완료되었는지 판단합니다. 
+        /// <br> 개발환경에서만 사용되어집니다. </b>
+        /// </summary>
+        private void Logic_LoadCount()
+        {
+            _step++;
         }
 
         /// <summary>
