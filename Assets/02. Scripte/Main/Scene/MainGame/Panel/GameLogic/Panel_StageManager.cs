@@ -33,7 +33,7 @@ namespace IdleGame.Main.GameLogic
             mainStage = m_data;
             mainStage.procedures = eProcedures.Initing;
 
-            Logic_SetLevel(mainStage.currentLevel);
+            Logic_SetLevel(mainStage.currentWave);
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         public void Logic_NextLevel()
         {
-            mainStage.currentLevel++;
-            if (mainStage.currentLevel > mainStage.maxLevel)
+            mainStage.currentWave++;
+            if (mainStage.currentWave > mainStage.maxWave)
                 Logic_TryNextStage();
 
-            Logic_SetLevel(mainStage.currentLevel);
+            Logic_SetLevel(mainStage.currentWave);
         }
 
         /// <summary>

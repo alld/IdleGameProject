@@ -33,7 +33,7 @@ namespace IdleGame.Data.Base
         public enum eLanguage
         {
             /// <summary> [언어] 한국어 </summary>
-            Kr = 65,
+            Kr = 66,
             /// <summary> [언어] 영어</summary>
             En,
             /// <summary> [언어] 일본어</summary>

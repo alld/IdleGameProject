@@ -84,6 +84,7 @@ namespace IdleGame.Data.Common.Log
         public static readonly Data Error_NetworkConnect = new Data("네트워크 연결 상태가 원활하지 않습니다.");
         public static readonly Data Error_TryChangeSceneFail = new Data("씬 전환에 실패하였습니다.");
         public static readonly Data Error_TextLoadFailed = new Data("텍스트를 불러오는데 실패하였습니다.");
+        public static readonly Data Error_DataLoadFailed = new Data("데이터를 불러오는데 실패하였습니다.");
 
         #endregion
 
