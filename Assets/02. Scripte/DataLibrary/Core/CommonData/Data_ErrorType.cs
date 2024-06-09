@@ -85,10 +85,11 @@ namespace IdleGame.Data.Common.Log
         public static readonly Data Error_TryChangeSceneFail = new Data("씬 전환에 실패하였습니다.");
         public static readonly Data Error_TextLoadFailed = new Data("텍스트를 불러오는데 실패하였습니다.");
         public static readonly Data Error_DataLoadFailed = new Data("데이터를 불러오는데 실패하였습니다.");
-
+        public static readonly Data Error_NonCompareDataCount = new Data("불러온 데이터가 Global_Data의 형식과 맞지않습니다.");
         #endregion
 
         #region 경고 리스트
+        public static readonly Data Warning_IsSaveing = new Data("이미 세이브가 진행중입니다. 중복으로 진행이 실행되었습니다.");
         public static readonly Data Warning_InsufficientSetting = new Data("미할당된 오브젝트 설정이 존재합니다.");
         // 코루틴 중복 실행
         public static readonly Data Warning_FunctionRunInDuplicate = new Data("코루틴 함수가 중복 실행되었습니다.");

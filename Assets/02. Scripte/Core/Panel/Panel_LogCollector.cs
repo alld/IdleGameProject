@@ -8,7 +8,7 @@ namespace IdleGame.Core.Panel.LogCollector
     /// <summary>
     /// [모듈] 에러 수집기는 발생한 에러들을 수집하여 처리하는 방법을 정의합니다. 
     /// </summary>
-    public class Panel_LogCollector : Base_Panel
+    public class Panel_LogCollector : Base_ManagerPanel
     {
         /// <summary>
         /// [상태] 해당 에러가 수집되는 장소를 지정합니다. 
@@ -38,7 +38,7 @@ namespace IdleGame.Core.Panel.LogCollector
         /// <summary>
         /// [기능] 예외에 따른 에러 로그 발생시 송출하는 로그 핸들러입니다.
         /// </summary>
-        public void ExceptionLog(string m_log, string m_stack, LogType m_type)
+        private void ExceptionLog(string m_log, string m_stack, LogType m_type)
         {
             if (m_type == LogType.Exception)
                 Logic_PutLog(new Data_Log(m_stack, m_log, eLogType.Error));

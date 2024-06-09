@@ -1,4 +1,3 @@
-using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Core.Procedure;
 using IdleGame.Main.GameLogic;
 using UnityEngine;
@@ -29,7 +28,6 @@ namespace IdleGame.Main
         [SerializeField]
         private Panel_TimeManager _time;
 
-
         protected override void Awake()
         {
             base.Awake();
@@ -40,7 +38,8 @@ namespace IdleGame.Main
                 Main = this;
                 DontDestroyOnLoad(this);
 
-                Log = GetComponentInChildren<Panel_LogCollector>();
+                Logic_RegisterManager();
+                Logic_ManagerInit();
             }
             else
             {

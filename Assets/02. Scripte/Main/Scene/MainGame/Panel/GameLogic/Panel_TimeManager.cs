@@ -19,7 +19,7 @@ namespace IdleGame.Main.GameLogic
     /// <summary>
     /// [기능] 전반적인 시간의 흐름을 관리합니다. 
     /// </summary>
-    public class Panel_TimeManager : Base_Panel
+    public class Panel_TimeManager : Base_ManagerPanel
     {
         /// <summary>
         /// [캐시] 작동중인 타이머 코루틴입니다.
@@ -77,9 +77,11 @@ namespace IdleGame.Main.GameLogic
 
             while (true)
             {
-                yield return _co_Timer;
+                yield return _delay_1_00f;
                 if (updateCount-- == 0)
                 {
+                    if (GameManager.Scene.Logic_ConditionIsInGameScene())
+                        GameManager.Save.Logic_Save(true);
                     GameManager.Event.CallEvent(eGlobalEventType.TimeEvent_OnUpdate_5_00f);
                     updateCount = 5;
                 }
