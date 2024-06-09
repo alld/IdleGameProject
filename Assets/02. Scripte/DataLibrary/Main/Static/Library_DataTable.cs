@@ -12,6 +12,10 @@ namespace IdleGame.Data.DataTable
         /// </summary>
         public static Data_DataTableInfo Info = new Data_DataTableInfo();
 
+        /// <summary>
+        /// [데이터] 데이터 테이블의 총 갯수를 나타냅니다. 
+        /// </summary>
+        public const int DataTableCount = 4;
 
         /// <summary>
         /// [데이터] 스테이지에대한 모든 정보를 담고 있습니다. 인덱스로 스테이지를 찾을 수 있습니다. 

@@ -24,11 +24,6 @@ namespace IdleGame.Core.Panel.DataTable
         private Module_TSVConvert _tableLoader = new Module_TSVConvert();
 #endif
 
-        protected override void Logic_Init_Custom()
-        {
-            if (_tableLoader != null) Logic_TryLoadData(eDataTableType.GameInfo);
-        }
-
         protected override void Logic_RegisterEvent_Custom()
         {
             Base_Engine.Event.RegisterEvent<eDataTableType, string[], int>(eGlobalEventType.Table_OnResponseData, OnResponseData);
@@ -84,7 +79,6 @@ namespace IdleGame.Core.Panel.DataTable
             {
                 case eDataTableType.GameInfo:
                     Convert_GameInfo(m_dataArray);
-
                     Logic_LoadAllData();
                     break;
                 case eDataTableType.Stage:
@@ -100,9 +94,10 @@ namespace IdleGame.Core.Panel.DataTable
                     break;
                 default:
                     Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
-                    // TODO :: 에러메시지 출력 (설정되지않은 데이터 타입이 지정되었습니다.)
                     break;
             }
+
+            Base_Engine.Event.CallEvent(eGlobalEventType.Save_OnResponseStep);
         }
 
         #region 데이터 파싱

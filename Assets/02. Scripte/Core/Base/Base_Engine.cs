@@ -1,6 +1,8 @@
 using IdleGame.Core.Module.EventSystem;
 using IdleGame.Core.Module.Scene;
+using IdleGame.Core.Panel.DataTable;
 using IdleGame.Core.Panel.LogCollector;
+using IdleGame.Core.Panel.SaveEngine;
 using IdleGame.Core.Popup;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Event;
@@ -47,6 +49,15 @@ namespace IdleGame.Core.Procedure
         /// </summary>
         public static Panel_LogCollector Log;
 
+        /// <summary>
+        /// [캐시] 동적 데이터들을 저장하거나 저장된 데이터를 불러옵니다.
+        /// </summary>
+        public static Panel_SaveEngine Save;
+
+        /// <summary>
+        /// [캐시] 정적 데이터들을 관리합니다.
+        /// </summary>
+        public static Panel_DataTableManager Table;
 
         /// <summary>
         /// [상태] 지속적인 호출을 제한하기위해서 최초 실행 유무를 판단합니다.

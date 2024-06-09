@@ -1,11 +1,11 @@
 using System;
 
-namespace IdleGame.Data.Save
+namespace IdleGame.Data.NSave
 {
     /// <summary>
     /// [데이터] 세이브 데이터의 기본 구성을 담고 있습니다.
     /// </summary>
-    public class Data_MainSave
+    public class Data_MainSave : Interface_SaveData
     {
         /// <summary>
         /// [데이터] 마지막으로 플레이한 시간 정보입니다.
@@ -22,11 +22,9 @@ namespace IdleGame.Data.Save
         /// </summary>
         public bool isUpdateTime = false;
 
-
         /// <summary>
         /// [데이터] 게임에 최초 접속하는 유저인지를 판단합니다. 
         /// </summary>
         public bool isFirstPlaying = false;
-
     }
 }
