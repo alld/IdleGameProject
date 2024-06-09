@@ -98,6 +98,11 @@ public class Graphic_Text : MonoBehaviour
     }
 
     /// <summary>
+    /// [기능] 유니티에서 사용되는 컴포넌트 텍스트를 반환합니다. 
+    /// </summary>
+    public TMP_Text GetText() => t_text;
+
+    /// <summary>
     /// [기능] 텍스트를 새롭게 설정합니다. 커스텀 텍스트가 적용되면 언어 변경의 적용을 받지않습니다.
     /// </summary>
     public void SetText(string m_text)

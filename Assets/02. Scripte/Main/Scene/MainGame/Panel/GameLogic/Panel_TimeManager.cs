@@ -77,9 +77,11 @@ namespace IdleGame.Main.GameLogic
 
             while (true)
             {
-                yield return _co_Timer;
+                yield return _delay_1_00f;
                 if (updateCount-- == 0)
                 {
+                    if (GameManager.Scene.Logic_ConditionIsInGameScene())
+                        GameManager.Save.Logic_Save(true);
                     GameManager.Event.CallEvent(eGlobalEventType.TimeEvent_OnUpdate_5_00f);
                     updateCount = 5;
                 }

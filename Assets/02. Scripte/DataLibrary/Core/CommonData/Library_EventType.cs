@@ -30,6 +30,18 @@ namespace IdleGame.Data.Common.Event
 
         #endregion
 
+        #region 세이브
+        /// <summary> 모든 세이브가 완료된 경우 호출됩니다. </summary>
+        Save_OnResponseSave,
+
+        /// <summary> 로드 과정에서 단계별 진행과정이 클리어될때마다 호출됩니다. </summary>
+        Save_OnResponseStep,
+
+        /// <summary> 모든 데이터 로드가 완료된 경우 호출됩니다. </summary>
+        Save_OnResponseLoad,
+
+        #endregion
+
         #region 옵션
         /// <summary> 언어 설정이 변경된 경우 호출됩니다. </summary>
         Option_OnChangeLanguage,

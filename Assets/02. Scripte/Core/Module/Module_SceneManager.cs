@@ -27,6 +27,11 @@ namespace IdleGame.Core.Module.Scene
         public bool Logic_ConditionIsEntryScene() => _currentScene == eSceneKind.None;
 
         /// <summary>
+        /// [검사] 현재 씬이 인게임 씬인지를 확인합니다. 
+        /// </summary>
+        public bool Logic_ConditionIsInGameScene() => _currentScene == eSceneKind.MainGame;
+
+        /// <summary>
         /// [기능] 특정 씬으로 전환을 시도합니다.
         /// </summary>
         public void Logic_TryChangeScene(eSceneKind m_sceneKind)
