@@ -7,7 +7,7 @@ using IdleGame.Data.Common.Log;
 using UnityEngine.WSA;
 using Unity.VisualScripting;
 
-public class Panel_ObjectPooling : MonoBehaviour
+public class Base_PoolObject : MonoBehaviour
 {
     /// <summary>
     /// 하이어라키에 생성된 오브젝트가 없어서 현재 임시 명칭입니다.
@@ -23,11 +23,10 @@ public class Panel_ObjectPooling : MonoBehaviour
     [SerializeField] private List<GameObject> dungeonPrefabs = new List<GameObject>();        // 던전 오브젝트 풀링 (던전에 대한 오브젝트가 현재 없어서 임시명칭임)  
     [SerializeField] private Dictionary<System.Enum, List<GameObject>> prefabsDictionary = new Dictionary<System.Enum, List<GameObject>>();
 
-
     /// <summary>
     /// 오브젝트 풀링의 크기(갯수)를 설정합니다.
     /// </summary>
-    [SerializeField] private int poolSize = 20;     // 오브젝트 생성 갯수
+    [SerializeField] private int poolSize = 20;     
 
     [SerializeField] private List<GameObject> poolList;           // 오브젝트 풀링 리스트
 
