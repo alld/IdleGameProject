@@ -91,6 +91,7 @@ namespace IdleGame.Data.Common.Log
         #region 경고 리스트
         public static readonly Data Warning_IsSaveing = new Data("이미 세이브가 진행중입니다. 중복으로 진행이 실행되었습니다.");
         public static readonly Data Warning_InsufficientSetting = new Data("미할당된 오브젝트 설정이 존재합니다.");
+        public static readonly Data Warning_NullValueSoundPlay = new Data("미할당된 사운드가 재생되었습니다.");
         // 코루틴 중복 실행
         public static readonly Data Warning_FunctionRunInDuplicate = new Data("코루틴 함수가 중복 실행되었습니다.");
 
