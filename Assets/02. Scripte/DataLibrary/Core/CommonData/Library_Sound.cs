@@ -98,5 +98,10 @@ namespace IdleGame.Data.Common
         /// [기능] 해당 사운드의 플레이어 인덱스를 반환합니다. 
         /// </summary>
         public int Logic_GetPlayIndex() => _playIndex;
+
+        /// <summary>
+        /// [기능] 해당 사운드가 사용된 데이터인지를 구분합니다. 
+        /// </summary>
+        public bool Logic_GetUseSound() => _isUsedData;
     }
 }
