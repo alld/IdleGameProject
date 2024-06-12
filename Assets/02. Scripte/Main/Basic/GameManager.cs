@@ -47,5 +47,22 @@ namespace IdleGame.Main
             }
             #endregion
         }
+
+        private void OnApplicationQuit()
+        {
+            Save.Logic_Save(true);
+        }
+
+        private void OnApplicationPause(bool m_pause)
+        {
+            if (m_pause)
+            {
+                Save.Logic_Save();
+            }
+            else
+            {
+                // TODO :: 방치 보상 계산 // 복귀 시간 계산 
+            }
+        }
     }
 }
