@@ -6,119 +6,96 @@ using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Log;
 using UnityEngine.WSA;
 using Unity.VisualScripting;
+using System;
 
 public class Base_PoolObject : MonoBehaviour
 {
-    /// <summary>
-    /// 하이어라키에 생성된 오브젝트가 없어서 현재 임시 명칭입니다.
-    /// </summary>
-    //[SerializeField] private List<GameObject> enemyPool = new List<GameObject>();             // 적 오브젝트 풀링 (적에 대한 오브젝트가 현재 없어서 임시명칭임)
-    //[SerializeField] private List<GameObject> alliesPool = new List<GameObject>();            // 아군 오브젝트 풀링 (아군에 대한 오브젝트가 현재 없어서 임시명칭임)
-    //[SerializeField] private List<GameObject> dungeonPool = new List<GameObject>();           // 던전 오브젝트 풀링 (던전에 대한 오브젝트가 현재 없어서 임시명칭임)  
-
-    // New
     [SerializeField] private List<GameObject> prefabs = new List<GameObject>();      // 적 오브젝트 풀링 (적에 대한 오브젝트가 현재 없어서 임시명칭임)
-    //[SerializeField] private Dictionary<System.Enum, List<GameObject>> prefabs = new Dictionary<System.Enum, List<GameObject>>();      // 적 오브젝트 풀링 (적에 대한 오브젝트가 현재 없어서 임시명칭임)
     [SerializeField] private List<GameObject> uiPrefabs = new List<GameObject>();             // 적 오브젝트 풀링 (적에 대한 오브젝트가 현재 없어서 임시명칭임)
     [SerializeField] private List<GameObject> dungeonPrefabs = new List<GameObject>();        // 던전 오브젝트 풀링 (던전에 대한 오브젝트가 현재 없어서 임시명칭임)  
-    [SerializeField] private Dictionary<System.Enum, List<GameObject>> prefabsDictionary = new Dictionary<System.Enum, List<GameObject>>();
+    [SerializeField] private Dictionary<Enum, List<Data_Pool>> poolDictionary = new Dictionary<Enum, List<Data_Pool>>();
 
     /// <summary>
     /// 오브젝트 풀링의 크기(갯수)를 설정합니다.
     /// </summary>
-    [SerializeField] private int poolSize = 20;     
+    [SerializeField] private int poolSize = 40;
+    [SerializeField] private int betweenPoolSize = 20;              // 변동적인 풀 사이즈즈
 
     [SerializeField] private List<GameObject> poolList;           // 오브젝트 풀링 리스트
-
-    public enum EnemyType
-    {
-        None = 0,
-        Orc,
-        Zombie,
-        Skeleton,
-        Slime,
-        Goblin          // 기타 등등... (임시 명칭)
-    }
-    public enum UIType
-    {
-        None = 0,
-        Button,
-        Text,
-        Image,
-        Slider,
-        Toggle          // 기타 등등... (임시 명칭)
-    }
-
-
-    [SerializeField] private Dictionary<EnemyType, List<GameObject>> poolDic = new Dictionary<EnemyType, List<GameObject>>();
 
     [SerializeField] private Transform enemyrespawnLocation;         // 적 생성 위치
 
     private void Awake()
     {
         //enemyrespawnLocation = GameObject.Find("EnemyRespawnLocation").transform;     // 적 생성 위치
+    
+        foreach (GameObject prefab in prefabs)
+        {
+            Data_Pool data = CreateObjectData(prefab);
+            RegisterPool(data.Type, data, poolSize);        // 오브젝트 풀링 등록
+        }
     }
 
-    private void Start()
+    // 추가중
+    public Data_Pool CreateObjectData(GameObject prefab)
     {
-        // 딕셔너리 테스트용 Legacy
-        //DictionaryCreateObject();                               // 딕셔너리 생성 (임시)
+        if (prefab.CompareTag("Enemy"))
+        {
+            return new Data_Pool(EnemyType.None, prefab);
+        }
+        else if (prefab.CompareTag("UI"))
+        {
+            return new Data_Pool(UIType.None, prefab);
+        }
 
-        // 오브젝트 첫 등록
-        RegisterPool(EnemyType.Orc, prefabs[0]);
-        RegisterPool(EnemyType.Zombie, prefabs[1]);
-        RegisterPool(EnemyType.Skeleton, prefabs[2]);
-        RegisterPool(EnemyType.Slime, prefabs[3]);
-        RegisterPool(EnemyType.Goblin, prefabs[4]);
-        
-        /// UI 오브젝트 등록
-        //RegisterPool(UIType.Button, uiPrefabs[0]);
-        //RegisterPool(UIType.Text, uiPrefabs[1]);
-        //RegisterPool(UIType.Image, uiPrefabs[2]);
-        //RegisterPool(UIType.Slider, uiPrefabs[3]);
-        //RegisterPool(UIType.Toggle, uiPrefabs[4]);
+        return null;
     }
 
     /// <summary>
     /// 오브젝트 등록 기능
     /// </summary>
-    public void RegisterPool<T>(T type, GameObject prefab, int poolSize2 = -1) where T : System.Enum
+    public void RegisterPool<T>(T type, Data_Pool prefab, int poolSize2 = -1) where T : Enum
     {
         // 받은 타입이 없는 타입이면 등록
-        if (!prefabsDictionary.ContainsKey(type))
+        if (!poolDictionary.ContainsKey(type))
         {
-            prefabsDictionary.Add(type, new List<GameObject>());
-        }
-
-        // 첫할당시 사이즈 설정
-        if (poolSize2 == -1)
-        {
-            poolSize2 = poolSize;
+            poolDictionary.Add(type, new List<Data_Pool>());  // 키-값 존재시 오류 발생
+            //poolDictionary[type] = new List<Data_Pool>();       // 키 존재시 새로운 값 할당 | 키 없으면 키-값 추가
         }
 
         // 비활성화 상태 풀 생성 오브젝트 추가.
-        List<GameObject> pool = new List<GameObject>();
-        for (int i = 0; i < poolSize2; i++)
+        List<Data_Pool> pool = new List<Data_Pool>();
+
+        for (int i = 0; i < poolSize2; i += betweenPoolSize)
         {
-            GameObject obj = Instantiate(prefab);
-            obj.SetActive(false);
-            pool.Add(obj);
+            int count = poolSize;
+            pool.AddRange(CreateObjectDataBatch(prefab, count));
         }
 
         // 딕셔너리에 추가
-        prefabsDictionary[type].AddRange(pool);
+        poolDictionary[type].AddRange(pool);
     }
 
-    public GameObject GetObject<T>(T type) where T : System.Enum
+    private List<Data_Pool> CreateObjectDataBatch(Data_Pool prefab, int count)
     {
-        // 해당 타입이 존재하면 오브젝트 활성화 및 반환
-        if (prefabsDictionary.ContainsKey(type))
-        {
-            List<GameObject> pool = prefabsDictionary[type];
+        List<Data_Pool> batch = new List<Data_Pool>(count);
 
-            foreach (GameObject obj in pool)
+        for(int i = 0; i < count; i++)
+        {
+            batch.Add(prefab.Clone());
+        }
+
+        return batch;
+    }
+
+    public Data_Pool GetObject<T>(T type) where T : Enum
+    {
+        // 해당 값 체크
+        if (poolDictionary.TryGetValue(type, out List<Data_Pool> pool))
+        {
+            foreach (Data_Pool obj in pool)
             {
-                if (!obj.activeSelf)
+                if (!obj.IsActive)
                 {
                     obj.SetActive(true);
                     return obj;
@@ -126,20 +103,18 @@ public class Base_PoolObject : MonoBehaviour
             }
         }
 
-        // 해당 타입이 존재하지 않으면 타입 추가 및 오브젝트 반환
-        GameObject prefab = prefabs.Find(go => go.CompareTag(type.ToString()));
-        GameObject newObj = Instantiate(prefab);
-        newObj.SetActive(true);
+        Data_Pool prefab = CreateObjectData(prefabs.Find(go => go.CompareTag(type.ToString())));
+        RegisterPool(type, prefab, poolSize);
 
-        return newObj;
+        return GetObject(type);
     }
 
-    public void ReturnObject<T>(T type, GameObject obj) where T : System.Enum
+    public void ReturnObject<T>(T type, Data_Pool obj) where T : Enum
     {
-        if (prefabsDictionary.ContainsKey(type))
+        if (poolDictionary.ContainsKey(type))
         {
             obj.SetActive(false);
-            prefabsDictionary[type].Add(obj);
+            poolDictionary[type].Add(obj);
         }
     }
     
