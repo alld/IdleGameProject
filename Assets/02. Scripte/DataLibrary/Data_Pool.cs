@@ -4,10 +4,12 @@ using UnityEngine;
 public class Data_Pool
 {
     public Enum Type { get; private set; }
+    public string Name { get; private set; }
     private GameObject gameObject;
     
     public Data_Pool(Enum type, GameObject prefab)
     {
+        Name = prefab.name + "_" + type;
         Type = type;
         gameObject = prefab;
         gameObject.SetActive(false);
@@ -38,4 +40,14 @@ public enum UIType
     Image,
     Slider,
     Toggle          // 기타 등등... (임시 명칭)
+}
+
+public enum DungeonType
+{
+    Cave = 0,
+    Sea,
+    Hell,
+    Forest,
+    Void,
+    Desert          // 기타 등등... (임시 명칭)
 }
