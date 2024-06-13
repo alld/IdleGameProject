@@ -1,3 +1,4 @@
+using IdleGame.Core;
 using UnityEditor;
 using UnityEngine;
 
