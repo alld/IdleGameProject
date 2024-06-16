@@ -651,6 +651,7 @@ MonoBehaviour:
     type: 1
     procedure: 0
   _obj_MainGraphic: {fileID: 7613338623033744372}
+  mainGamePanel: {fileID: 3057659180920838542}
 --- !u!1001 &3057659180920838541
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -708,6 +709,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb32a8713743db34cadcbae8a4e0013f, type: 3}
+--- !u!114 &3057659180920838542 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 183976535124936443, guid: eb32a8713743db34cadcbae8a4e0013f, type: 3}
+  m_PrefabInstance: {fileID: 3057659180920838541}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 750e52aebb213a1478953c3146875794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3115754947882808134 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5119355802734912513, guid: f9e320238e4db4a4fbeef410de58b8d4, type: 3}

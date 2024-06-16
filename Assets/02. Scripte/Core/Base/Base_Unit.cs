@@ -1,4 +1,5 @@
 using DG.Tweening;
+using IdleGame.Core.Procedure;
 using IdleGame.Data.Base;
 using System.Collections;
 using UnityEngine;
@@ -120,6 +121,8 @@ namespace IdleGame.Core.Unit
         public virtual void Pool_Return()
         {
             Logic_RemoveModule();
+
+            Base_Engine.Pool.ReturnObject(this.gameObject);
         }
         #endregion
         #endregion

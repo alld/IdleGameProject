@@ -104,6 +104,10 @@ namespace IdleGame.Main.Scene.Main
         {
             _obj_graphic.SetActive(false);
 
+            GameManager.Main.Logic_GameStart();
+
+
+
             Panel_MainGameScene.Event.CallEvent(eSceneEventType_MainGame.Act_GameStart);
         }
     }

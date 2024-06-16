@@ -163,7 +163,7 @@ namespace IdleGame.Core.Intro
                 GameManager.Save.Logic_Load();
             else
                 _loadingCount += 2;
-            while (_loadingCount < _LoadMaxStep)
+            while (_loadingCount - 1 < _LoadMaxStep)
             {
                 yield return null;
             }
@@ -181,7 +181,11 @@ namespace IdleGame.Core.Intro
             if (_loadingCount > _LoadMaxStep) return;
 
             _i_progressGauge.DOKill();
-            _i_progressGauge.DOFillAmount(_loadingCount / _LoadMaxStep, 0.5f);
+            _i_progressGauge.DOFillAmount(_loadingCount / _LoadMaxStep, 0.5f)
+                .OnComplete(() =>
+                {
+                    if (_loadingCount >= _LoadMaxStep) _loadingCount++;
+                });
 
         }
 
