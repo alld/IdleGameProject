@@ -108,7 +108,7 @@ namespace IdleGame.Core.Procedure
         /// <summary>
         /// [초기화] 게임 매니저가 들고있는 오브젝트들을 탐색해서 적절하게 캐시처리합니다.
         /// </summary>
-        public void Logic_RegisterManager()
+        protected void Logic_RegisterManager()
         {
             Log = _obj_logic.GetComponentInChildren<Panel_LogCollector>();
             Save = _obj_logic.GetComponentInChildren<Panel_SaveEngine>();

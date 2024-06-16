@@ -2,6 +2,8 @@ using IdleGame.Core;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
+using IdleGame.Main.Scene.Main;
+using UnityEngine;
 
 namespace IdleGame.Main.GameLogic
 {
@@ -19,6 +21,28 @@ namespace IdleGame.Main.GameLogic
         /// [상태] 진행중이던 스테이지를 잠시 중단하고 다른 스테이지가 우선 진행될때 진행상황을 저장한 정보입니다.
         /// </summary>
         Data_Stage subStage;
+
+        /// <summary>
+        /// [데이터] 플레이어 시작 위치입니다. 
+        /// </summary>
+        [Header("Stage")]
+        [SerializeField]
+        private Vector3[] playerStartPos;
+        /// <summary>
+        /// [데이터] 플레이어 유닛들이 화면 밖에서 등장하는 위치입니다.
+        /// </summary>
+        [SerializeField]
+        private Vector3[] playerAppearPos;
+        /// <summary>
+        /// [데이터] 몬스터들의 시작 위치입니다.
+        /// </summary>
+        [SerializeField]
+        private Vector3 enemyStartPos;
+        /// <summary>
+        /// [데이터] 몬스터들의 화면밖 등장 위치입니다.
+        /// </summary>
+        [SerializeField]
+        private Vector3 enemyAppearPos;
 
 
         /// <summary>
@@ -59,6 +83,31 @@ namespace IdleGame.Main.GameLogic
                 Logic_TryNextStage();
 
             Logic_SetLevel(mainStage.currentWave);
+            Logic_MonsterPush();
+            Logic_PlayerSetting();
+        }
+
+        /// <summary>
+        /// [기능] 몬스터를 추가합니다. 
+        /// </summary>
+        private void Logic_MonsterPush()
+        {
+            for (int i = 0; i < mainStage.wave_unitCount[0][0]; i++)
+            {
+                GameObject monster = GameManager.Pool.GetObject();
+                monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
+                monster.transform.localPosition = enemyStartPos;
+            }
+        }
+
+        /// <summary>
+        /// [기능] 플레이어를 셋팅합니다. 복수의 스테이지에 별도의 캐릭터가 존재할 수 있습니다. 
+        /// </summary>
+        private void Logic_PlayerSetting()
+        {
+            GameObject player = GameManager.Pool.GetObject();
+            player.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            player.transform.localPosition = playerStartPos[0];
         }
 
         /// <summary>
@@ -122,7 +171,8 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         public void Logic_StageStart()
         {
-
+            // TODO 임시..
+            Logic_NextLevel();
         }
     }
 }

@@ -5,6 +5,13 @@ namespace IdleGame.Data.Common.Event
     /// </summary>
     public enum eGlobalEventType
     {
+        #region 게임 흐름
+
+        /// <summary> [기능] 게임을 시작시킵니다. (최초) </summary>
+        Game_Start,
+
+        #endregion
+
         #region 공용 팝업 & 팝업 기능
         /// <summary> [공용팝업] 버튼이 한개(확인)인 팝업창을 엽니다. </summary>
         CommonPopup_OneBt_Open,

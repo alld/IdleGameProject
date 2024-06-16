@@ -1397,6 +1397,12 @@ MonoBehaviour:
     tag: PanelStagemanager
     type: 2
     procedure: 0
+  playerStartPos:
+  - {x: -2, y: 2.3, z: 0}
+  playerAppearPos:
+  - {x: -4, y: 2.3, z: 0}
+  enemyStartPos: {x: 2, y: 2.3, z: 0}
+  enemyAppearPos: {x: 4, y: 2.3, z: 0}
 --- !u!1 &4256101308185235786
 GameObject:
   m_ObjectHideFlags: 0
