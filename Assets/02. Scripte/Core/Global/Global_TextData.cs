@@ -1,4 +1,4 @@
-using IdleGame.Core.Module;
+using IdleGame.Core;
 using System;
 using System.Collections.Generic;
 
@@ -68,7 +68,7 @@ public enum eTextKind
 }
 
 
-public static class Global_TextData 
+public static class Global_TextData
 {
     /// <summary>
     /// [데이터] 공통으로 사용되어지는 고정 텍스트입니다. 

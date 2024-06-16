@@ -1,4 +1,6 @@
 using IdleGame.Core.Procedure;
+using IdleGame.Data.Common.Event;
+using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
 using UnityEngine;
 
@@ -23,6 +25,11 @@ namespace IdleGame.Main
         private Panel_StageManager _stage;
 
         /// <summary>
+        /// [상태] 게임시작에 제한을 걸기 위해서 적용된 변수입니다. 중복 실행을 방지합니다.
+        /// </summary>
+        private bool _startLock = false;
+
+        /// <summary>
         /// [캐시] 게임 진행 상황을 기록하고 별도로 측정을 하는 시간 매니저입니다.
         /// </summary>
         [SerializeField]
@@ -39,6 +46,7 @@ namespace IdleGame.Main
                 DontDestroyOnLoad(this);
 
                 Logic_RegisterManager();
+                Logic_RegisterEvent();
                 Logic_ManagerInit();
             }
             else
@@ -46,6 +54,48 @@ namespace IdleGame.Main
                 Destroy(gameObject);
             }
             #endregion
+        }
+
+        /// <summary>
+        /// [초기화] 이벤트를 등록시킵니다.
+        /// </summary>
+        private void Logic_RegisterEvent() { }
+
+
+        /// <summary>
+        /// [기능] 본격적인 게임 진행 절차에 들어갑니다. (최초 1회만 선언될것.)
+        /// </summary>
+        public void Logic_GameStart()
+        {
+            if (_startLock) return;
+            _startLock = true;
+
+            //------ 임시 -------//
+
+            _stage.Logic_SetStage(Library_DataTable.stage[0]);
+            _stage.Logic_StageStart();
+
+            //--------------------//
+
+            Event.CallEvent(eGlobalEventType.Game_Start);
+        }
+
+
+        private void OnApplicationQuit()
+        {
+            Save.Logic_Save(true);
+        }
+
+        private void OnApplicationPause(bool m_pause)
+        {
+            if (m_pause)
+            {
+                Save.Logic_Save();
+            }
+            else
+            {
+                // TODO :: 방치 보상 계산 // 복귀 시간 계산 
+            }
         }
     }
 }

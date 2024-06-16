@@ -3,9 +3,11 @@ using IdleGame.Core.Module.Scene;
 using IdleGame.Core.Panel.DataTable;
 using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Core.Panel.SaveEngine;
+using IdleGame.Core.Panel.Sound;
 using IdleGame.Core.Popup;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Event;
+using IdleGame.Temp;
 using UnityEngine;
 
 
@@ -65,6 +67,16 @@ namespace IdleGame.Core.Procedure
         public static Panel_DataTableManager Table;
 
         /// <summary>
+        /// [캐시] 모든 사운드를 관리합니다. 
+        /// </summary>
+        public static Panel_SoundManager Sound;
+
+        /// <summary>
+        /// [캐시] 오브젝트 풀을 관리합니다. 
+        /// </summary>
+        public static Panel_ObjectPool Pool;
+
+        /// <summary>
         /// [상태] 지속적인 호출을 제한하기위해서 최초 실행 유무를 판단합니다.
         /// </summary>
         [Tooltip("\nture : 최초 1회 실행되었습니다. \nfalse : 한번도 실행된 적이 없습니다.")]
@@ -101,7 +113,8 @@ namespace IdleGame.Core.Procedure
             Log = _obj_logic.GetComponentInChildren<Panel_LogCollector>();
             Save = _obj_logic.GetComponentInChildren<Panel_SaveEngine>();
             Table = _obj_logic.GetComponentInChildren<Panel_DataTableManager>();
-
+            Sound = _obj_logic.GetComponentInChildren<Panel_SoundManager>();
+            Pool = _obj_logic.GetComponentInChildren<Panel_ObjectPool>();
             _managerPanels = _obj_logic.GetComponentsInChildren<Base_ManagerPanel>();
         }
 
