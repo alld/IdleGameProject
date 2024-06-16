@@ -1,6 +1,7 @@
 using IdleGame.Core;
 using IdleGame.Core.Module.EventSystem;
 using IdleGame.Data.Common.Event;
+using IdleGame.Main.Scene.Main.InGame;
 using UnityEngine;
 namespace IdleGame.Main.Scene.Main
 {
@@ -14,6 +15,10 @@ namespace IdleGame.Main.Scene.Main
         /// </summary>
         [SerializeField] protected GameObject _obj_MainGraphic;
 
+        /// <summary>
+        /// [캐시] 인게임에대한 기능을 통제합니다. 
+        /// </summary>
+        public Panel_MainGame mainGamePanel;
 
         /// <summary>
         /// [기능] 씬내에서만 사용되어지는 이벤트 시스템입니다. 
