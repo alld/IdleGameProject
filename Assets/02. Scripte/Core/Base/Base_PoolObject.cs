@@ -19,7 +19,7 @@ public class Base_PoolObject : MonoBehaviour
     /// 오브젝트 풀링의 크기(갯수)를 설정합니다.
     /// </summary>
     [SerializeField] private int poolSize = 40;
-    [SerializeField] private int betweenPoolSize = 20;              // 변동적인 풀 사이즈즈
+    [SerializeField] private int betweenPoolSize = 20;              // 변동적인 풀 사이즈
 
     [SerializeField] private List<GameObject> poolList;           // 오브젝트 풀링 리스트
 

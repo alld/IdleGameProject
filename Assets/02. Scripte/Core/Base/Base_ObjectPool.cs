@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Pool;
+using IdleGame.Core.Procedure;
+using IdleGame.Data.Common.Log;
 
-public class Base_ObjectPool : MonoBehaviour
+public class Base_ObjectPool : Base_ObjectPoolManager
 {
     public GameObject prefab;   // 오브젝트 풀링용 프리팹
     public int initialPoolSize; // 초기 풀 사이즈
@@ -18,12 +21,26 @@ public class Base_ObjectPool : MonoBehaviour
         public PooledObject(GameObject gameObj) { gameObject = gameObj; }
     }
 
-    private void Start()
+    public Base_ObjectPool(GameObject prefab, int initialPoolSize)
     {
+        this.prefab = prefab;
+        this.initialPoolSize = initialPoolSize;
         InitialPool();
+
+        Debug.Log(prefab + "를 " + initialPoolSize + "개 만들었습니다!");
     }
 
-    
+    /// <summary>
+    /// 초기화 함수 (풀 초기세팅)
+    /// </summary>
+    public void InitialPool()
+    {
+        for (int i = 0; i < initialPoolSize; i++)
+        {
+            CreateObject();
+        }
+    }
+
     /// <summary>
     /// 비활성화 객체 생성 함수
     /// </summary>
@@ -34,18 +51,7 @@ public class Base_ObjectPool : MonoBehaviour
         go.SetActive(false);                    // 비활성화 상태로
         pool.Enqueue(new PooledObject(go));     // 풀에 추가
 
-        return go;                              // 반환
-    }
-
-    /// <summary>
-    /// 초기화 함수 (풀 초기세팅)
-    /// </summary>
-    private void InitialPool()
-    {
-        for (int i = 0; i < initialPoolSize; i++)
-        {
-            CreateObject();
-        }
+        return go;                              // 반환 (확장용으로 return하고 있지만 Initial에서만 쓸경우 굳이 필요없음)
     }
 
     /// <summary>
@@ -78,7 +84,8 @@ public class Base_ObjectPool : MonoBehaviour
         // 찾지 못하면 종료
         if (po == null)
         {
-            Debug.Log("오브젝트를 찾지 못했습니다. ");
+            Base_Engine.Log.Logic_PutLog(new Data_Log("오브젝트를 찾지 못했습니다.", Data_ErrorType.Error_DataLoadFailed));
+
             return;
         }
 
@@ -86,6 +93,11 @@ public class Base_ObjectPool : MonoBehaviour
         po.gameObject.SetActive(false); // 비활성화
         ResetTransform(po.gameObject);  // 위치 초기화
         pool.Enqueue(po);               // 풀에 추가
+    }
+
+    public bool CanRelease(GameObject obj)
+    {
+        return activeObjects.Exists(p => p.gameObject == obj);      // obj가 활성화 리스트에 존재하는지 확인
     }
 
     /// <summary>
@@ -100,6 +112,10 @@ public class Base_ObjectPool : MonoBehaviour
         obj.transform.position = respawnZone;
     }
 
+    /// <summary>
+    /// 오브젝트 풀에 등록
+    /// </summary>
+    /// <param name="obj"></param>
     public void RegisterPooledObject(GameObject obj)
     {
         pool.Enqueue(new PooledObject(obj));
