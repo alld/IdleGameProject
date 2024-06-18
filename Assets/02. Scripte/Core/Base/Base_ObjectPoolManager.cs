@@ -17,12 +17,13 @@ public class Base_ObjectPoolManager : MonoBehaviour
         }
     }
 
-    public void CreatePool(GameObject prefab, int initialPoolSize)
+    public void CreatePool(GameObject prefab, int initialPoolSize, int betweenPoolSize)
     {
-        Base_ObjectPool pool = new Base_ObjectPool(prefab, initialPoolSize);
+        Base_ObjectPool pool = new Base_ObjectPool(prefab, initialPoolSize, betweenPoolSize);
         pools.Add(prefab, pool);
 
         Base_Engine.Log.Logic_PutLog(new Data_Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values));
+        Debug.Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values);
     }
 
     public GameObject GetPool(GameObject prefab)
