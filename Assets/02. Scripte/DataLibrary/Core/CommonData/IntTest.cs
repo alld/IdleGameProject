@@ -1,34 +1,70 @@
 using UnityEngine;
+using System.Collections;
 using IdleGame.Data.Numeric;
+using System;
 
 
 public class IntTest : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    [SerializeField]
-    private int data1;
-    [SerializeField]
-    private int data2;
     
-    [SerializeField]
-    private string dataSize1;
-    [SerializeField]
-    private string dataSize2;
-    
-    void Start()
-    {
-        IntData intData1 = new IntData(data1, dataSize1);
-        IntData intData2 = new IntData(data2, dataSize2);
+    [Header("ExactInt")] public ExactInt int1;
 
-        intData1 += intData2;
-        
-        Debug.Log(intData1.ToString());
+    private void Start()
+    {
+        int1 = new ExactInt(1000, true, 1);
     }
 
-    // Update is called once per frame
-    void Update()
+    [ContextMenu("ScaleToAlphabet Function Test")]
+    public void ScaleToAlphabetFunctionTest()
     {
-        
+        for (int i = 0; i <= 1000; ++i)
+        {
+            int1.Scale = i;
+            
+            Debug.Log(i + " : " + int1.ToString());
+        }
+    }
+    
+    [ContextMenu("AutoFunctionTest")]
+    public void AutoFunctionTest()
+    {
+        StartCoroutine(FunctionTestCorutine());
+    }
+
+    [SerializeField] private int AddCount = 1;
+    [SerializeField] private int Amount = 1;
+    [SerializeField] private float DelayTime = 1.0f;
+    public IEnumerator FunctionTestCorutine()
+    {
+        ExactInt int2 = new ExactInt(Amount);
+        while (true)
+        {
+            MultiplyFunctionTest(ref int2);
+            
+            yield return new WaitForSeconds(DelayTime);
+        }
+    }
+
+    [ContextMenu(("Subtract Function Test"))]
+    public void SubtractFunctionTest()
+    {
+        int1 -= new ExactInt(Amount);
+        Debug.Log("SubtractFunctionTest : " + int1.ToString());
+    }
+    
+    [ContextMenu(("Multiply Function Test"))]
+    public void MultiplyFunctionTest(ref ExactInt int2)
+    {
+        int1 *= int2;
+        Debug.Log("MultiplyFunctionTest : " + int1.ToString());
+    }
+    
+    [ContextMenu(("Devide Function Test"))]
+    public void DevideFunctionTest()
+    {
+        int1 /= new ExactInt(Amount);
+        Debug.Log("MultiplyFunctionTest : " + int1.ToString());
     }
 }

@@ -14,357 +14,231 @@ namespace IdleGame.Data.Numeric
         public const int Int = 10000;
     }
 
-    struct IntData
+    [Serializable]
+    public struct ExactInt
     {
-        List<int> data;
-        string dataSize;
-        bool isPositive;
+        public List<int> Value;
+        public int Scale;
+        public bool IsPositive;
 
-        public static IntData operator+(IntData a, IntData b)
+        // Value 값에 IntLimit 이상의 값이 들어가지 않는 것을 원칙으로 한다.
+        public ExactInt (int value, bool isPositive = true, int scale = 0)
         {
-            if (a.isPositive != b.isPositive)
-            {
-                
-            }
-            
-            if (CalculateDataSize(a.dataSize) < CalculateDataSize(b.dataSize))
-            {
-                b.Add(a);
-                return b;
-            }
-            
-            a.Add(b);
-            return a;
+            Value = new List<int>(new int[scale+1]);
+            Scale = scale;
+            IsPositive = isPositive;
+            Value[scale] = value;
         }
 
-        public void Add(IntData addData)
+        public ExactInt(List<int> value, bool isPositive = true, int scale = 0)
         {
-            // Todo : pos + pos / pos + neg / neg + pos / neg + neg 
-            
-            int lastIndex = addData.data.Count;
-            int carry = 0;
-            
-            for (int i = 0; i < lastIndex; ++i)
-            {
-                data[i] += carry + addData.data[i];
-                carry = data[i] / DataLimit.Int;
-                data[i] %= DataLimit.Int;
-            }
-            if (carry > 0) data.Add(carry);
+            Value = value;
+            Scale = scale;
+            IsPositive = isPositive;
         }
 
-        public int GetDataSize()
+        public override string ToString ()
         {
-            return data.Count;
-        }
+            string result = IsPositive ? "" : "-";
 
-        static int CalculateDataSize(string _dataSize)
-        {
-            // _dataSize == "ba"
+            result += Value.Last().ToString();
 
-            _dataSize = _dataSize.ToLower();
-
-            int num = 0;
-
-            for (int i = 0; i < _dataSize.Length; ++i)
+            if (Value.Count > 1)
             {
-                num *= 26;
-                num += _dataSize[i] - 'a' + 1;
-                
-                // Debug.Log(_dataSize[i] + " : " + num);
-            }
-            
-            // Debug.Log("dataSize : " + num);
-
-            return num;
-        }
-        
-        public IntData(int _data, string _dataSize = "")
-        {
-            data = new List<int>();
-            dataSize = _dataSize;
-            if (_dataSize.Length > 0)
-            {
-                data = Enumerable.Repeat(0, CalculateDataSize(_dataSize)).ToList();
-            }
-
-            while (_data >= DataLimit.Int)
-            {
-                data.Add(_data % DataLimit.Int);
-                _data /= DataLimit.Int;
-            }
-
-            if (_data < 0)
-            {
-                isPositive = false;
-                _data *= -1;
-            }
-            else
-            {
-                isPositive = true;
-            }
-            data.Add(_data);
-        }
-
-        public IntData(IntData refIntData)
-        {
-            data = new List<int>(refIntData.data);
-            dataSize = refIntData.dataSize;
-            isPositive = refIntData.isPositive;
-        }
-
-        public override string ToString()
-        {
-            string result = "";
-
-            int dataSize = data.Count;
-
-            for (int i = dataSize - 1; i >= 0; --i)
-            {
-                string current = data[i].ToString();
-
-                while (i < dataSize - 1 && current.Length < 4)
+                string decimalString = Value[Value.Count - 2].ToString();
+                if (decimalString.Length > 2)
                 {
-                    current = '0' + current;
+                    result += '.';
+                    decimalString = decimalString.Length > 3 ? decimalString : '0' + decimalString;
+                    result += decimalString[1] == '0' ? decimalString[0] : decimalString.Substring(0, 2);
                 }
-
-                result += current + ' ';
             }
+
+            result += ScaleToAlphabet(Scale);
 
             return result;
         }
-    }
-    
-    /* 20240609 Data Test
-    interface IDataNode<T>
-    {
-        public T data { get; set; }
 
-        public string GetDataSize();
-    }
-
-    [System.Serializable]
-    struct IntData : IDataNode<int>
-    {
-        public int data { get; set; }
-        public IDataNode<int> prev { get; set; }
-        public IDataNode<int> next { get; set; }
-        public string dataSize { get; set; }
-        public string GetDataSize()
+        public static string ScaleToAlphabet(int scale)
         {
-            return dataSize;
-        }
-        
-        public static string GetNextDataSize(string prevDataSize)
-        {
-            if (prevDataSize.IsNullOrEmpty())
+            string result = string.Empty;
+            while (scale > 0)
             {
-                return "a";
+                scale--; // 1을 빼서 0부터 시작하도록 조정
+                int remainder = scale % 26;
+                result = (char)(remainder + 'a') + result;
+                scale /= 26;
             }
-
-            int lastPos = prevDataSize.Length - 1;
-            System.Text.StringBuilder sb = new StringBuilder(prevDataSize);
-            sb[lastPos]++;
-
-            while (sb[lastPos] > 'z')
-            {
-                sb[lastPos--] = 'a';
-                if (lastPos < 0)
-                {
-                    sb.Insert(0, 'a');
-                }
-                else
-                {
-                    sb[lastPos]++;
-                }
-            }
-
-            return sb.ToString();
-        }
-        public IntData(int _data, IDataNode<int> _prev = null)
-        {
-            next = null;
-            prev = _prev;
-            while (_data >= DataLimit.Int)
-            {
-                prev = new IntData(_data % DataLimit.Int, prev);
-                _data /= DataLimit.Int;
-            }
-            data = _data;
-            if (prev == null)
-            {
-                dataSize = "";
-            }
-            else
-            {
-                dataSize = GetNextDataSize(prev.GetDataSize());
-            }
-        }
-
-        public static IntData operator+(IntData A, IntData B)
-        {
-            
-            return A;
-        }
-
-        public override string ToString()
-        {
-            string result = data.ToString() + dataSize;
-            if (prev != null)
-            {
-                result += prev.ToString();
-            }
-
             return result;
         }
-    }
-    */
-    
-    
-    /* 240607 Linked List Node Struct Test
-    {
-    
-    struct IntNode : IDataNode
-    {
-        public IDataNode upper;
-        public IDataNode lower;
-        public int data;
-        public string dataSize;
 
-        public IntNode(int _data, IDataNode _lower = null)
+        private void Normalize()
         {
-            lower = _lower;
-            while (_data >= DataLimit.Int)
+            for (int i = 0; i < Value.Count; ++i)
             {
-                lower = new IntNode(_data % DataLimit.Int, lower);
-                _data /= DataLimit.Int;
-            }
-            
-            data = _data;
-            upper = null;
-            
-            if (lower == null)
-            {
-                dataSize = "";
-                return;
+                if (Value[i] < DataLimit.Int) continue;
+
+                if (i == Value.Count - 1)
+                {
+                    Value.Add(0);
+                }
+
+                Value[i + 1] += Value[i] / DataLimit.Int;
+                Value[i] %= DataLimit.Int;
             }
 
-            
-            if (lower.GetDataSize().IsNullOrEmpty())
-            {
-                dataSize = "a";
-            }
-            else
-            {
-                // 하위 단위의 마지막 문자에 따라 현재 단위문자 초기화 
-                System.Text.StringBuilder sb = new System.Text.StringBuilder(lower.GetDataSize());
-                if (sb[sb.Length - 1] == 'z')
-                {
-                    sb[sb.Length - 1] = 'a';
-                    sb.Insert(0, 'a');
-                }
-                else
-                {
-                    sb[sb.Length - 1]++;
-                }
-            
-                dataSize = sb.ToString();
-            }
-            lower.SetUpper(this);
+            Scale = Value.Count - 1;
         }
 
-        static bool IsBiggerSize(string A, string B)
+        private static int CompareAbsoluteValues(ExactInt a, ExactInt b)
         {
-            if (A.Length < B.Length) return false;
-
-            if (A.Length > B.Length) return true;
-
-            for (int i = A.Length - 1; i >= 0; --i)
+            if (a.Scale != b.Scale)
             {
-                if (A[i] < B[i]) return false;
+                return a.Scale > b.Scale ? 1 : -1;
             }
-            
-            return true;
+
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] != b.Value[i])
+                {
+                    return a.Value[i] > b.Value[i] ? 1 : -1;
+                }
+            }
+
+            return 0;
         }
 
-        public static int CalcDist(string a, string b)
+        private static void AlignScales(ref ExactInt a, ref ExactInt b)
         {
-            int resultA = 0;
-
-            for (int i = 0; i < a.Length; ++i)
+            int scaleDiff = Math.Abs(a.Scale - b.Scale);
+            if (a.Scale > b.Scale)
             {
-                resultA *= 26;
-                resultA += a[i] - 'a';
+                for (int i = 0; i < scaleDiff; ++i)
+                {
+                    b.Value.Add(0);
+                }
             }
-
-            int resultB = 0;
-
-            for (int i = 0; i < b.Length; ++i)
+            else if (b.Scale > a.Scale)
             {
-                resultB *= 26;
-                resultB += b[i] - 'a';
+                for (int i = 0; i < scaleDiff; ++i)
+                {
+                    a.Value.Add(0);
+                }
             }
-
-            return resultA - resultB;
         }
         
-        public static IntNode operator+(IntNode a, IntNode b)
-        {   
-            string aDataSize = a.GetDataSize();
-            string bDataSize = b.GetDataSize();
-
-            int sizeDist = CalcDist(aDataSize, bDataSize);
-            if (sizeDist < 0)
+        public static ExactInt operator + (ExactInt a, ExactInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
             {
-                // Swap
-                (a, b) = (b, a);
-                sizeDist *= -1;
+                b.IsPositive = !b.IsPositive;
+                return a - b;
             }
-
-            a.GetLower();
+            
+            AlignScales(ref a, ref b);
+            for (int i = 0; i < a.Value.Count; ++i)
+            {
+                a.Value[i] += b.Value[i];
+            }
+            
+            a.Normalize();
             
             return a;
         }
 
-        
-        public override string ToString()
+        public static ExactInt operator -(ExactInt a, ExactInt b)
         {
-            string dataString = data.ToString() + dataSize;
-
-            if (lower != null)
+            if (a.IsPositive != b.IsPositive)
             {
-                dataString += lower.ToString();
+                b.IsPositive = !b.IsPositive;
+
+                return a + b;
             }
 
-            return dataString;
+            int comparison = CompareAbsoluteValues(a, b);
+
+            if (comparison == 0)
+            {
+                return new ExactInt(0);
+            }
+            
+            AlignScales(ref a, ref b);
+            a.IsPositive = comparison > 0 ? a.IsPositive : !a.IsPositive;
+
+            if (comparison > 0)
+            {
+                for (int i = 0; i < a.Value.Count; ++i)
+                {
+                    a.Value[i] -= b.Value[i];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < a.Value.Count; ++i)
+                {
+                    a.Value[i] = b.Value[i] - a.Value[i];
+                }
+            }
+
+            for (int i = a.Value.Count - 1; i > 0; --i)
+            {
+                if (a.Value[i - 1] < 0)
+                {
+                    a.Value[i - 1] += DataLimit.Int;
+                    if (--a.Value[i] == 0 && i == a.Value.Count - 1)
+                    {
+                        a.Value.RemoveAt(i);
+                    }
+                }
+            }
+            
+            a.Normalize();
+
+            return a;
         }
 
-        public void SetUpper(IDataNode _upper)
+        public static ExactInt operator *(ExactInt a, ExactInt b)
         {
-            upper = _upper;
+            List<int> resultValue = new List<int>(new int[a.Value.Count + b.Value.Count - 1]);
+            for (int i = 0; i < a.Value.Count; ++i)
+            {
+                for (int j = 0; j < b.Value.Count; ++j)
+                {
+                    resultValue[i + j] += a.Value[i] * b.Value[j];
+                }
+            }
+
+            bool resultIsPositive = a.IsPositive == b.IsPositive;
+            ExactInt result = new ExactInt(resultValue, resultIsPositive, a.Scale + b.Scale);
+            result.Normalize();
+            return result;
         }
 
-        public void SetLower(IDataNode _lower)
+        public static ExactInt operator /(ExactInt a, ExactInt b)
         {
-            lower = _lower;
-        }
+            if (b.Value.Last() == 0)
+            {
+                throw new DivideByZeroException();
+            }
 
-        public ref IDataNode GetUpper()
-        {
-            return ref upper;
-        }
+            a.Scale -= b.Scale;
+            a.IsPositive = a.IsPositive == b.IsPositive;
 
-        public ref IDataNode GetLower()
-        {
-            return ref lower;
-        }
+            int temp = 0;
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                temp = temp * DataLimit.Int + a.Value[i];
+                a.Value[i] = temp / b.Value.Last();
+                if (i > 0 && a.Value[i] == 0 && i == a.Value.Count - 1)
+                {
+                    a.Value.RemoveAt(i);
+                }
+                temp %= b.Value.Last();
+            }
+            
+            a.Normalize();
 
-        public string GetDataSize()
-        {
-            return dataSize;
+            return a;
         }
     }
-    }
-    */
-    
 }
