@@ -12,8 +12,8 @@ public class IntTest : MonoBehaviour
 
     private void Start()
     {
-        int1 = new SimpleInt(1000, true, 1);
-        int2 = new SimpleInt(1000, true, 1);
+        int1 = new SimpleInt(100, true, 1);
+        int2 = new SimpleInt(100, true, 1);
     }
 
     [ContextMenu("ScaleToAlphabet Function Test")]

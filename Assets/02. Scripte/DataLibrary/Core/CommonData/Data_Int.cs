@@ -7,7 +7,7 @@ namespace IdleGame.Data.Numeric
 {
     static class DataLimit
     {
-        public const int Int = 10000;
+        public const int Int = 1000;
     }
 
     [Serializable]
@@ -216,21 +216,29 @@ namespace IdleGame.Data.Numeric
             {
                 throw new DivideByZeroException();
             }
+            
+            if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[1] < b.Value[1])) return new ExactInt(0);
 
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
 
-            int temp = 0;
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            int devideValue = b.Value.Last() * DataLimit.Int;
+            if (b.Value.Count() > 1)
             {
-                temp = temp * DataLimit.Int + a.Value[i];
-                a.Value[i] = temp / b.Value.Last();
+                devideValue += b.Value[b.Value.Count() - 2];
+            }
+            int temp = 0;
+            for (int i = a.Value.Count - 1; i > 0; --i)
+            {
+                temp = (temp * DataLimit.Int + a.Value[i]) * DataLimit.Int + a.Value[i-1];
+                a.Value[i] = temp / devideValue;
                 if (i > 0 && a.Value[i] == 0 && i == a.Value.Count - 1)
                 {
                     a.Value.RemoveAt(i);
                 }
-                temp %= b.Value.Last();
+                temp %= devideValue;
             }
+            a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value.Last();
             
             a.Normalize();
 
@@ -455,10 +463,21 @@ namespace IdleGame.Data.Numeric
 
             if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[1] < b.Value[1])) return new SimpleInt(0);
 
-            a.Value[0] = ((a.Value[1] % b.Value[1]) * DataLimit.Int + a.Value[0]) / b.Value[1];
-            a.Value[1] /= b.Value[1];
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
+            
+            int devideValue = b.Value[1] * DataLimit.Int + b.Value[0];
+            int temp = (a.Value[1] * DataLimit.Int) + a.Value[0]; 
+            a.Value[1] = temp / devideValue;
+            temp = temp % devideValue;
+            a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value[1];
+
+            if (a.Value[1] == 0 && a.Value[0] != 0)
+            {
+                a.Value[1] = a.Value[0];
+                a.Value[0] = 0;
+                a.Scale = a.Scale > 0 ? a.Scale-- : 0;
+            }
             
             a.Normalize();
             return a;
