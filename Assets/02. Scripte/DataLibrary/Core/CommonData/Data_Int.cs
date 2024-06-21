@@ -1,11 +1,7 @@
-using DG.DemiEditor;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace IdleGame.Data.Numeric
 {
@@ -238,6 +234,233 @@ namespace IdleGame.Data.Numeric
             
             a.Normalize();
 
+            return a;
+        }
+    }
+
+    [Serializable]
+    public struct SimpleInt
+    {
+        public List<int> Value;
+        public int Scale;
+        public bool IsPositive;
+
+        public SimpleInt(int value, bool isPositive = true, int scale = 0)
+        {
+            Value = new List<int>(new int[2]);
+            Value[1] = value;
+            IsPositive = isPositive;
+            Scale = scale;
+        }
+        
+        public SimpleInt(List<int> value, bool isPositive = true, int scale = 0)
+        {
+            Value = value;
+            IsPositive = isPositive;
+            Scale = scale;
+        }
+        
+        public override string ToString ()
+        {
+            string result = IsPositive ? "" : "-";
+
+            result += Value.Last().ToString();
+
+            string decimalString = Value[0].ToString();
+            if (decimalString.Length > 2)
+            {
+                result += '.';
+                decimalString = decimalString.Length > 3 ? decimalString : '0' + decimalString;
+                result += decimalString[1] == '0' ? decimalString[0] : decimalString.Substring(0, 2);
+            }
+
+            result += ScaleToAlphabet(Scale);
+
+            return result;
+        }
+        
+        public static string ScaleToAlphabet(int scale)
+        {
+            string result = string.Empty;
+            while (scale > 0)
+            {
+                scale--; // 1을 빼서 0부터 시작하도록 조정
+                int remainder = scale % 26;
+                result = (char)(remainder + 'a') + result;
+                scale /= 26;
+            }
+            return result;
+        }
+
+        void Normalize()
+        {
+            for (int i = 0; i < Value.Count(); ++i)
+            {
+                if (Value[i] >= DataLimit.Int)
+                {
+                    if (i == Value.Count() - 1)
+                    {
+                        Value.Add(0);
+                        Scale++;
+                    }
+
+                    Value[i + 1] += Value[i] / DataLimit.Int;
+                    Value[i] %= DataLimit.Int;
+                }
+            }
+
+            Value = Value.Skip(Value.Count()-2).ToList();
+        }
+        
+        public static SimpleInt operator +(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                b.IsPositive = !b.IsPositive;
+                return a - b;
+            }
+
+            int scaleDiff = a.Scale - b.Scale;
+            if (Math.Abs(scaleDiff) > 1)
+            {
+                // 단위가 2 이상 차이가 나는 경우
+                if (scaleDiff > 0)
+                {
+                    a.Value[0]++;
+                }
+                else
+                {
+                    b.Value[0]++;
+                    a.Value = b.Value;
+                    a.Scale = b.Scale;
+                }
+            }
+            else if (Math.Abs(scaleDiff) == 1)
+            {
+                // 단위가 차이가 1 인 경우
+                if (scaleDiff > 0)
+                {
+                    a.Value[0] += b.Value[1];
+                }
+                else
+                {
+                    b.Value[0] += a.Value[1];
+                    a.Value = b.Value;
+                    a.Scale = b.Scale;
+                }
+            }
+            else
+            {
+                // 단위가 같은 경우
+                a.Value[0] += b.Value[0];
+                a.Value[1] += b.Value[1];
+            }
+            
+            a.Normalize();
+            return a;
+        }
+
+        public static SimpleInt operator -(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                b.IsPositive = !b.IsPositive;
+
+                return a + b;
+            }
+            
+            int scaleDiff = a.Scale - b.Scale;
+            if (Math.Abs(scaleDiff) > 1)
+            {
+                if (scaleDiff > 0)
+                {
+                    a.Value[0]--;
+                }
+                else
+                {
+                    a.Value[1] = b.Value[1];
+                    a.Value[0] = b.Value[0] - 1;
+                    a.IsPositive = !a.IsPositive;
+                    a.Scale = b.Scale;
+                }
+            }
+            else if (Math.Abs(scaleDiff) == 1)
+            {
+                if (scaleDiff > 0)
+                {
+                    a.Value[0] -= b.Value[1];
+                }
+                else
+                {
+                    a.Value[1] = b.Value[1];
+                    a.Value[0] = b.Value[0] - a.Value[1];
+                    a.IsPositive = !a.IsPositive;
+                    a.Scale = b.Scale;
+                }
+            }
+            else
+            {
+                a.Value[1] -= b.Value[1];
+                if (a.Value[1] < 0)
+                {
+                    a.Value[1] *= -1;
+                    a.IsPositive = !a.IsPositive;
+                }
+                a.Value[0] -= b.Value[0];
+            }
+
+            for (int i = a.Value.Count - 1; i > 0; --i)
+            {
+                if (a.Value[i - 1] < 0)
+                {
+                    a.Value[i]--;
+                    a.Value[i - 1] += DataLimit.Int;
+                }
+            }
+
+            if (a.Value[1] == 0 && a.Value[0] != 0)
+            {
+                a.Value[1] = a.Value[0];
+                a.Value[0] = 0;
+                a.Scale = a.Scale > 0 ? a.Scale-- : 0;
+            }
+            
+            a.Normalize();
+            return a;
+        }
+
+        public static SimpleInt operator *(SimpleInt a, SimpleInt b)
+        {
+            if (a.Value[1] == 0 || b.Value[1] == 0) return new SimpleInt(0);
+            List<int> resultValue = new List<int>(new int[a.Value.Count + b.Value.Count - 1]);
+            for (int i = 0; i < a.Value.Count; ++i)
+            {
+                for (int j = 0; j < b.Value.Count; ++j)
+                {
+                    resultValue[i + j] += a.Value[i] * b.Value[j];
+                }
+            }
+
+            SimpleInt result = new SimpleInt(resultValue, a.IsPositive == b.IsPositive, a.Scale + b.Scale);
+            result.Normalize();
+            return result;
+        }
+
+        public static SimpleInt operator /(SimpleInt a, SimpleInt b)
+        {
+            if (b.Value.Last() == 0)
+            {
+                throw new DirectoryNotFoundException();
+            }
+
+            if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[1] < b.Value[1])) return new SimpleInt(0);
+
+            a.Value[0] = ((a.Value[1] % b.Value[1]) * DataLimit.Int + a.Value[0]) / b.Value[1];
+            a.Value[1] /= b.Value[1];
+            a.Scale -= b.Scale;
+            a.IsPositive = a.IsPositive == b.IsPositive;
+            
+            a.Normalize();
             return a;
         }
     }
