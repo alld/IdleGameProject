@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace IdleGame.Core.Panel.DataTable
 {
-    public class Base_ObjectPool : Base_ObjectPoolManager
+    public class Base_ObjectPool : MonoBehaviour
     {
         public GameObject prefab;   // 오브젝트 풀링용 프리팹
         public int initialPoolSize; // 초기 풀 사이즈
@@ -26,7 +26,7 @@ namespace IdleGame.Core.Panel.DataTable
             { gameObject = gameObj; }
         }
 
-        public Base_ObjectPool(GameObject prefab, int initialPoolSize, int betweenPoolSize)
+        public Base_ObjectPool(GameObject prefab, int initialPoolSize, int betweenPoolSize) : base()
         {
             this.prefab = prefab;
             this.initialPoolSize = initialPoolSize;
@@ -50,7 +50,7 @@ namespace IdleGame.Core.Panel.DataTable
         }
 
         /// <summary>
-        /// 
+        /// 부모 오브젝트 생성 함수
         /// </summary>
         /// <param name="name"></param>
         private void CreateParentObject(string name)
@@ -59,6 +59,7 @@ namespace IdleGame.Core.Panel.DataTable
             {
                 GameObject parent = new GameObject(name + "Parent");
                 parentObjects[name] = parent;
+                parentObjects[name].transform.SetParent(Base_ObjectPoolManager.Instance.transform);
             }
         }
 
@@ -85,8 +86,8 @@ namespace IdleGame.Core.Panel.DataTable
         {
             // 우선 추가.
             initialPoolSize += betweenPoolSize;     // 1. N개씩 자동 추가용
-                                                    //initialPoolSize = maxPoolSize;      // 2. 최대값까지 추가용
-                                                    //initialPoolSize++;                  // 3. 1개씩 추가용
+            //initialPoolSize = maxPoolSize;      // 2. 최대값까지 추가용
+            //initialPoolSize++;                  // 3. 1개씩 추가용
 
             InitialPool();                      // 오브젝트 추가.
         }

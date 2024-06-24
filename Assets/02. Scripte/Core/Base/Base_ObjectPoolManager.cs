@@ -12,12 +12,6 @@ namespace IdleGame.Core.Panel.DataTable
 
         public static Base_ObjectPoolManager Instance { get; private set; }
 
-
-        /// <summary>
-        /// [캐시] 오브젝트 풀링을 관리하는 매니저입니다.
-        /// </summary>
-        [SerializeField] private Base_ObjectPoolManager _objectPoolManager;
-
         private void Awake()
         {
             if (Instance == null)
@@ -27,6 +21,16 @@ namespace IdleGame.Core.Panel.DataTable
             }
 
             CreatePool(new GameObject(), 20, 20);
+        }
+
+        /// <summary>
+        /// 오브젝트 생성용 함수 (MonoBehaviour없는 스크립트에서만 사용)
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <returns></returns>
+        public GameObject InstantiateObject(GameObject prefab)
+        {
+            return Instantiate(prefab);
         }
 
         public void CreatePool(GameObject prefab, int initialPoolSize, int betweenPoolSize)

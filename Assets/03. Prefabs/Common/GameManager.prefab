@@ -1079,7 +1079,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8529101949119286703}
-  - component: {fileID: 3633782760924164214}
+  - component: {fileID: 8761560222299827365}
+  - component: {fileID: 7423088286522792552}
   m_Layer: 0
   m_Name: Panel_ObjectPool
   m_TagString: Untagged
@@ -1103,7 +1104,7 @@ Transform:
   - {fileID: 158565655084795823}
   m_Father: {fileID: 6243778832215002781}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3633782760924164214
+--- !u!114 &8761560222299827365
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1112,15 +1113,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 3590276853285326446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7ffd9509241be9478a6498227e71d66, type: 3}
+  m_Script: {fileID: 11500000, guid: 89084a5c98c65db48a94d6ff855a1206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _tag:
     tag: 
     type: 0
     procedure: 0
-  prefab: {fileID: 1081724568313289882, guid: da8d9ef409c8bb341ad40cd51fbd8bc6, type: 3}
-  pool: {fileID: 158565655084795823}
+--- !u!114 &7423088286522792552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3590276853285326446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47067fdccfbfaec439375bdd5824557c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  initialPoolSize: 5
+  betweenPoolSize: 5
+  respawnZone: {x: 0, y: 0, z: 0}
 --- !u!1 &3652599538589278691
 GameObject:
   m_ObjectHideFlags: 0
