@@ -8,13 +8,16 @@ namespace IdleGame.Core.Panel.DataTable
 {
     public class Base_ObjectPool : MonoBehaviour
     {
-        public GameObject prefab;   // 오브젝트 풀링용 프리팹
-        public int initialPoolSize; // 초기 풀 사이즈
-        public int betweenPoolSize;     // 추가 풀 사이즈
-
-        private Dictionary<string, GameObject> parentObjects = new Dictionary<string, GameObject>();
+        private GameObject prefab;   // 오브젝트 풀링용 프리팹
+        
+        private int initialPoolSize; // 초기 풀 사이즈
+        private int betweenPoolSize;     // 추가 풀 사이즈
+        
+        public Dictionary<string, GameObject> ParentObjects = new Dictionary<string, GameObject>();
         private Queue<PooledObject> pool = new Queue<PooledObject>();   // 오브젝트 풀
         private List<PooledObject> activeObjects = new List<PooledObject>();
+
+        public const string ParentName = "Parent";
 
         [SerializeField] private Vector3 respawnZone;
 
@@ -34,7 +37,7 @@ namespace IdleGame.Core.Panel.DataTable
             CreateParentObject(prefab.name);
             InitialPool();
 
-            Base_Engine.Log.Logic_PutLog(new Data_Log(prefab + "를 " + initialPoolSize + "개 만들었습니다!"));
+            //Base_Engine.Log.Logic_PutLog(new Data_Log(prefab + "를 " + initialPoolSize + "개 만들었습니다!"));
             Debug.Log(prefab + "를 " + initialPoolSize + "개 만들었습니다!");
         }
 
@@ -55,11 +58,12 @@ namespace IdleGame.Core.Panel.DataTable
         /// <param name="name"></param>
         private void CreateParentObject(string name)
         {
-            if (!parentObjects.ContainsKey(name))
+            if (!ParentObjects.ContainsKey(name))
             {
-                GameObject parent = new GameObject(name + "Parent");
-                parentObjects[name] = parent;
-                parentObjects[name].transform.SetParent(Base_ObjectPoolManager.Instance.transform);
+                GameObject parent = new GameObject(name + ParentName);
+                ParentObjects[name] = parent;
+                ParentObjects[name].transform.SetParent(Base_ObjectPoolManager.Instance.transform);
+
             }
         }
 
@@ -72,7 +76,7 @@ namespace IdleGame.Core.Panel.DataTable
         private GameObject CreateObject()
         {
             GameObject go = Instantiate(prefab);    // 프리팹 생성
-            go.transform.SetParent(parentObjects[prefab.name].transform);
+            go.transform.SetParent(ParentObjects[prefab.name].transform);
             go.SetActive(false);                    // 비활성화 상태로
             pool.Enqueue(new PooledObject(go));     // 풀에 추가
 
