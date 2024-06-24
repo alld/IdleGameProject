@@ -71,4 +71,15 @@ public class IntTest : MonoBehaviour
         int1 /= int2;
         Debug.Log("MultiplyFunctionTest : " + int1.ToString());
     }
+    
+    [ContextMenu(("Compare Function Test"))]
+    public void CompareFunction()
+    {
+        Debug.Log("int1 < int2 : " + (int1 < int2));
+        Debug.Log("int1 > int2 : " + (int1 > int2));
+        Debug.Log("int1 == int2 : " + (int1 == int2));
+        Debug.Log("int1 != int2 : " + (int1 != int2));
+        Debug.Log("int1 <= int2 : " + (int1 <= int2));
+        Debug.Log("int1 >= int2 : " + (int1 >= int2));
+    }
 }

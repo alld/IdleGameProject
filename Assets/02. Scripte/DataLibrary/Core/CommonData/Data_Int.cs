@@ -244,6 +244,83 @@ namespace IdleGame.Data.Numeric
 
             return a;
         }
+
+        public static bool operator <(ExactInt a, ExactInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                return !a.IsPositive;
+            }
+
+            if (a.Scale != b.Scale)
+            {
+                return a.Scale < b.Scale;
+            }
+
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return a.Value[i] < b.Value[i];
+            }
+
+            return false;
+        }
+        public static bool operator >(ExactInt a, ExactInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                return a.IsPositive;
+            }
+            
+            if (a.Scale != b.Scale)
+            {
+                return a.Scale > b.Scale;
+            }
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return a.Value[i] > b.Value[i];
+            }
+
+            return false;
+        }
+        
+        public static bool operator ==(ExactInt a, ExactInt b)
+        {
+            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return false;
+            }
+
+            return true;
+        }
+        
+        public static bool operator !=(ExactInt a, ExactInt b)
+        {
+            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator <=(ExactInt a, ExactInt b)
+        {
+            return a < b || a == b;
+        }
+        
+        public static bool operator >=(ExactInt a, ExactInt b)
+        {
+            return a > b || a == b;
+        }
     }
 
     [Serializable]
@@ -481,6 +558,83 @@ namespace IdleGame.Data.Numeric
             
             a.Normalize();
             return a;
+        }
+        
+        public static bool operator <(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                return !a.IsPositive;
+            }
+
+            if (a.Scale != b.Scale)
+            {
+                return a.Scale < b.Scale;
+            }
+
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return a.Value[i] < b.Value[i];
+            }
+
+            return false;
+        }
+        public static bool operator >(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive)
+            {
+                return a.IsPositive;
+            }
+            
+            if (a.Scale != b.Scale)
+            {
+                return a.Scale > b.Scale;
+            }
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return a.Value[i] > b.Value[i];
+            }
+
+            return false;
+        }
+        
+        public static bool operator ==(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return false;
+            }
+
+            return true;
+        }
+        
+        public static bool operator !=(SimpleInt a, SimpleInt b)
+        {
+            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
+            
+            for (int i = a.Value.Count - 1; i >= 0; --i)
+            {
+                if (a.Value[i] == b.Value[i]) continue;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator <=(SimpleInt a, SimpleInt b)
+        {
+            return a < b || a == b;
+        }
+        
+        public static bool operator >=(SimpleInt a, SimpleInt b)
+        {
+            return a > b || a == b;
         }
     }
 }
