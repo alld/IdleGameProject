@@ -147,6 +147,9 @@ namespace IdleGame.Core.Unit
             // TODO :: 여러 데이터 기반으로 판단을함.
         }
 
+        /// <summary>
+        /// [기능] 유닛이 대기 상태일때의 행동을 정의합니다.
+        /// </summary>
         public virtual void Logic_Act_Stay()
         {
             Coroutine prevAction = null;
@@ -158,6 +161,9 @@ namespace IdleGame.Core.Unit
             StopCoroutine(prevAction);
         }
 
+        /// <summary>
+        /// [기능] 유닛이 이동하다가 공격상태로 전환하는 행동을 정의합니다.
+        /// </summary>
         public virtual void Logic_Act_AttackMove()
         {
             if (_target == null) Logic_SearchTarget_Base();
@@ -165,6 +171,9 @@ namespace IdleGame.Core.Unit
             Logic_ChangeState(eUnitState.Move, eUnitState.Attack);
         }
 
+        /// <summary>
+        /// [기능] 유닛이 죽었을떄의 행동을 정의합니다.
+        /// </summary>
         public virtual void Logic_Act_Die()
         {
             Logic_Action_Die();
@@ -237,6 +246,11 @@ namespace IdleGame.Core.Unit
             StartCoroutine(Logic_OperatorAct());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="m_delayTime"></param>
+        /// <returns></returns>
         protected virtual IEnumerator Logic_Action_Idle(float m_delayTime = 0)
         {
             transform.DOKill();
@@ -293,6 +307,9 @@ namespace IdleGame.Core.Unit
             Logic_Action_Move();
         }
 
+        /// <summary>
+        /// [기능] 유닛이 이동하는 행동을 정의합니다.
+        /// </summary>
         protected virtual void Logic_Action_Move()
         {
             transform.DOKill();
@@ -328,7 +345,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_TargetClear_Base()
         {
-            _target._onBroadcastDie -= Logic_TargetClear_Base;
+            _target._onBroadcastDie -= Logic_TargetClear_Base; 
             _target = null;
 
             Logic_StopAction();
@@ -355,16 +372,19 @@ namespace IdleGame.Core.Unit
                 return;
             }
 
+            // 현재 상태가 다음상태와 동일하면 None상태로 변경
             if (m_state == m_next)
                 _state.next = eUnitState.None;
+            // 현재와 다음의 행동이 다르면 다음 행동을 설정
             else if (_state.next != m_next && m_next != eUnitState.None)
                 _state.next = m_next;
 
+            // 현재 상태를 지속적으로 받고있으면 종료
             if (_state.cur == m_state)
                 return;
 
-            _state.prev = _state.cur;
-            _state.cur = m_state;
+            _state.prev = _state.cur;   // 현재 상태를 이전상태로 만들고
+            _state.cur = m_state;       // 다음 행동을 현재상태로 만든다.
         }
 
         #endregion
