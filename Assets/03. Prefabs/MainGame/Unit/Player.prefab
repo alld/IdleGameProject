@@ -101,9 +101,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b531fc27cd1f41488c3a52c5ab7358b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 0}
-  _cameraDistance: -10
-  _player: {fileID: 4182368821926324045}
+  _atk: 0
+  _atkSpeed: 0
+  _atkDistance: 0
+  _health: 0
+  _maxHealth: 0
+  _def: 0
+  _moveSpeed: 0
+  _timer: 0
 --- !u!1001 &6222042104650563446
 PrefabInstance:
   m_ObjectHideFlags: 0

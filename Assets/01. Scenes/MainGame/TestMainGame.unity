@@ -123,11 +123,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3538525167275005098, guid: 3363c279d8a888948b51af9ff4684ad4, type: 3}
   m_PrefabInstance: {fileID: 2844868872242952628}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &357618622 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 897404011705859716, guid: 48d7fcfe25e53dd458bd1fd19caf18bc, type: 3}
-  m_PrefabInstance: {fileID: 5537138013916021327}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &458831971
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,10 +810,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3642956932352926072, guid: 3363c279d8a888948b51af9ff4684ad4, type: 3}
-      propertyPath: _camera
-      value: 
-      objectReference: {fileID: 357618622}
     - target: {fileID: 4182368821926324045, guid: 3363c279d8a888948b51af9ff4684ad4, type: 3}
       propertyPath: m_Name
       value: Player
@@ -2081,8 +2072,8 @@ PrefabInstance:
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 7904288275150207521, guid: 475efabab995aec439f3db85d84f0d94, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
