@@ -33,7 +33,7 @@ namespace IdleGame.Core.Unit
         {
             base.Logic_Init_Custom();
 
-            Debug.Log("1번만 호출하기로 약속☆");
+            Debug.Log("Player에서 1번만 호출하기로 약속☆");
 
             _atk = 10;
             _atkSpeed = 1f;
@@ -74,6 +74,9 @@ namespace IdleGame.Core.Unit
         {
             base.Logic_Act_Die();
 
+            _state.cur = eUnitState.Die;
+            Logic_SetAction(_state.cur);
+            
             gameObject.SetActive(false);
         }
 
@@ -86,7 +89,6 @@ namespace IdleGame.Core.Unit
 
             if (_timer <= 0)
             {
-                Debug.Log("공격!");
                 Attack();
 
                 _timer = _atkSpeed;
@@ -96,13 +98,18 @@ namespace IdleGame.Core.Unit
 
         public void Logic()
         {
-            float distance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
-            //Debug.Log("거리 : " + distance);
+            //
+            float atkdistance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
+            //Debug.Log("거리 : " + atkdistance);
 
             // 범위안에 들어오면 공격속도 로직 실행
-            if (distance <= _atkDistance)
+            if (atkdistance <= _atkDistance)
             {
                 AttackSpeed();
+            }
+            else
+            {
+                Move();
             }
         }
 
@@ -114,9 +121,17 @@ namespace IdleGame.Core.Unit
             Debug.Log("플레이어가 공격을 실행합니다.");
             //StartCoroutine(Logic_Action_Attack());      // 나중에는 여기서 작업을 할 것.
 
-            //_enemy.Logic_Act_Damaged();
             _state.cur = eUnitState.Attack;
-            Logic_SetAction(_state.cur);
+            //Logic_SetAction(_state.cur);
+            Logic_Act_AttackMove();
+            _enemy.Logic_Act_Damaged();
+        }
+
+        public void Move()
+        {
+            Debug.Log("플레이어가 이동합니다.");
+            _state.cur = eUnitState.Move;
+            Logic_Action_Move();
         }
 
         private void Update()
