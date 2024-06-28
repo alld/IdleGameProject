@@ -34,6 +34,7 @@ namespace IdleGame.Core.Unit
         /// [캐시] 상태에 따른 행동 액션을 담고 있습니다.
         /// </summary>
         protected Coroutine _stateAction;
+        protected Coroutine StateAction { get; set; }
 
         /// <summary>
         /// [캐시] 유닛의 목표 대상입니다. 
@@ -321,7 +322,7 @@ namespace IdleGame.Core.Unit
                 .OnComplete(
                 () =>
                 {
-                    StartCoroutine(Logic_OperatorAct());
+                    StartCoroutine(Logic_OperatorAct());    
                 });
 
             Sound_Move();

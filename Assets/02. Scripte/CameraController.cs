@@ -9,8 +9,8 @@ public class CameraController : MonoBehaviour
     private float _cameraDistance = -10f;    // z축만 조절 
 
     [SerializeField] private SpriteRenderer _mapSprite;
-    private Vector2 _mapMin;
-    private Vector2 _mapMax;
+    [SerializeField] private Vector2 _mapMin;
+    [SerializeField] private Vector2 _mapMax;
 
     private Vector3 velocity = Vector3.zero;
     private float smoothTime = 0.2f;
@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
         {
             Bounds bounds = _mapSprite.bounds;
             _mapMin = new Vector2(bounds.min.x, bounds.min.y);
-            _mapMax = new Vector2(bounds.max.x / 1.5f, bounds.max.y);
+            _mapMax = new Vector2(bounds.max.x, bounds.max.y);
         }
         else
         {

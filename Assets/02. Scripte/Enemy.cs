@@ -30,7 +30,7 @@ public class Enemy : Base_Unit
     {
         base.Logic_Init_Custom();
 
-        Debug.Log("1번만 호출하기로 약속☆");
+        Debug.Log("Enemy에서 1번만 호출하기로 약속☆");
 
         _atk = 10;
         _atkSpeed = 1f;
@@ -54,7 +54,11 @@ public class Enemy : Base_Unit
 
     public override void Logic_Act_Die()
     {
+        Debug.Log("현재 상태 : " + StateAction);
         base.Logic_Act_Die();
+
+        _state.cur = eUnitState.Die;
+        Logic_SetAction(_state.cur);
 
         gameObject.SetActive(false);
     }
@@ -64,11 +68,12 @@ public class Enemy : Base_Unit
         base.Logic_Act_Damaged();
 
         _health -= _player.Atk - _def;
-        Debug.Log("적이 피해를 입었습니다.");
+        Debug.Log("적이 피해를 입었습니다. 적의 현재 체력 : " + _health);
 
         if (_health <= 0)
         {
             Debug.Log("적 : 깨꼬닥");
+
             Logic_Act_Die();
         }
     }
@@ -96,16 +101,33 @@ public class Enemy : Base_Unit
         Debug.Log("적이 공격을 실행합니다.");
         //StartCoroutine(Logic_Action_Attack());      // 나중에는 여기서 수치 계산 
 
-        Logic_SetAction(eUnitState.Attack);
+        _state.cur = eUnitState.Attack;
+        //Logic_SetAction(eUnitState.Attack);
+        Logic_Act_AttackMove();
+        _player.Logic_Act_Damaged();
     }
 
+    public void Move()
+    {
+        Debug.Log("적이 이동합니다.");
+        _state.cur = eUnitState.Move;
+        Logic_Action_Move();
+    }
 
     public void Logic()
     {
+        //
+        float atkdistance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
+        //Debug.Log("거리 : " + atkdistance);
+
         // 범위안에 들어오면 공격속도 로직 실행
-        if (Mathf.Abs(transform.position.x + _atkDistance) >= Mathf.Abs(_target.gameObject.transform.position.x))
+        if (atkdistance <= _atkDistance)
         {
-            AttackSpeed();
+            //AttackSpeed();
+        }
+        else
+        {
+            Move();
         }
     }
 
