@@ -324,7 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   t_text: {fileID: 170967193}
-  kind_base: 0
+  kind_base: 2
   kind_basic_index: -1
 --- !u!222 &170967195
 CanvasRenderer:
@@ -1508,7 +1508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   t_text: {fileID: 1554100587}
-  kind_base: 0
+  kind_base: 1
   kind_basic_index: -1
 --- !u!222 &1554100589
 CanvasRenderer:
@@ -1989,7 +1989,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB370\uC774\uD130 \uB85C\uB529\uC911"
+  m_text: Data Loading
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
   m_sharedMaterial: {fileID: -1691878722938302546, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
