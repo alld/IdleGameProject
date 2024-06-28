@@ -137,6 +137,11 @@ namespace IdleGame.Core.Panel.DataTable
             pool.Enqueue(po);               // 풀에 추가
         }
 
+        /// <summary>
+        /// 오브젝트 해제 가능 여부 확인
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool CanRelease(GameObject obj)
         {
             return activeObjects.Exists(p => p.gameObject == obj);      // obj가 활성화 리스트에 존재하는지 확인
@@ -162,6 +167,22 @@ namespace IdleGame.Core.Panel.DataTable
         public void RegisterPooledObject(GameObject obj)
         {
             pool.Enqueue(new PooledObject(obj));
+        }
+
+
+        public void LogPool()
+        {
+            Debug.Log("풀 로그 : " + Base_ObjectPoolManager.Instance.pools.Count);
+
+            foreach (var log in Base_ObjectPoolManager.Instance.pools)
+            {
+                Base_ObjectPool pool = log.Value;
+                Debug.Log("풀 프리팹 : " + log.Key.name + "\n" +
+                            "활성화 오브젝트 : " + pool.activeObjects.Count + "\n" +
+                            "초기 풀 사이즈 : + " + pool.initialPoolSize + "\n" +
+                            "확장 풀 사이즈 : + " + pool.betweenPoolSize + "\n" +
+                            "총 갯수 : " + pool.pool.Count);
+            }
         }
     }
 }

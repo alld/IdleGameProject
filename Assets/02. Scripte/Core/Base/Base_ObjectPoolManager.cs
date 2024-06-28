@@ -8,7 +8,7 @@ namespace IdleGame.Core.Panel.DataTable
 {
     public class Base_ObjectPoolManager : Base_ManagerPanel
     {
-        protected Dictionary<GameObject, Base_ObjectPool> pools = new Dictionary<GameObject, Base_ObjectPool>();
+        public Dictionary<GameObject, Base_ObjectPool> pools = new Dictionary<GameObject, Base_ObjectPool>();
         
         [SerializeField] private Base_ObjectPool objectPool;
 
@@ -37,22 +37,27 @@ namespace IdleGame.Core.Panel.DataTable
             Base_ObjectPool pool = new Base_ObjectPool(prefab, initialPoolSize, betweenPoolSize);
             pools.Add(prefab, pool);
 
+            //objectPool.LogPool();
             //Base_Engine.Log.Logic_PutLog(new Data_Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values));
             Debug.Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values);
         }
 
         public GameObject GetPool(GameObject prefab)
         {
-            if (pools.ContainsKey(prefab))
+            if (pools.TryGetValue(prefab, out Base_ObjectPool pool))
             {
-                return pools[prefab].GetObject();
+                GameObject obj = pool.GetObject();
+                pools[obj] = pool;
+
+
+                return obj;
             }
             else
             {
                 //Base_Engine.Log.Logic_PutLog(new Data_Log("키 값이 존재하지 않습니다. : " + prefab.name, Data_ErrorType.Error_DataLoadFailed));
                 Base_Engine.Log.Logic_PutLog(new Data_Log("키 값이 존재하지 않아 오브젝트를 활성화 할수 없습니다. 오브젝트를 생성합니다. " + prefab.name, Data_ErrorType.Error_DataLoadFailed));
                 CreatePool(prefab, 20, 20);
-
+                
                 return null;
             }
         }
@@ -63,37 +68,35 @@ namespace IdleGame.Core.Panel.DataTable
         /// <param name="obj"></param>
         public void Release(GameObject obj)
         {
-            string parent = obj.transform.parent.name + Base_ObjectPool.ParentName;    // 받은 오브젝트의 1단계 상위 오브젝트 찾기
-            
-            if(parent == null)
+            string parent = obj.name + Base_ObjectPool.ParentName;    // 받은 오브젝트의 1단계 상위 오브젝트 찾기
+
+            if (pools.TryGetValue(obj, out Base_ObjectPool pool))
             {
-                // 널이면 전체를 찾을 수 밖에 없음.
-                foreach (var pool in pools.Values)
-                {
-                    // 해제 가능한 오브젝트인지 확인 후 해제
-                    if (pool.CanRelease(obj))
-                    {
-                        pool.ReturnObject(obj);
-                        
-                        return;
-                    }
-                }
+                pool.ReturnObject(obj);
+                pools.Remove(obj);
             }
             else
             {
-                if (objectPool.ParentObjects.TryGetValue(parent, out GameObject prefab));
-                {
-                    if(pools.TryGetValue(prefab, out Base_ObjectPool pool))
-                    {
-                        pool.ReturnObject(obj);
-
-                        return;
-                    }
-                }
-                
+                Base_Engine.Log.Logic_PutLog(new Data_Log("해제할 수 없는 오브젝트입니다. : " + obj.name, Data_ErrorType.Error_DataLoadFailed));
+                ReleaseObjectParent(obj);
             }
 
-            Base_Engine.Log.Logic_PutLog(new Data_Log("해제할 수 없는 오브젝트입니다. : " + obj.name, Data_ErrorType.Error_DataLoadFailed));
+            //objectPool.LogPool();
+        }
+
+        /// <summary>
+        /// 오브젝트의 부모 오브젝트를 찾아서 해제
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ReleaseObjectParent(GameObject obj)
+        {
+            foreach (var pool in pools.Values)
+            {
+                if(pool.CanRelease(obj))
+                {
+                    pool.ReturnObject(obj);
+                }
+            }
         }
 
         public System.Collections.IEnumerator TestRelease()
@@ -103,7 +106,7 @@ namespace IdleGame.Core.Panel.DataTable
             Debug.Log("해제 요청");
 
             Release(testCube);
-            
         }
+
     }
 }
