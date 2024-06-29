@@ -1,6 +1,10 @@
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Log;
+using PlasticPipe.PlasticProtocol.Messages;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -29,12 +33,14 @@ namespace IdleGame.Core.Panel.DataTable
             CreatePool(testCube, 20, 20);
             //GetPool(new GameObject());
 
-            StartCoroutine(TestRelease());
+            StartCoroutine(ActivateAndDeactivateObjects(testCube, 10));
         }
 
         public void CreatePool(GameObject prefab, int initialPoolSize, int betweenPoolSize)
         {
-            Base_ObjectPool pool = new Base_ObjectPool(prefab, initialPoolSize, betweenPoolSize);
+            GameObject poolObject = new GameObject(prefab.name);
+            Base_ObjectPool pool = poolObject.AddComponent<Base_ObjectPool>();
+            pool.Initialize(prefab, initialPoolSize, betweenPoolSize);
             pools.Add(prefab, pool);
 
             //objectPool.LogPool();
@@ -44,11 +50,14 @@ namespace IdleGame.Core.Panel.DataTable
 
         public GameObject GetPool(GameObject prefab)
         {
+            GameObject obj = pools.Keys.FirstOrDefault(key => key.name == prefab.name);
+
+            Debug.Log("받은 오브젝트는 " + obj.name + "입니다");
+
             if (pools.TryGetValue(prefab, out Base_ObjectPool pool))
             {
-                GameObject obj = pool.GetObject();
+                obj = pool.GetObject();
                 pools[obj] = pool;
-
 
                 return obj;
             }
@@ -56,7 +65,7 @@ namespace IdleGame.Core.Panel.DataTable
             {
                 //Base_Engine.Log.Logic_PutLog(new Data_Log("키 값이 존재하지 않습니다. : " + prefab.name, Data_ErrorType.Error_DataLoadFailed));
                 Base_Engine.Log.Logic_PutLog(new Data_Log("키 값이 존재하지 않아 오브젝트를 활성화 할수 없습니다. 오브젝트를 생성합니다. " + prefab.name, Data_ErrorType.Error_DataLoadFailed));
-                CreatePool(prefab, 20, 20);
+                CreatePool(prefab, objectPool.initialPoolSize, objectPool.betweenPoolSize);
                 
                 return null;
             }
@@ -66,8 +75,8 @@ namespace IdleGame.Core.Panel.DataTable
         /// 오브젝트 풀링 해제
         /// </summary>
         /// <param name="obj"></param>
-        public void Release(GameObject obj)
-        {
+        public void ReleasePool(GameObject obj)
+         {
             string parent = obj.name + Base_ObjectPool.ParentName;    // 받은 오브젝트의 1단계 상위 오브젝트 찾기
 
             if (pools.TryGetValue(obj, out Base_ObjectPool pool))
@@ -99,13 +108,17 @@ namespace IdleGame.Core.Panel.DataTable
             }
         }
 
-        public System.Collections.IEnumerator TestRelease()
+        public IEnumerator ActivateAndDeactivateObjects(GameObject pool, int count)
         {
+            for(int i= 0; i< count; i++)
+            {
+                GetPool(pool);    
+            }
+
             yield return new WaitForSeconds(5f);
 
-            Debug.Log("해제 요청");
+            ReleasePool(pool);
 
-            Release(testCube);
         }
 
     }

@@ -10,12 +10,12 @@ namespace IdleGame.Core.Panel.DataTable
     {
         private GameObject prefab;   // 오브젝트 풀링용 프리팹
         
-        private int initialPoolSize; // 초기 풀 사이즈
-        private int betweenPoolSize;     // 추가 풀 사이즈
+        public int initialPoolSize; // 초기 풀 사이즈
+        public int betweenPoolSize;     // 추가 풀 사이즈
         
         public Dictionary<string, GameObject> ParentObjects = new Dictionary<string, GameObject>();
         private Queue<PooledObject> pool = new Queue<PooledObject>();   // 오브젝트 풀
-        private List<PooledObject> activeObjects = new List<PooledObject>();
+        private Dictionary<int, PooledObject> activeObjects = new Dictionary<int, PooledObject>();
 
         public const string ParentName = "Parent";
 
@@ -29,7 +29,7 @@ namespace IdleGame.Core.Panel.DataTable
             { gameObject = gameObj; }
         }
 
-        public Base_ObjectPool(GameObject prefab, int initialPoolSize, int betweenPoolSize) : base()
+        public void Initialize(GameObject prefab, int initialPoolSize, int betweenPoolSize)
         {
             this.prefab = prefab;
             this.initialPoolSize = initialPoolSize;
@@ -110,8 +110,10 @@ namespace IdleGame.Core.Panel.DataTable
 
             PooledObject po = pool.Dequeue();    // 풀에서 꺼내옴
             po.gameObject.SetActive(true);       // 활성화
-            activeObjects.Add(po);               // 활성화 리스트에 추가
 
+            int key = po.gameObject.GetInstanceID();
+            activeObjects[key] = po;
+            
             return po.gameObject;                // 반환
         }
 
@@ -121,20 +123,23 @@ namespace IdleGame.Core.Panel.DataTable
         /// <param name="obj"></param>
         public void ReturnObject(GameObject obj)
         {
-            PooledObject po = activeObjects.Find(p => p.gameObject == obj); // 활성화 리스트에서 찾음
+            int key = obj.GetInstanceID();    
 
+            if(activeObjects.TryGetValue(key, out PooledObject po))
+            { 
+                activeObjects.Remove(key);      // 활성화 리스트에서 제거
+                po.gameObject.SetActive(false); // 비활성화
+                ResetTransform(po.gameObject);  // 위치 초기화
+                pool.Enqueue(po);               // 풀에 추가
+            }
             // 찾지 못하면 종료
-            if (po == null)
+            else
             {
                 Base_Engine.Log.Logic_PutLog(new Data_Log("오브젝트를 찾지 못했습니다.", Data_ErrorType.Error_DataLoadFailed));
+                Debug.Log("오브젝트를 찾지 못했습니다.");
 
                 return;
             }
-
-            activeObjects.Remove(po);       // 활성화 리스트에서 제거 (문제가 될 수도 있을 수 있는 부분)
-            po.gameObject.SetActive(false); // 비활성화
-            ResetTransform(po.gameObject);  // 위치 초기화
-            pool.Enqueue(po);               // 풀에 추가
         }
 
         /// <summary>
@@ -144,7 +149,8 @@ namespace IdleGame.Core.Panel.DataTable
         /// <returns></returns>
         public bool CanRelease(GameObject obj)
         {
-            return activeObjects.Exists(p => p.gameObject == obj);      // obj가 활성화 리스트에 존재하는지 확인
+            int key = obj.GetInstanceID();
+            return activeObjects.ContainsKey(key);      // obj가 활성화 리스트에 존재하는지 확인
         }
 
         /// <summary>
@@ -169,7 +175,9 @@ namespace IdleGame.Core.Panel.DataTable
             pool.Enqueue(new PooledObject(obj));
         }
 
-
+        /// <summary>
+        /// 오브젝트 풀 로그 테스트용
+        /// </summary>
         public void LogPool()
         {
             Debug.Log("풀 로그 : " + Base_ObjectPoolManager.Instance.pools.Count);
