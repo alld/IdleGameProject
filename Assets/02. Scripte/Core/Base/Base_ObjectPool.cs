@@ -13,9 +13,9 @@ namespace IdleGame.Core.Panel.DataTable
         public int initialPoolSize; // 초기 풀 사이즈
         public int betweenPoolSize;     // 추가 풀 사이즈
         
-        public Dictionary<string, GameObject> ParentObjects = new Dictionary<string, GameObject>();
-        private Queue<PooledObject> pool = new Queue<PooledObject>();   // 오브젝트 풀
-        private Dictionary<int, PooledObject> activeObjects = new Dictionary<int, PooledObject>();
+        public Dictionary<string, Stack<Transform>> ParentObjects = new Dictionary<string, Stack<Transform>>();
+        private Stack<PooledObject> pool = new Stack<PooledObject>();   // 오브젝트 풀
+        private Dictionary<int, Stack<PooledObject>> activeObjects = new Dictionary<int, Stack<PooledObject>>();
 
         public const string ParentName = "Parent";
 
@@ -61,9 +61,10 @@ namespace IdleGame.Core.Panel.DataTable
             if (!ParentObjects.ContainsKey(name))
             {
                 GameObject parent = new GameObject(name + ParentName);
-                ParentObjects[name] = parent;
-                ParentObjects[name].transform.SetParent(Base_ObjectPoolManager.Instance.transform);
-
+                parent.transform.SetParent(Base_ObjectPoolManager.Instance.transform);
+                Stack<Transform> stackTransform = new Stack<Transform>();
+                stackTransform.Push(parent.transform);
+                ParentObjects[name] = stackTransform;       // 부모 오브젝트 위치값 저장
             }
         }
 
@@ -76,9 +77,16 @@ namespace IdleGame.Core.Panel.DataTable
         private GameObject CreateObject()
         {
             GameObject go = Instantiate(prefab);    // 프리팹 생성
-            go.transform.SetParent(ParentObjects[prefab.name].transform);
+            
+            if(ParentObjects.TryGetValue(prefab.name, out Stack<Transform> objectParent) && 
+                objectParent.Count > 0)
+            {
+                go.transform.SetParent(objectParent.Peek());
+            }
+
             go.SetActive(false);                    // 비활성화 상태로
-            pool.Enqueue(new PooledObject(go));     // 풀에 추가
+            // 여기도 Prefab이 들어가야하지 않나? new키워드로 생성하는게 맞나?
+            pool.Push(new PooledObject(go));     // 풀에 추가
 
             return go;                              // 반환 (확장용으로 return하고 있지만 Initial에서만 쓸경우 굳이 필요없음)
         }
@@ -108,12 +116,13 @@ namespace IdleGame.Core.Panel.DataTable
                 ExpandPool();
             }
 
-            PooledObject po = pool.Dequeue();    // 풀에서 꺼내옴
+            PooledObject po = pool.Pop();    // 풀에서 꺼내옴
             po.gameObject.SetActive(true);       // 활성화
 
             int key = po.gameObject.GetInstanceID();
-            activeObjects[key] = po;
+            activeObjects[key].Push(po);
             
+            // 여기에 activateObjects로 넣어줘야 하지 않나? 나중에 까먹을까봐 미리 적어둠
             return po.gameObject;                // 반환
         }
 
@@ -125,12 +134,14 @@ namespace IdleGame.Core.Panel.DataTable
         {
             int key = obj.GetInstanceID();    
 
-            if(activeObjects.TryGetValue(key, out PooledObject po))
-            { 
-                activeObjects.Remove(key);      // 활성화 리스트에서 제거
+            if(activeObjects.TryGetValue(key, out Stack<PooledObject> stackPool) &&
+                stackPool.Count > 0)
+            {
+                PooledObject po = stackPool.Pop(); // 스택에서 제거
                 po.gameObject.SetActive(false); // 비활성화
                 ResetTransform(po.gameObject);  // 위치 초기화
-                pool.Enqueue(po);               // 풀에 추가
+                pool.Push(po);                  // 풀에 추가
+                activeObjects.Remove(key);      // 활성화된 오브젝트 풀에서 제거
             }
             // 찾지 못하면 종료
             else
@@ -158,11 +169,6 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         public void ResetTransform(GameObject obj)
         {
-            // 어디다 하든 상관없지만 더 나은 관리를 위한 의문점.
-            // 위치 초기화는 게임매니저 함수에 있는게 나은가?
-            // 아니면 오브젝트 풀링에서 함수로 있는게 나은가?
-            // 만들고 나서 물어보기
-
             obj.transform.position = respawnZone;
         }
 
@@ -172,7 +178,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// <param name="obj"></param>
         public void RegisterPooledObject(GameObject obj)
         {
-            pool.Enqueue(new PooledObject(obj));
+            pool.Push(new PooledObject(obj));
         }
 
         /// <summary>
@@ -184,12 +190,25 @@ namespace IdleGame.Core.Panel.DataTable
 
             foreach (var log in Base_ObjectPoolManager.Instance.pools)
             {
-                Base_ObjectPool pool = log.Value;
-                Debug.Log("풀 프리팹 : " + log.Key.name + "\n" +
-                            "활성화 오브젝트 : " + pool.activeObjects.Count + "\n" +
-                            "초기 풀 사이즈 : + " + pool.initialPoolSize + "\n" +
-                            "확장 풀 사이즈 : + " + pool.betweenPoolSize + "\n" +
-                            "총 갯수 : " + pool.pool.Count);
+                Stack<Base_ObjectPool> poolStack = log.Value;
+                GameObject logPrefab = log.Key;
+
+                if (poolStack.Count > 0)
+                {
+                    int totalObjects = 0;
+                    int activeObjects = 0;
+
+                    foreach (var pool in poolStack)
+                    {
+                        totalObjects += pool.pool.Count;
+                        activeObjects += pool.activeObjects.Count;
+                    }
+                    Debug.Log("풀 프리팹 : " + logPrefab.name + "\n" +
+                                "활성화 오브젝트 : " + activeObjects + "\n" +
+                                //"초기 풀 사이즈 : + " + pool.initialPoolSize + "\n" +
+                                //"확장 풀 사이즈 : + " + pool.betweenPoolSize + "\n" +
+                                "총 갯수 : " + pool.Count);
+                }
             }
         }
     }
