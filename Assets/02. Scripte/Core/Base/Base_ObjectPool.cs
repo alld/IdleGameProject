@@ -118,8 +118,13 @@ namespace IdleGame.Core.Panel.DataTable
 
             PooledObject po = pool.Pop();    // 풀에서 꺼내옴
             po.gameObject.SetActive(true);       // 활성화
-
             int key = po.gameObject.GetInstanceID();
+
+            if(!activeObjects.ContainsKey(key))
+            {
+                activeObjects[key] = new Stack<PooledObject>();
+            }
+
             activeObjects[key].Push(po);
             
             // 여기에 activateObjects로 넣어줘야 하지 않나? 나중에 까먹을까봐 미리 적어둠
@@ -139,8 +144,10 @@ namespace IdleGame.Core.Panel.DataTable
             {
                 PooledObject po = stackPool.Pop(); // 스택에서 제거
                 po.gameObject.SetActive(false); // 비활성화
-                ResetTransform(po.gameObject);  // 위치 초기화
+                ResetTransform(po.gameObject.transform);  // 위치 초기화
                 pool.Push(po);                  // 풀에 추가
+                
+                // 뭔가 Pop으로 바꿔서 pools에 넣으면 더 깔쌈할거 같은데 뭔가 로직이 계속 꼬이는 느낌
                 activeObjects.Remove(key);      // 활성화된 오브젝트 풀에서 제거
             }
             // 찾지 못하면 종료
@@ -167,9 +174,9 @@ namespace IdleGame.Core.Panel.DataTable
         /// <summary>
         /// 오브젝트 기존 위치로 이동
         /// </summary>
-        public void ResetTransform(GameObject obj)
+        public void ResetTransform(Transform objTransform)
         {
-            obj.transform.position = respawnZone;
+            objTransform.position = respawnZone;
         }
 
         /// <summary>

@@ -1,10 +1,7 @@
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Common.Log;
-using PlasticPipe.PlasticProtocol.Messages;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace IdleGame.Core.Panel.DataTable
@@ -16,7 +13,7 @@ namespace IdleGame.Core.Panel.DataTable
         [SerializeField] private Base_ObjectPool objectPool;
 
         public static Base_ObjectPoolManager Instance { get; private set; }
-        public GameObject testCube;
+        public GameObject testCube;         // 프로토타입 이후 인터페이스든, 뭐시기든으로 바꾸기
 
         private void Awake()
         {
@@ -30,42 +27,62 @@ namespace IdleGame.Core.Panel.DataTable
 
             /// 여기서 CreatePool 함수로 오브젝트 풀 생성.
             CreatePool(testCube, 20, 20);
-            //GetPool(new GameObject());
 
-            StartCoroutine(ActivateAndDeactivateObjects(testCube, 10));
+            List<GameObject> activeObjects = GetPools(testCube, 10);
+
         }
 
         public void CreatePool(GameObject prefab, int initialPoolSize, int betweenPoolSize)
         {
+            if(!pools.ContainsKey(prefab))
+            {
+                pools[prefab] = new Stack<Base_ObjectPool>();
+            }
+
             Base_ObjectPool pool = prefab.gameObject.AddComponent<Base_ObjectPool>();
             pool.Initialize(prefab, initialPoolSize, betweenPoolSize);
             
             // 오류 생길 수 있는 부분?
             pools[prefab].Push(pool);
 
-            //objectPool.LogPool();
             //Base_Engine.Log.Logic_PutLog(new Data_Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values));
             Debug.Log("딕셔너리에 저장 되었습니다. : " + pools.Keys + " | " + pools.Values);
         }
 
-        public GameObject GetPool(GameObject prefab)
+        private GameObject GetPool(GameObject prefab)
         {
-            GameObject obj = pools.Keys.FirstOrDefault(key => key.name == prefab.name);
-
-            Debug.Log("받은 오브젝트는 " + obj.name + "입니다");
+            //GameObject obj = pools.Keys.FirstOrDefault(key => key.name == prefab.name);
+            //Debug.Log("받은 오브젝트는 " + obj.name + "입니다");
 
             if (pools.TryGetValue(prefab, out Stack<Base_ObjectPool> poolStack) &&
                 poolStack.Count > 0)
             {
                 Base_ObjectPool pool = poolStack.Peek();
-                GameObject poolObj = pool.GetObject();
 
-                if (poolObj != null)
+                return pool.GetObject();
+            }
+            // 정상적으로 오브젝트 풀링이 되지 않았을 경우 오브젝트 풀 생성
+            CreatePool(prefab, objectPool.initialPoolSize, objectPool.betweenPoolSize);
+
+            return pools[prefab].Peek().GetObject();
+
+
+            /*
+            if (pools.TryGetValue(prefab, out Stack<Base_ObjectPool> poolStack) &&
+                poolStack.Count > 0)
+            {
+                for(int i = 0; i < count; i++)
                 {
-                    return obj;
+                    Base_ObjectPool pool = poolStack.Peek();
+                    GameObject poolObj = pool.GetObject();
+
+                    if (poolObj != null)
+                    {
+                        return poolObj;
+                    }
                 }
             }
-
+            
             Base_Engine.Log.Logic_PutLog(new Data_Log("키 값이 존재하지 않아 오브젝트를 활성화 할수 없습니다. 오브젝트를 생성합니다. " + prefab.name, Data_ErrorType.Error_DataLoadFailed));
             CreatePool(prefab, objectPool.initialPoolSize, objectPool.betweenPoolSize);
 
@@ -73,13 +90,39 @@ namespace IdleGame.Core.Panel.DataTable
                poolStack2.Count > 0 )
             {
                 Base_ObjectPool pool = poolStack2.Peek();
-                
-                return pool.GetObject();
+                GameObject newObj = pool.GetObject();
+
+                if(newObj != null)
+                {
+                    return newObj;
+                }
             }
 
             Base_Engine.Log.Logic_PutLog(new Data_Log("마지막까지 생성 실패!" + prefab.name, Data_ErrorType.Error_DataLoadFailed));
             
             return null;
+            */
+        }
+
+        public List<GameObject> GetPools(GameObject prefab, int count)
+        {
+            List<GameObject> activeObjects = new List<GameObject>(count);
+
+            for(int i = 0; i < count; i++)
+            {
+                GameObject obj = GetPool(prefab);
+
+                if(obj != null)
+                {
+                    activeObjects.Add(obj);
+                }
+                else
+                {   // 반복문 종료
+                    break;  
+                }
+            }
+
+            return activeObjects; 
         }
 
         /// <summary>
@@ -88,7 +131,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// <param name="obj"></param>
         public void ReleasePool(GameObject obj)
         {
-            string parent = obj.name + Base_ObjectPool.ParentName;    // 받은 오브젝트의 1단계 상위 오브젝트 찾기
+            //string parent = obj.name + Base_ObjectPool.ParentName;    // 받은 오브젝트의 1단계 상위 오브젝트 찾기
 
             if (pools.TryGetValue(obj, out Stack<Base_ObjectPool> poolStack) &&
                 poolStack.Count > 0)
@@ -127,19 +170,5 @@ namespace IdleGame.Core.Panel.DataTable
                 }            }
         }
 
-        public IEnumerator ActivateAndDeactivateObjects(GameObject pool, int count)
-        {
-            for(int i= 0; i< count; i++)
-            {
-                GetPool(pool);    
-            }
-
-            yield return new WaitForSeconds(5f);
-
-            ReleasePool(pool);
-
-        }
-
-        
     }
 }
