@@ -1,3 +1,4 @@
+using IdleGame.Core.Panel.DataTable;
 using IdleGame.Core.Unit;
 using System.Collections;
 using UnityEngine;
@@ -42,6 +43,7 @@ public class Enemy : Base_Unit
 
         _state = new Data_UnitState();
         _state.cur = eUnitState.Idle;
+        Logic_SetAction(_state.cur);
 
         _player = GameObject.FindWithTag("Player").GetComponent<Player>();
         _target = GameObject.FindWithTag("Player").GetComponent<Base_Unit>();
@@ -60,7 +62,9 @@ public class Enemy : Base_Unit
         _state.cur = eUnitState.Die;
         Logic_SetAction(_state.cur);
 
+        Debug.Log("적의 상태 : " + _state.cur);
         gameObject.SetActive(false);
+
     }
 
     public override void Logic_Act_Damaged()
@@ -74,7 +78,7 @@ public class Enemy : Base_Unit
         {
             Debug.Log("적 : 깨꼬닥");
 
-            Logic_Act_Die();
+            //Logic_Act_Die();
         }
     }
 
@@ -123,11 +127,22 @@ public class Enemy : Base_Unit
         // 범위안에 들어오면 공격속도 로직 실행
         if (atkdistance <= _atkDistance)
         {
-            //AttackSpeed();
+            Logic_SearchTarget_Base();
+            AttackSpeed();
         }
         else
         {
             Move();
+        }
+    }
+
+    public void Die()
+    {
+        if(isDie)
+        {
+            Debug.Log("ㅈㅓㄱㅇㅣ ㅈㅜㄱㅇㅓㅆㅅㅡㅂㄴㅣㄷㅏ.");
+
+            //Logic_Act_Die();
         }
     }
 

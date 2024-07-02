@@ -105,6 +105,7 @@ namespace IdleGame.Core.Unit
             // 범위안에 들어오면 공격속도 로직 실행
             if (atkdistance <= _atkDistance)
             {
+                Logic_SearchTarget_Base();
                 AttackSpeed();
             }
             else

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using IdleGame.Core.Panel.DataTable;
 using IdleGame.Core.Procedure;
 using IdleGame.Data.Base;
 using System.Collections;
@@ -121,9 +122,11 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public virtual void Pool_Return()
         {
+            Debug.Log("내 유닛 : " + this.gameObject);
             Logic_RemoveModule();
 
-            Base_Engine.Pool.ReturnObject(this.gameObject);
+            //Base_Engine.Pool.ReturnObject(this.gameObject);
+            Base_ObjectPoolManager.Instance.ReleaseObjectParent(this.gameObject);
         }
         #endregion
         #endregion

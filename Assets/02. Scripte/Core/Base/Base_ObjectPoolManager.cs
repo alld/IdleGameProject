@@ -9,9 +9,7 @@ namespace IdleGame.Core.Panel.DataTable
     public class Base_ObjectPoolManager : Base_ManagerPanel
     {
         public Dictionary<GameObject, Stack<Base_ObjectPool>> pools = new Dictionary<GameObject, Stack<Base_ObjectPool>>();
-        
         [SerializeField] private Base_ObjectPool objectPool;
-
         public static Base_ObjectPoolManager Instance { get; private set; }
         public GameObject testCube;         // 프로토타입 이후 인터페이스든, 뭐시기든으로 바꾸기
 
@@ -28,8 +26,8 @@ namespace IdleGame.Core.Panel.DataTable
             /// 여기서 CreatePool 함수로 오브젝트 풀 생성.
             CreatePool(testCube, 20, 20);
 
-            List<GameObject> activeObjects = GetPools(testCube, 10);
-
+            // 테스트용
+            //List<GameObject> activeObjects = GetPools(testCube, 10);
         }
 
         public void CreatePool(GameObject prefab, int initialPoolSize, int betweenPoolSize)
@@ -39,7 +37,10 @@ namespace IdleGame.Core.Panel.DataTable
                 pools[prefab] = new Stack<Base_ObjectPool>();
             }
 
-            Base_ObjectPool pool = prefab.gameObject.AddComponent<Base_ObjectPool>();
+            GameObject poolObject = new GameObject(prefab.name + "Pool");
+            // AddComponent로할지 GetComponent로 할지는 선택해야함.
+            Base_ObjectPool pool = poolObject.AddComponent<Base_ObjectPool>();
+            //Base_ObjectPool pool = poolObject.GetComponent<Base_ObjectPool>();
             pool.Initialize(prefab, initialPoolSize, betweenPoolSize);
             
             // 오류 생길 수 있는 부분?
@@ -154,7 +155,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// 오브젝트의 부모 오브젝트를 찾아서 해제
         /// </summary>
         /// <param name="obj"></param>
-        private void ReleaseObjectParent(GameObject obj)
+        public void ReleaseObjectParent(GameObject obj)
         {
             foreach (var pool in pools.Values)
             {
@@ -167,8 +168,8 @@ namespace IdleGame.Core.Panel.DataTable
                         baseObj.ReturnObject(obj);
                         return;
                     }
-                }            }
+                }
+            }
         }
-
     }
 }
