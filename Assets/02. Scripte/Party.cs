@@ -26,8 +26,6 @@ namespace IdleGame.Core.Unit
         {
             base.Logic_Init_Custom();
 
-            Debug.Log("1번만 호출하기로 약속☆");
-
             _atk = 10;
             _atkSpeed = 1f;
             _atkDistance = 15f;

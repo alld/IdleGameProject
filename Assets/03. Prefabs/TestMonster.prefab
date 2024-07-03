@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 8048802144519591782}
   - component: {fileID: 8922567871725465735}
   - component: {fileID: 7597934991094818545}
-  - component: {fileID: -6824497686071013839}
-  - component: {fileID: 8758719045928567363}
+  - component: {fileID: 4081091769766323185}
   m_Layer: 0
   m_Name: TestMonster
   m_TagString: Untagged
@@ -110,22 +109,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-6824497686071013839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2742592896446762282}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47067fdccfbfaec439375bdd5824557c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  initialPoolSize: 20
-  betweenPoolSize: 20
-  respawnZone: {x: 0, y: 0, z: 0}
---- !u!114 &8758719045928567363
+--- !u!114 &4081091769766323185
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

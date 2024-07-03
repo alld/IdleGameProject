@@ -31,8 +31,6 @@ public class Enemy : Base_Unit
     {
         base.Logic_Init_Custom();
 
-        Debug.Log("Enemy에서 1번만 호출하기로 약속☆");
-
         _atk = 10;
         _atkSpeed = 1f;
         _atkDistance = 2f;
@@ -56,29 +54,27 @@ public class Enemy : Base_Unit
 
     public override void Logic_Act_Die()
     {
-        Debug.Log("현재 상태 : " + StateAction);
+        Debug.Log("현재 액션 : " + StateAction + "현재 상태 : " + _state.cur + " 브로드캐스트 다이 : " + _onBroadcastDie);
         base.Logic_Act_Die();
 
-        _state.cur = eUnitState.Die;
-        Logic_SetAction(_state.cur);
-
-        Debug.Log("적의 상태 : " + _state.cur);
-        gameObject.SetActive(false);
-
+        Debug.Log("현재 액션2 : " + StateAction + "현재 상태2 : " + _state.cur + " 브로드캐스트 다이 : " + _onBroadcastDie);
     }
 
     public override void Logic_Act_Damaged()
     {
+        if(isDie)
+            return;
+
         base.Logic_Act_Damaged();
 
         _health -= _player.Atk - _def;
         Debug.Log("적이 피해를 입었습니다. 적의 현재 체력 : " + _health);
 
-        if (_health <= 0)
+        if (_health <= 0 && !isDie)
         {
             Debug.Log("적 : 깨꼬닥");
 
-            //Logic_Act_Die();
+            Logic_Act_Die();
         }
     }
 
@@ -87,6 +83,9 @@ public class Enemy : Base_Unit
     /// </summary>
     public void AttackSpeed()
     {
+        if(isDie)
+            return;
+
         _timer -= Time.deltaTime;    
 
         if(_timer <= 0)
@@ -113,27 +112,33 @@ public class Enemy : Base_Unit
 
     public void Move()
     {
-        Debug.Log("적이 이동합니다.");
+        Debug.Log("적이 이동합니다. :" + this.gameObject);
         _state.cur = eUnitState.Move;
         Logic_Action_Move();
     }
 
     public void Logic()
     {
-        //
-        float atkdistance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
+        //float atkdistance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
         //Debug.Log("거리 : " + atkdistance);
 
         // 범위안에 들어오면 공격속도 로직 실행
-        if (atkdistance <= _atkDistance)
+        //if (atkdistance <= _atkDistance)
+        //{
+        //    Logic_SearchTarget_Base();
+        //    AttackSpeed();
+        //}
+        //else
+        //{
+        //    Move();
+        //}
+
+        if(_onBroadcastDie == null)
         {
             Logic_SearchTarget_Base();
-            AttackSpeed();
         }
-        else
-        {
-            Move();
-        }
+
+        Logic_Action_Move(_player.transform.position);
     }
 
     public void Die()
@@ -142,12 +147,16 @@ public class Enemy : Base_Unit
         {
             Debug.Log("ㅈㅓㄱㅇㅣ ㅈㅜㄱㅇㅓㅆㅅㅡㅂㄴㅣㄷㅏ.");
 
-            //Logic_Act_Die();
+            Logic_Act_Die();
         }
     }
 
     private void Update()
     {
-        Logic();
+        if(!isDie && _target != null)
+        {
+            Debug.Log("업데이트 특성액션 : " + _stateAction + " 타겟 : " + _target + " 죽음 : " + isDie + "현재 상태 : " + _state.cur);
+            Logic();
+        }
     }
 }

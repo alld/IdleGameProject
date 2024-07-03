@@ -33,8 +33,6 @@ namespace IdleGame.Core.Unit
         {
             base.Logic_Init_Custom();
 
-            Debug.Log("Player에서 1번만 호출하기로 약속☆");
-
             _atk = 10;
             _atkSpeed = 1f;
             _atkDistance = 15f;
@@ -102,6 +100,8 @@ namespace IdleGame.Core.Unit
             float atkdistance = Vector3.Distance(transform.position, _target.gameObject.transform.position);
             //Debug.Log("거리 : " + atkdistance);
 
+            //Move();
+
             // 범위안에 들어오면 공격속도 로직 실행
             if (atkdistance <= _atkDistance)
             {
@@ -130,7 +130,7 @@ namespace IdleGame.Core.Unit
 
         public void Move()
         {
-            Debug.Log("플레이어가 이동합니다.");
+            Debug.Log("플레이어가 이동합니다. : " + this.gameObject);
             _state.cur = eUnitState.Move;
             Logic_Action_Move();
         }
