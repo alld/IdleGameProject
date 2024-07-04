@@ -1,3 +1,4 @@
+using IdleGame.Data;
 using IdleGame.Data.Numeric;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,9 +15,7 @@ namespace IdleGame.Main
         public Dictionary<Data.eCurrencyType, Data.Data_Currency> currencyList;
         void Awake()
         {
-            // Todo : Get currencyList from Player
-            // currencyList = Global_Data.Player.currencyList;
-
+            currencyList = Global_Data.Player.currencyList;
             InitializeCurrencyFlags();
         }
 
