@@ -155,7 +155,7 @@ namespace IdleGame.Core.Intro
             Logic_AddCountLoadStep();
             _pages[_currentPageIndex].Logic_FadeIn();
             yield return _delay_LoadPage;
-            _t_loadingBar.text = "데이터 로딩중";
+            _t_loadingBar.text = "Data Loading";
             StartCoroutine(Logic_LoadingBarTextEffect());
 
             GameManager.Table.Logic_TryLoadData(eDataTableType.GameInfo);

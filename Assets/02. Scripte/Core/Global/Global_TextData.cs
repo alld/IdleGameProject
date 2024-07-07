@@ -8,15 +8,17 @@ using System.Collections.Generic;
 public enum eTextKind
 {
     None = 0,
-    #region 공용팝업
-    /// <summary> 안내</summary>
-    CommonP_Information = 1,
-    /// <summary> 확인 </summary>
-    CommonP_Check,
-    /// <summary> 닫기</summary>
-    CommonP_Close,
-    /// <summary> 텍스트를 입력해주세요.</summary>
-    CommonP_EnterText,
+    #region 인트로
+    /// <summary> 게임이름 </summary>
+    Intro_GameName = 1,
+    /// <summary> 아무 버튼이나 누르세요. </summary>
+    Intro_AnyTouchScreen,
+    /// <summary> 빈슬롯</summary>
+    Intro_Empty_0,
+    /// <summary> 빈슬롯</summary>
+    Intro_EMpty_1,
+    /// <summary> 빈슬롯</summary>
+    Intro_EMpty_2,
 
     #endregion
 
