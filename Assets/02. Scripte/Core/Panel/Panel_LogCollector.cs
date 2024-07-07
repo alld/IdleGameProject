@@ -1,3 +1,4 @@
+using IdleGame.Data;
 using IdleGame.Data.Common.Log;
 using System.Collections;
 using UnityEngine;
@@ -58,6 +59,11 @@ namespace IdleGame.Core.Panel.LogCollector
             {
                 StartCoroutine(Post(m_log));
             }
+
+#if DevelopeMode 
+            if (Global_Data.Editor.unityLog)
+                Debug.Log(m_log.ToString());
+#endif
         }
 
         /// <summary>
