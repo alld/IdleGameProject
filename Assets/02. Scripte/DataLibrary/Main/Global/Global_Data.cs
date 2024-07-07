@@ -1,3 +1,4 @@
+using IdleGame.Data.EditorSetting;
 using IdleGame.Data.NSave;
 using IdleGame.Data.Option;
 using System;
@@ -30,7 +31,10 @@ namespace IdleGame.Data
         /// </summary>
         public static Data_Option Option = new Data_Option();
 
-
+        /// <summary>
+        /// [데이터] 개발 과정에서 사용되어지는 에디터 설정입니다.
+        /// </summary>
+        public static Data_EditorSetting Editor = new Data_EditorSetting();
 
         /// <summary>
         /// [기능] 세이브 엔진에서 사용되어지는 기능입니다. 세이브 형태로 데이터를 변환하여 반환합니다.
