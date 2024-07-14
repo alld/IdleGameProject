@@ -1,6 +1,5 @@
 using DG.Tweening;
-using IdleGame.Core.Panel.DataTable;
-using IdleGame.Core.Procedure;
+using IdleGame.Core.Pool;
 using IdleGame.Data.Base;
 using System.Collections;
 using UnityEngine;
@@ -11,7 +10,7 @@ namespace IdleGame.Core.Unit
     /// [기능] 유닛의 가장 기본적인 구성들을 담고 있습니다. 
     /// <br> 유니티내에서 관리되는 참조리스트에서 유닛들의 할당을 최소화하기 위해서 유니티 콜백함수를 사용하지않습니다. </br>
     /// </summary>
-    public class Base_Unit : MonoBehaviour
+    public class Base_Unit : Base_PoolObject
     {
         /// <summary>
         /// [캐시] 유닛이 공통적으로 사용되어지는 여러 구성요소들을 포함하고 있습니다.
@@ -126,7 +125,7 @@ namespace IdleGame.Core.Unit
             Logic_RemoveModule();
 
             //Base_Engine.Pool.ReturnObject(this.gameObject);
-            Base_ObjectPoolManager.Instance.ReleaseObjectParent(this.gameObject);
+            //Base_ObjectPoolManager.Instance.ReleaseObjectParent(this.gameObject);
         }
         #endregion
         #endregion
@@ -325,7 +324,7 @@ namespace IdleGame.Core.Unit
                 .OnComplete(
                 () =>
                 {
-                    StartCoroutine(Logic_OperatorAct());    
+                    StartCoroutine(Logic_OperatorAct());
                 });
 
             Sound_Move();
@@ -349,7 +348,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_TargetClear_Base()
         {
-            _target._onBroadcastDie -= Logic_TargetClear_Base; 
+            _target._onBroadcastDie -= Logic_TargetClear_Base;
             _target = null;
 
             Logic_StopAction();
@@ -424,6 +423,11 @@ namespace IdleGame.Core.Unit
         /// [사운드] 사망시 들리는 사운드입니다. 
         /// </summary>
         protected virtual void Sound_Die() { }
+
+        public override void Pool_Clear()
+        {
+            throw new System.NotImplementedException();
+        }
         #endregion
 
         #endregion

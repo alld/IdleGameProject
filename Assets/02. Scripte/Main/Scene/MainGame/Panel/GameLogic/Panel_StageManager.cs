@@ -2,7 +2,6 @@ using IdleGame.Core;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
-using IdleGame.Main.Scene.Main;
 using UnityEngine;
 
 namespace IdleGame.Main.GameLogic
@@ -94,9 +93,9 @@ namespace IdleGame.Main.GameLogic
         {
             for (int i = 0; i < mainStage.wave_unitCount[0][0]; i++)
             {
-                GameObject monster = GameManager.Pool.GetObject();
-                monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
-                monster.transform.localPosition = enemyStartPos;
+                //GameObject monster = GameManager.Pool.GetObject();
+                //monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
+                //monster.transform.localPosition = enemyStartPos;
             }
         }
 
@@ -105,9 +104,9 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_PlayerSetting()
         {
-            GameObject player = GameManager.Pool.GetObject();
-            player.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
-            player.transform.localPosition = playerStartPos[0];
+            //GameObject player = GameManager.Pool.GetObject();
+            //player.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            //player.transform.localPosition = playerStartPos[0];
         }
 
         /// <summary>
