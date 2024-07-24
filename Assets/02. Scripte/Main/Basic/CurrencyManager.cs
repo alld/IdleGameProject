@@ -1,90 +1,24 @@
 using IdleGame.Data;
 using IdleGame.Data.Numeric;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
-namespace IdleGame.Main 
+namespace IdleGame.Core.Panel
 {
-    public class CurrencyManager : MonoBehaviour
+    /// <summary>
+    /// [기능] 현재 상태값을 기록합니다. 
+    /// </summary>
+    public class CurrencyManager : Base_ManagerPanel
     {
-        private int currentFlag = 0;
-        
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-    
-        public Dictionary<Data.eCurrencyType, Data.Data_Currency> currencyList;
-        void Awake()
+        [System.Serializable]
+        public struct Data_DisplayComponent
         {
-            currencyList = Global_Data.Player.currencyList;
-            InitializeCurrencyFlags();
+            [SerializeField]
+            private Graphic_Text t_display;
+
         }
 
-        private void InitializeCurrencyFlags()
-        {
-            // Initialize Flags
-            // Todo : Maybe read config file to initliaize 
-            currencyList[Data.eCurrencyType.Jewel].Flags = 0x1;
-        }
-
-        public bool SetCurrentFlag(int newFlag)
-        {
-            if (newFlag < 1 || 32 < newFlag) return false;
-
-            currentFlag = newFlag;
-
-            foreach (KeyValuePair<Data.eCurrencyType, Data.Data_Currency> iter in currencyList)
-            {
-                if (iter.Value.IsFlagSet(currentFlag))
-                {
-                    // Todo : Turn on widget
-                }
-                else
-                {
-                    // Todo : Turn off widget
-                }
-            }
-            
-
-            return true;
-        }
-    
-        public bool AddCurrency(Data.eCurrencyType currencyType, ExactInt addAmount)
-        {
-            if (currencyList[currencyType].IsFlagSet(currentFlag))
-            {
-                // Todo : Play Animation
-            }
-            else
-            {
-                currencyList[currencyType].Amount += addAmount;
-            }
-            
-            return true;
-        }
-        
-        public bool SubCurrency(Data.eCurrencyType currencyType, ExactInt subAmount)
-        {
-            if (currencyList[currencyType].Amount < subAmount) return false;
-            
-            currencyList[currencyType].Amount -= subAmount;
-            
-            // Todo : currencyWidget Update
-            
-            return true;
-        }
-    
-        public List<KeyValuePair<Data.eCurrencyType, Data.Data_Currency>> GetCurrencyList(int flag)
-        {
-            List<KeyValuePair<Data.eCurrencyType, Data.Data_Currency>> result = new List<KeyValuePair<Data.eCurrencyType, Data.Data_Currency>>();
-            foreach (KeyValuePair<Data.eCurrencyType, Data.Data_Currency> iter in currencyList)
-            {
-                if (iter.Value.IsFlagSet(flag))
-                {
-                    result.Add(iter);
-                }
-            }
-    
-            return result;
-        }
     }
 }
