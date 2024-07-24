@@ -47,7 +47,7 @@ namespace IdleGame.Data.Base
         /// <summary>
         /// [종류] 인게임 내에서 사용되는 하단 UI 페이지 리스트입니다.
         /// </summary>
-        public enum eBottomUIPage
+        public enum eUIPage
         {
             /// <summary> [패널] 스킬 강화 </summary>
             AbilityUpgrade = -1,

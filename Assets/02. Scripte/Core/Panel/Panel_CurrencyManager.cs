@@ -1,7 +1,4 @@
-using IdleGame.Data;
-using IdleGame.Data.Numeric;
-using System.Collections.Generic;
-using TMPro;
+using IdleGame.Data.Common;
 using UnityEngine;
 
 
@@ -20,5 +17,33 @@ namespace IdleGame.Core.Panel
 
         }
 
+        /// <summary>
+        /// [상태] 현재 보여지고 있는 타입입니다. 
+        /// </summary>
+        private eCurrencyType _currentType;
+
+        /// <summary>
+        /// [설정] 현재 보여지고 있는 재화 타입을 지정합니다. 
+        /// </summary>
+        public void Logic_SetCurrencyType(eCurrencyType m_type)
+        {
+            _currentType = m_type;
+        }
+
+        /// <summary>
+        /// [설정] 현재 설정된 재화 타입에서 특정 재화 타입을 포함시킵니다.
+        /// </summary>
+        public void Logic_AddCurrencyType(eCurrencyType m_type)
+        {
+            Logic_SetCurrencyType(_currentType | m_type);
+        }
+
+        /// <summary>
+        /// [설정] 현재 설정된 재화 타입에서 특정 재화 타입을 제외시킵니다. 
+        /// </summary>
+        public void Logic_RemoveCurrencyType(eCurrencyType m_type)
+        {
+            Logic_SetCurrencyType(_currentType & ~m_type);
+        }
     }
 }
