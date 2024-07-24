@@ -126,12 +126,16 @@ namespace IdleGame.Core.Panel.DataTable
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.maxWave, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.isMainStory, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.waveType, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.storyIndex, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.wave_unitKind, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.wave_unitCount, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.wave_num, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.stage_effect, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.story, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.background_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_num, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_max, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.boss_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.boss_battletime, dataSegment[index++]);
 
                 Library_DataTable.stage.Add(parsingData.index, parsingData);
             }

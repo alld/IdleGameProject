@@ -10,7 +10,7 @@ namespace IdleGame.Core.Panel
     /// <summary>
     /// [기능] 현재 상태값을 기록합니다. 
     /// </summary>
-    public class CurrencyManager : Base_ManagerPanel
+    public class Panel_CurrencyManager : Base_ManagerPanel
     {
         [System.Serializable]
         public struct Data_DisplayComponent
