@@ -1,5 +1,6 @@
 using IdleGame.Data.Base.BottomPage;
 using IdleGame.Data.NSave;
+using IdleGame.Data.Numeric;
 
 namespace IdleGame.Data
 {
@@ -23,5 +24,15 @@ namespace IdleGame.Data
         /// [상태] 현재 보여지고 있는 페이지에대한 정보입니다. 
         /// </summary>
         public eUIPage currentPage = eUIPage.AbilityUpgrade;
+
+        /// <summary>
+        /// [데이터] 골드 재화 보유량입니다.
+        /// </summary>
+        public ExactInt cc_Gold;
+
+        /// <summary>
+        /// [데이터] 특성 포인트 보유량입니다. 
+        /// </summary>
+        public ExactInt cc_Ability;
     }
 }
