@@ -18,12 +18,34 @@ namespace IdleGame.Data.Numeric
         public bool IsPositive;
 
         // Value 값에 IntLimit 이상의 값이 들어가지 않는 것을 원칙으로 한다.
-        public ExactInt (int value, bool isPositive = true, int scale = 0)
+        public ExactInt(int value, bool isPositive = true, int scale = 0)
         {
-            Value = new List<int>(new int[scale+1]);
+            Value = new List<int>(new int[scale + 1]);
             Scale = scale;
             IsPositive = isPositive;
             Value[scale] = value;
+        }
+
+        public ExactInt(int value, int scale)
+        {
+            Value = new List<int>(new int[scale + 1]);
+            Scale = scale;
+            IsPositive = value >= 0;
+            Value[scale] = value;
+        }
+
+        public ExactInt(int value)
+        {
+            Value = ConvertNumber(value);
+            Scale = Value.Count - 1;
+            IsPositive = value >= 0;
+        }
+
+        public ExactInt(long value)
+        {
+            Value = ConvertNumber(value);
+            Scale = Value.Count - 1;
+            IsPositive = value >= 0;
         }
 
         public ExactInt(List<int> value, bool isPositive = true, int scale = 0)
@@ -33,7 +55,42 @@ namespace IdleGame.Data.Numeric
             IsPositive = isPositive;
         }
 
-        public override string ToString ()
+        public static bool CompareZero(ExactInt m_value)
+        {
+            if (m_value.Scale != 0)
+                return false;
+
+            if (m_value.Value[0] != 0)
+                return false;
+
+            return true;
+        }
+
+        public static List<int> ConvertNumber(int m_value)
+        {
+            return ConvertNumber((long)m_value);
+        }
+
+        public static List<int> ConvertNumber(long m_value)
+        {
+            List<int> result = new List<int>();
+            m_value = Math.Abs(m_value);
+
+            while (true)
+            {
+                if (m_value < 10000)
+                {
+                    result.Add((int)m_value);
+                    break;
+                }
+
+                m_value /= 10000;
+            }
+
+            return result;
+        }
+
+        public override string ToString()
         {
             string result = IsPositive ? "" : "-";
 
@@ -122,24 +179,39 @@ namespace IdleGame.Data.Numeric
                 }
             }
         }
-        
-        public static ExactInt operator + (ExactInt a, ExactInt b)
+
+
+        public static ExactInt operator +(ExactInt a, ExactInt b)
         {
             if (a.IsPositive != b.IsPositive)
             {
                 b.IsPositive = !b.IsPositive;
                 return a - b;
             }
-            
+
             AlignScales(ref a, ref b);
             for (int i = 0; i < a.Value.Count; ++i)
             {
                 a.Value[i] += b.Value[i];
             }
-            
+
             a.Normalize();
-            
+
             return a;
+        }
+
+        public static ExactInt operator +(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a + num_b;
+        }
+
+        public static ExactInt operator +(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a + num_b;
         }
 
         public static ExactInt operator -(ExactInt a, ExactInt b)
@@ -157,7 +229,7 @@ namespace IdleGame.Data.Numeric
             {
                 return new ExactInt(0);
             }
-            
+
             AlignScales(ref a, ref b);
             a.IsPositive = comparison > 0 ? a.IsPositive : !a.IsPositive;
 
@@ -187,10 +259,24 @@ namespace IdleGame.Data.Numeric
                     }
                 }
             }
-            
+
             a.Normalize();
 
             return a;
+        }
+
+        public static ExactInt operator -(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a - num_b;
+        }
+
+        public static ExactInt operator -(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a - num_b;
         }
 
         public static ExactInt operator *(ExactInt a, ExactInt b)
@@ -210,13 +296,27 @@ namespace IdleGame.Data.Numeric
             return result;
         }
 
+        public static ExactInt operator *(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a * num_b;
+        }
+
+        public static ExactInt operator *(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a * num_b;
+        }
+
         public static ExactInt operator /(ExactInt a, ExactInt b)
         {
             if (b.Value.Last() == 0)
             {
                 throw new DivideByZeroException();
             }
-            
+
             if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[1] < b.Value[1])) return new ExactInt(0);
 
             a.Scale -= b.Scale;
@@ -230,7 +330,7 @@ namespace IdleGame.Data.Numeric
             int temp = 0;
             for (int i = a.Value.Count - 1; i > 0; --i)
             {
-                temp = (temp * DataLimit.Int + a.Value[i]) * DataLimit.Int + a.Value[i-1];
+                temp = (temp * DataLimit.Int + a.Value[i]) * DataLimit.Int + a.Value[i - 1];
                 a.Value[i] = temp / devideValue;
                 if (i > 0 && a.Value[i] == 0 && i == a.Value.Count - 1)
                 {
@@ -239,10 +339,24 @@ namespace IdleGame.Data.Numeric
                 temp %= devideValue;
             }
             a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value.Last();
-            
+
             a.Normalize();
 
             return a;
+        }
+
+        public static ExactInt operator /(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a / num_b;
+        }
+
+        public static ExactInt operator /(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a / num_b;
         }
 
         public static bool operator <(ExactInt a, ExactInt b)
@@ -271,12 +385,12 @@ namespace IdleGame.Data.Numeric
             {
                 return a.IsPositive;
             }
-            
+
             if (a.Scale != b.Scale)
             {
                 return a.Scale > b.Scale;
             }
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -285,11 +399,13 @@ namespace IdleGame.Data.Numeric
 
             return false;
         }
-        
+
         public static bool operator ==(ExactInt a, ExactInt b)
         {
+            if (CompareZero(a) == CompareZero(b)) return true;
+
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -298,11 +414,25 @@ namespace IdleGame.Data.Numeric
 
             return true;
         }
-        
+
+        public static bool operator ==(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a == num_b;
+        }
+
+        public static bool operator ==(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a == num_b;
+        }
+
         public static bool operator !=(ExactInt a, ExactInt b)
         {
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -312,11 +442,25 @@ namespace IdleGame.Data.Numeric
             return false;
         }
 
+        public static bool operator !=(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a != num_b;
+        }
+
+        public static bool operator !=(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a != num_b;
+        }
+
         public static bool operator <=(ExactInt a, ExactInt b)
         {
             return a < b || a == b;
         }
-        
+
         public static bool operator >=(ExactInt a, ExactInt b)
         {
             return a > b || a == b;
@@ -337,15 +481,15 @@ namespace IdleGame.Data.Numeric
             IsPositive = isPositive;
             Scale = scale;
         }
-        
+
         public SimpleInt(List<int> value, bool isPositive = true, int scale = 0)
         {
             Value = value;
             IsPositive = isPositive;
             Scale = scale;
         }
-        
-        public override string ToString ()
+
+        public override string ToString()
         {
             string result = IsPositive ? "" : "-";
 
@@ -363,7 +507,7 @@ namespace IdleGame.Data.Numeric
 
             return result;
         }
-        
+
         public static string ScaleToAlphabet(int scale)
         {
             string result = string.Empty;
@@ -394,9 +538,9 @@ namespace IdleGame.Data.Numeric
                 }
             }
 
-            Value = Value.Skip(Value.Count()-2).ToList();
+            Value = Value.Skip(Value.Count() - 2).ToList();
         }
-        
+
         public static SimpleInt operator +(SimpleInt a, SimpleInt b)
         {
             if (a.IsPositive != b.IsPositive)
@@ -440,7 +584,7 @@ namespace IdleGame.Data.Numeric
                 a.Value[0] += b.Value[0];
                 a.Value[1] += b.Value[1];
             }
-            
+
             a.Normalize();
             return a;
         }
@@ -453,7 +597,7 @@ namespace IdleGame.Data.Numeric
 
                 return a + b;
             }
-            
+
             int scaleDiff = a.Scale - b.Scale;
             if (Math.Abs(scaleDiff) > 1)
             {
@@ -509,7 +653,7 @@ namespace IdleGame.Data.Numeric
                 a.Value[0] = 0;
                 a.Scale = a.Scale > 0 ? a.Scale-- : 0;
             }
-            
+
             a.Normalize();
             return a;
         }
@@ -542,9 +686,9 @@ namespace IdleGame.Data.Numeric
 
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
-            
+
             int devideValue = b.Value[1] * DataLimit.Int + b.Value[0];
-            int temp = (a.Value[1] * DataLimit.Int) + a.Value[0]; 
+            int temp = (a.Value[1] * DataLimit.Int) + a.Value[0];
             a.Value[1] = temp / devideValue;
             temp = temp % devideValue;
             a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value[1];
@@ -555,11 +699,11 @@ namespace IdleGame.Data.Numeric
                 a.Value[0] = 0;
                 a.Scale = a.Scale > 0 ? a.Scale-- : 0;
             }
-            
+
             a.Normalize();
             return a;
         }
-        
+
         public static bool operator <(SimpleInt a, SimpleInt b)
         {
             if (a.IsPositive != b.IsPositive)
@@ -586,12 +730,12 @@ namespace IdleGame.Data.Numeric
             {
                 return a.IsPositive;
             }
-            
+
             if (a.Scale != b.Scale)
             {
                 return a.Scale > b.Scale;
             }
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -600,11 +744,11 @@ namespace IdleGame.Data.Numeric
 
             return false;
         }
-        
+
         public static bool operator ==(SimpleInt a, SimpleInt b)
         {
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -613,11 +757,11 @@ namespace IdleGame.Data.Numeric
 
             return true;
         }
-        
+
         public static bool operator !=(SimpleInt a, SimpleInt b)
         {
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
-            
+
             for (int i = a.Value.Count - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
@@ -631,7 +775,7 @@ namespace IdleGame.Data.Numeric
         {
             return a < b || a == b;
         }
-        
+
         public static bool operator >=(SimpleInt a, SimpleInt b)
         {
             return a > b || a == b;

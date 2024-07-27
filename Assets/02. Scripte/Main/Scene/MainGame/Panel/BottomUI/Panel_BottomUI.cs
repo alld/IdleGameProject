@@ -1,5 +1,6 @@
 using IdleGame.Core;
 using IdleGame.Core.Popup;
+using IdleGame.Data;
 using IdleGame.Data.Base.BottomPage;
 using UnityEngine;
 
@@ -25,34 +26,28 @@ namespace IdleGame.Main.Scene.Main.UI
         private Base_Popup[] _pages;
 
         /// <summary>
-        /// [상태] 현재 활성화중인 패널의 정보를 나타냅니다. 
-        /// </summary>
-        private eBottomUIPage _currentActivePage = eBottomUIPage.AbilityUpgrade;
-
-
-        /// <summary>
         /// [기능] 하단 UI 버튼에 반응하여 활성화시킬 패널을 변경합니다. 
         /// </summary>
-        public void Logic_ChangeBottomPnael(eBottomUIPage m_changePage)
+        public void Logic_ChangeBottomPnael(eUIPage m_changePage)
         {
             int index = (int)m_changePage;
 
             switch (m_changePage)
             {
-                case eBottomUIPage.AbilityUpgrade:
+                case eUIPage.AbilityUpgrade:
                     if (index != -1)
                         _pages[index].OnClickClose_Base();
                     break;
-                case eBottomUIPage.Character:
-                case eBottomUIPage.Party:
-                case eBottomUIPage.Dungeon:
-                case eBottomUIPage.Mine:
-                case eBottomUIPage.Shop:
-                    if (_currentActivePage == m_changePage && _pages[index].Logic_GetIsShowPopup())
-                        goto case eBottomUIPage.AbilityUpgrade;
+                case eUIPage.Character:
+                case eUIPage.Party:
+                case eUIPage.Dungeon:
+                case eUIPage.Mine:
+                case eUIPage.Shop:
+                    if (Global_Data.Player.currentPage == m_changePage && _pages[index].Logic_GetIsShowPopup())
+                        goto case eUIPage.AbilityUpgrade;
 
-                    if (_currentActivePage != eBottomUIPage.AbilityUpgrade && _pages[(int)_currentActivePage].Logic_GetIsShowPopup())
-                        _pages[(int)_currentActivePage].OnClickClose_Base();
+                    if (Global_Data.Player.currentPage != eUIPage.AbilityUpgrade && _pages[(int)Global_Data.Player.currentPage].Logic_GetIsShowPopup())
+                        _pages[(int)Global_Data.Player.currentPage].OnClickClose_Base();
 
                     _pages[index].OnClickOpen_Base();
                     break;
@@ -60,7 +55,7 @@ namespace IdleGame.Main.Scene.Main.UI
                     break;
             }
 
-            _currentActivePage = m_changePage;
+            Global_Data.Player.currentPage = m_changePage;
         }
 
 
@@ -72,7 +67,7 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void OnClickCharacter()
         {
-            Logic_ChangeBottomPnael(eBottomUIPage.Character);
+            Logic_ChangeBottomPnael(eUIPage.Character);
         }
 
         /// <summary>
@@ -80,7 +75,7 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void OnClickParty()
         {
-            Logic_ChangeBottomPnael(eBottomUIPage.Party);
+            Logic_ChangeBottomPnael(eUIPage.Party);
         }
 
         /// <summary>
@@ -88,7 +83,7 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void OnClickDungeon()
         {
-            Logic_ChangeBottomPnael(eBottomUIPage.Dungeon);
+            Logic_ChangeBottomPnael(eUIPage.Dungeon);
         }
 
         /// <summary>
@@ -96,7 +91,7 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void OnClickMine()
         {
-            Logic_ChangeBottomPnael(eBottomUIPage.Mine);
+            Logic_ChangeBottomPnael(eUIPage.Mine);
         }
 
         /// <summary>
@@ -104,7 +99,7 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void OnClickShop()
         {
-            Logic_ChangeBottomPnael(eBottomUIPage.Shop);
+            Logic_ChangeBottomPnael(eUIPage.Shop);
         }
         #endregion
     }

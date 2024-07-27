@@ -2,6 +2,8 @@ using IdleGame.Core;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
+using IdleGame.Data.Pool;
+using IdleGame.Main.Scene.Main;
 using UnityEngine;
 
 namespace IdleGame.Main.GameLogic
@@ -78,7 +80,7 @@ namespace IdleGame.Main.GameLogic
         public void Logic_NextLevel()
         {
             mainStage.currentWave++;
-            if (mainStage.currentWave > mainStage.maxWave)
+            if (mainStage.currentWave > mainStage.wave_num)
                 Logic_TryNextStage();
 
             Logic_SetLevel(mainStage.currentWave);
@@ -91,7 +93,7 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_MonsterPush()
         {
-            for (int i = 0; i < mainStage.wave_unitCount[0][0]; i++)
+            for (int i = 0; i < mainStage.monster_max[mainStage.currentWave]; i++)
             {
                 //GameObject monster = GameManager.Pool.GetObject();
                 //monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
@@ -104,9 +106,8 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_PlayerSetting()
         {
-            //GameObject player = GameManager.Pool.GetObject();
-            //player.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
-            //player.transform.localPosition = playerStartPos[0];
+            var player = GameManager.Pool.Logic_GetObject(ePoolType.Unit, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            player.transform.localPosition = playerStartPos[0];
         }
 
         /// <summary>
@@ -124,9 +125,9 @@ namespace IdleGame.Main.GameLogic
         public void Logic_TryNextStage()
         {
             mainStage.procedures = eProcedures.Exhaustion;
-            if (mainStage.isMainStory)
+            if (true)
                 GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
-            // todo :: 스테이지 테이블에서 새로운 데이터를 가져옵니다. 
+            //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
             else
                 Logic_ChangeStage();
         }

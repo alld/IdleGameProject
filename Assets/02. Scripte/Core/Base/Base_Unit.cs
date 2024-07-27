@@ -116,16 +116,17 @@ namespace IdleGame.Core.Unit
             // TODO :: 구성 제거, 구성에대한 내용이 확정되어야함.. 그럴려면 유닛 기본 디자인 형태같은게 확정되어야함.
         }
 
+        public override void Pool_Clear()
+        {
+            Logic_RemoveModule();
+        }
+
         /// <summary>
         /// TODO :: 추후 오브젝트 풀이 적용 되었을때 해당 함수 내용을 반영해야함.
         /// </summary>
-        public virtual void Pool_Return()
+        public override void Pool_Return_Base()
         {
-            Debug.Log("내 유닛 : " + this.gameObject);
-            Logic_RemoveModule();
-
-            //Base_Engine.Pool.ReturnObject(this.gameObject);
-            //Base_ObjectPoolManager.Instance.ReleaseObjectParent(this.gameObject);
+            base.Pool_Return_Base();
         }
         #endregion
         #endregion
@@ -301,7 +302,7 @@ namespace IdleGame.Core.Unit
 
             // TODO :: 사망처리를 별도로... 하던가... 딱히 필요 없어보임..
 
-            Pool_Return();
+            Pool_Return_Base();
         }
 
         protected virtual void Logic_Action_Move(Vector3 m_target)
@@ -423,11 +424,6 @@ namespace IdleGame.Core.Unit
         /// [사운드] 사망시 들리는 사운드입니다. 
         /// </summary>
         protected virtual void Sound_Die() { }
-
-        public override void Pool_Clear()
-        {
-            throw new System.NotImplementedException();
-        }
         #endregion
 
         #endregion

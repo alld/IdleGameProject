@@ -92,6 +92,7 @@ namespace IdleGame.Core.Panel.Pool
             /// </summary>
             public void Push(Base_PoolObject m_object)
             {
+                m_object.Pool_Clear();
                 _deActiveList.Push(m_object);
 
                 if (_activeList[m_object.GetPoolIndex] != m_object)
