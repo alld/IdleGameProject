@@ -1,4 +1,5 @@
 using IdleGame.Core.Unit;
+using IdleGame.Main.GameLogic;
 
 namespace IdleGame.Main.Unit
 {
@@ -8,6 +9,33 @@ namespace IdleGame.Main.Unit
     /// </summary>
     public abstract class Controller_AllyUnit : Base_Unit
     {
+        #region 보조 기능
 
+        protected override void Logic_SearchTarget_Base()
+        {
+            Controller_EnemyUnit compareUnit = null;
+
+            if (Panel_StageManager.Unit_Monsters.Count == 0) return;
+            else if (Panel_StageManager.Unit_Monsters.Count == 1)
+                _target = Panel_StageManager.Unit_Monsters[0];
+            else
+            {
+                // 조건 :: 현재 기준, 가장 가까운 유닛을 탐색함.
+                compareUnit = Panel_StageManager.Unit_Monsters[0];
+
+                for (int i = 1; i < Panel_StageManager.Unit_Monsters.Count; i++)
+                {
+                    if (Panel_StageManager.Unit_Monsters[i].transform.position.x >= compareUnit.transform.position.x)
+                        continue;
+
+                    compareUnit = Panel_StageManager.Unit_Monsters[i];
+                }
+
+                _target = compareUnit;
+            }
+
+            base.Logic_SearchTarget_Base();
+        }
+        #endregion
     }
 }

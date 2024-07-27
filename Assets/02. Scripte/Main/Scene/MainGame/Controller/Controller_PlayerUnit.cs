@@ -1,3 +1,6 @@
+using IdleGame.Core.Unit;
+using IdleGame.Main.GameLogic;
+
 namespace IdleGame.Main.Unit
 {
     /// <summary>
@@ -7,5 +10,23 @@ namespace IdleGame.Main.Unit
     public class Controller_PlayerUnit : Controller_AllyUnit
     {
 
+
+
+        #region 생명주기
+        protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
+        {
+            base.Logic_SetModule(m_type, m_index);
+
+            Panel_StageManager.Unit_Player = this;
+        }
+
+        protected override void Logic_RemoveModule()
+        {
+            base.Logic_RemoveModule();
+
+            Panel_StageManager.Unit_Player = null;
+        }
+
+        #endregion
     }
 }

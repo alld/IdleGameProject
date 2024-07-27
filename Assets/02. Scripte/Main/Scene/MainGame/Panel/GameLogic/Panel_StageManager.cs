@@ -5,6 +5,8 @@ using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Pool;
 using IdleGame.Main.Scene.Main;
+using IdleGame.Main.Unit;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IdleGame.Main.GameLogic
@@ -46,6 +48,15 @@ namespace IdleGame.Main.GameLogic
         [SerializeField]
         private Vector3 enemyAppearPos;
 
+        /// <summary>
+        /// [캐시] 현재 게임중인 플레이어 유닛입니다.
+        /// </summary>
+        public static Controller_PlayerUnit Unit_Player;
+
+        /// <summary>
+        /// [캐시] 스테이지에 등장한 몬스터 수입니다.
+        /// </summary>
+        public static List<Controller_EnemyUnit> Unit_Monsters = new List<Controller_EnemyUnit>();
 
         /// <summary>
         /// [설정] 새로운 스테이지 정보를 설정합니다. 
@@ -80,6 +91,7 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         public void Logic_NextLevel()
         {
+            Unit_Monsters.Clear();
             mainStage.currentWave++;
             Global_Data.PlayProgress.stage_curWave = mainStage.currentWave;
 

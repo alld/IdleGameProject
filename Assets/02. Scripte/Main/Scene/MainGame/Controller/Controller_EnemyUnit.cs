@@ -1,4 +1,5 @@
 using IdleGame.Core.Unit;
+using IdleGame.Main.GameLogic;
 
 namespace IdleGame.Main.Unit
 {
@@ -9,5 +10,31 @@ namespace IdleGame.Main.Unit
     public abstract class Controller_EnemyUnit : Base_Unit
     {
 
+        #region 생명주기
+        protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
+        {
+            base.Logic_SetModule(m_type, m_index);
+
+            Panel_StageManager.Unit_Monsters.Add(this);
+        }
+
+        protected override void Logic_RemoveModule()
+        {
+            base.Logic_RemoveModule();
+
+            Panel_StageManager.Unit_Monsters.Remove(this);
+        }
+
+        #endregion
+
+        #region 보조 기능
+
+        protected override void Logic_SearchTarget_Base()
+        {
+            _target = Panel_StageManager.Unit_Player;
+
+            base.Logic_SearchTarget_Base();
+        }
+        #endregion
     }
 }
