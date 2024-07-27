@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &196596741528871932
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 158565655084795823}
-  m_Layer: 0
-  m_Name: Parent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &158565655084795823
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196596741528871932}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8529101949119286703}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &614408955337121159
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,8 +1062,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8529101949119286703}
-  - component: {fileID: 8761560222299827365}
-  - component: {fileID: 7423088286522792552}
+  - component: {fileID: 2498501904729724380}
   m_Layer: 0
   m_Name: Panel_ObjectPool
   m_TagString: Untagged
@@ -1114,11 +1082,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 158565655084795823}
+  m_Children: []
   m_Father: {fileID: 6243778832215002781}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8761560222299827365
+--- !u!114 &2498501904729724380
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1127,29 +1094,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 3590276853285326446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89084a5c98c65db48a94d6ff855a1206, type: 3}
+  m_Script: {fileID: 11500000, guid: bfd2117f701426a41af629b81266c76c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _tag:
-    tag: 
-    type: 0
+    tag: PanelPoolManager
+    type: 1
     procedure: 0
---- !u!114 &7423088286522792552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3590276853285326446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47067fdccfbfaec439375bdd5824557c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  initialPoolSize: 5
-  betweenPoolSize: 5
-  respawnZone: {x: 0, y: 0, z: 0}
+  registerPoolList:
+  - type: 1
+    prefab: {fileID: 3750936732375420864, guid: 2022633df9338c64b8ccff392e9e0105, type: 3}
+    poolSize: 1
+  - type: 2
+    prefab: {fileID: 4405448734430012091, guid: 733a6c9143a18b049be92fc00fa28c84, type: 3}
+    poolSize: 5
+  - type: 3
+    prefab: {fileID: 2768999317100617185, guid: 86f01480518697d448032b5b6e355cbc, type: 3}
+    poolSize: 0
 --- !u!1 &3652599538589278691
 GameObject:
   m_ObjectHideFlags: 0

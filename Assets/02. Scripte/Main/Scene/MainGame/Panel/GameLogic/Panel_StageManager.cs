@@ -2,6 +2,7 @@ using IdleGame.Core;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Pool;
 using IdleGame.Main.Scene.Main;
 using UnityEngine;
@@ -80,6 +81,8 @@ namespace IdleGame.Main.GameLogic
         public void Logic_NextLevel()
         {
             mainStage.currentWave++;
+            Global_Data.PlayProgress.stage_curWave = mainStage.currentWave;
+
             if (mainStage.currentWave > mainStage.wave_num)
                 Logic_TryNextStage();
 
@@ -95,9 +98,9 @@ namespace IdleGame.Main.GameLogic
         {
             for (int i = 0; i < mainStage.monster_max[mainStage.currentWave]; i++)
             {
-                //GameObject monster = GameManager.Pool.GetObject();
-                //monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
-                //monster.transform.localPosition = enemyStartPos;
+                var monster = GameManager.Pool.Logic_GetObject(ePoolType.Enemy, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
+                monster.transform.localPosition = enemyStartPos;
+                monster.gameObject.SetActive(true);
             }
         }
 
@@ -106,8 +109,9 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_PlayerSetting()
         {
-            var player = GameManager.Pool.Logic_GetObject(ePoolType.Unit, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
             player.transform.localPosition = playerStartPos[0];
+            player.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -125,9 +129,23 @@ namespace IdleGame.Main.GameLogic
         public void Logic_TryNextStage()
         {
             mainStage.procedures = eProcedures.Exhaustion;
-            if (true)
-                GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
-            //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
+            if (true) // 메인 스테이지인지를 판단함, 아닌 경우 ChangeStage를 진행해서 메인스테이지로 전환을 시도함
+            {
+                if (Library_DataTable.stage.ContainsKey(Global_Data.PlayProgress.stage_curIndex))
+                {
+                    Global_Data.PlayProgress.stage_curWave = 0;
+                    Global_Data.PlayProgress.stage_curIndex++;
+
+                    Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+
+                    GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
+                    //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
+                }
+                else
+                {
+                    //todo :: 더이상 진행할 스테이지가 존재하지않는 경우 처리...
+                }
+            }
             else
                 Logic_ChangeStage();
         }
@@ -172,6 +190,7 @@ namespace IdleGame.Main.GameLogic
         public void Logic_StageStart()
         {
             // TODO 임시..
+            mainStage.currentWave--;
             Logic_NextLevel();
         }
     }
