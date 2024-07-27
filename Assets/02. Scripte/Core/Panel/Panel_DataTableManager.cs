@@ -130,6 +130,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.wave_num, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_effect, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.story, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.story_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.background_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_num, dataSegment[index++]);

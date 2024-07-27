@@ -33,6 +33,11 @@ namespace IdleGame.Data
         public bool story = false;
 
         /// <summary>
+        /// [데이터] 스토리에 해당하는 아이디입니다.. 
+        /// </summary>
+        public int story_id = -1;
+
+        /// <summary>
         /// [데이터] 스테이지 진행시 적용되는 배경 id입니다. 
         /// </summary>
         public int background_id = 0;
