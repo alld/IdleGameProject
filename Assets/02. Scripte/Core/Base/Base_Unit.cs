@@ -151,18 +151,21 @@ namespace IdleGame.Core.Unit
             // TODO :: 여러 데이터 기반으로 판단을함.
         }
 
+
+        /// <summary>
+        /// [기능] 유닛이 등장할때 이루어지는 행동을 정의합니다.
+        /// </summary>
+        public virtual void Logic_Act_Appear()
+        {
+            Logic_SetAction(eUnitState.Appear);
+        }
+
         /// <summary>
         /// [기능] 유닛이 대기 상태일때의 행동을 정의합니다.
         /// </summary>
         public virtual void Logic_Act_Stay()
         {
-            Coroutine prevAction = null;
-            if (_stateAction != null)
-                prevAction = _stateAction;
-
-            _stateAction = StartCoroutine(Logic_Action_Idle());
-
-            StopCoroutine(prevAction);
+            Logic_SetAction(eUnitState.Idle);
         }
 
         /// <summary>
@@ -173,6 +176,8 @@ namespace IdleGame.Core.Unit
             if (_target == null) Logic_SearchTarget_Base();
 
             Logic_ChangeState(eUnitState.Move, eUnitState.Attack);
+
+            StartCoroutine(Logic_OperatorAct());
         }
 
         /// <summary>
@@ -180,7 +185,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public virtual void Logic_Act_Die()
         {
-            Logic_Action_Die();
+            Logic_SetAction(eUnitState.Die);
         }
 
         /// <summary>
@@ -191,7 +196,10 @@ namespace IdleGame.Core.Unit
         {
             // TODO 데미지 엔진에서 계산을 한번 때림 결과값을 보고 체력이 남으면 피격 연출, 있으면 다음 행동은 사망처리
             if (0 > 0)
+            {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);
+                StartCoroutine(Logic_OperatorAct());
+            }
 
             Logic_Action_Attacked();
         }
