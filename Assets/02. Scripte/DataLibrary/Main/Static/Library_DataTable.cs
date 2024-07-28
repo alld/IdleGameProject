@@ -15,11 +15,21 @@ namespace IdleGame.Data.DataTable
         /// <summary>
         /// [데이터] 데이터 테이블의 총 갯수를 나타냅니다. 
         /// </summary>
-        public const int DataTableCount = 4;
+        public const int DataTableCount = 6;
 
         /// <summary>
         /// [데이터] 스테이지에대한 모든 정보를 담고 있습니다. 인덱스로 스테이지를 찾을 수 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Stage> stage = new Dictionary<int, Data_Stage>();
+
+        /// <summary>
+        /// [데이터[ 몬스터에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<int, Data_Monster> monster = new Dictionary<int, Data_Monster>();
+
+        /// <summary>
+        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<int, Data_Quest> quest = new Dictionary<int, Data_Quest>();
     }
 }
