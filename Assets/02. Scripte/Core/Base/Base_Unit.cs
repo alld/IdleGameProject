@@ -10,7 +10,7 @@ namespace IdleGame.Core.Unit
     /// [기능] 유닛의 가장 기본적인 구성들을 담고 있습니다. 
     /// <br> 유니티내에서 관리되는 참조리스트에서 유닛들의 할당을 최소화하기 위해서 유니티 콜백함수를 사용하지않습니다. </br>
     /// </summary>
-    public class Base_Unit : Base_PoolObject
+    public abstract class Base_Unit : Base_PoolObject
     {
         /// <summary>
         /// [캐시] 유닛이 공통적으로 사용되어지는 여러 구성요소들을 포함하고 있습니다.
@@ -148,9 +148,18 @@ namespace IdleGame.Core.Unit
                 yield break;
             }
 
-            // TODO :: 여러 데이터 기반으로 판단을함.
+            Logic_JudgmentAction_Custom();
         }
 
+        /// <summary>
+        /// [기능] 다음 행동할 행동들을 판단하여 명령합니다. 
+        /// </summary>
+        public virtual void Logic_JudgmentAction_Custom()
+        {
+            // TODO :: 임시 정의. 상속하여 처리하도록 
+
+            Logic_Act_AttackMove();
+        }
 
         /// <summary>
         /// [기능] 유닛이 등장할때 이루어지는 행동을 정의합니다.
@@ -177,7 +186,7 @@ namespace IdleGame.Core.Unit
 
             Logic_ChangeState(eUnitState.Move, eUnitState.Attack);
 
-            StartCoroutine(Logic_OperatorAct());
+            Logic_Action_Move();
         }
 
         /// <summary>
@@ -255,6 +264,7 @@ namespace IdleGame.Core.Unit
             Sound_Appear();
             yield return new WaitForSeconds(2f);
 
+            Logic_ChangeState(eUnitState.None);
             StartCoroutine(Logic_OperatorAct());
         }
 
@@ -350,6 +360,9 @@ namespace IdleGame.Core.Unit
         {
             // TODO :: 상속된 곳에서 알맞게 대상을 써치해야함. (적은 플레이어를, 플레이어와 동료는 (기획미정) 가깝던,, 우선도가 있던.. 적을 타겟팅함)
             _target._onBroadcastDie += Logic_TargetClear_Base;
+
+            // TODO 유닛의 사거리 요소 포함// 동료및 플레이어 유닛은 이동하지않기때문에 무브포인트를 계산하지않음.
+            _dd.target_movePoint = _target.transform.position;
         }
 
         /// <summary>
@@ -357,11 +370,13 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_TargetClear_Base()
         {
-            _target._onBroadcastDie -= Logic_TargetClear_Base;
-            _target = null;
+            if (_target != null)
+            {
+                _target._onBroadcastDie -= Logic_TargetClear_Base;
+                _target = null;
+            }
 
             Logic_StopAction();
-            StartCoroutine(Logic_OperatorAct());
         }
 
         /// <summary>
@@ -369,6 +384,9 @@ namespace IdleGame.Core.Unit
         /// </summary>
         private void Logic_StopAction()
         {
+            if (_stateAction == null)
+                return;
+
             StopCoroutine(_stateAction);
             _stateAction = null;
         }

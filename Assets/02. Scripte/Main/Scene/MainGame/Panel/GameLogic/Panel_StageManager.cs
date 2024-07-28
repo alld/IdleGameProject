@@ -1,4 +1,5 @@
 using IdleGame.Core;
+using IdleGame.Core.Unit;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
@@ -6,6 +7,7 @@ using IdleGame.Data.DataTable;
 using IdleGame.Data.Pool;
 using IdleGame.Main.Scene.Main;
 using IdleGame.Main.Unit;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -113,6 +115,7 @@ namespace IdleGame.Main.GameLogic
                 var monster = GameManager.Pool.Logic_GetObject(ePoolType.Enemy, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
                 monster.transform.localPosition = enemyStartPos;
                 monster.gameObject.SetActive(true);
+                (monster as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Enemy, mainStage.monster_id[0]));
             }
         }
 
@@ -124,6 +127,7 @@ namespace IdleGame.Main.GameLogic
             var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
             player.transform.localPosition = playerStartPos[0];
             player.gameObject.SetActive(true);
+            (player as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Player, 0));
         }
 
         /// <summary>
@@ -204,6 +208,19 @@ namespace IdleGame.Main.GameLogic
             // TODO 임시..
             mainStage.currentWave--;
             Logic_NextLevel();
+
+            StartCoroutine(Logic_TempAppear());
+        }
+
+        private IEnumerator Logic_TempAppear()
+        {
+            yield return null;
+
+            Unit_Player.Logic_Act_Appear();
+            for (int i = 0; i < Unit_Monsters.Count; i++)
+            {
+                Unit_Monsters[i].Logic_Act_Appear();
+            }
         }
     }
 }
