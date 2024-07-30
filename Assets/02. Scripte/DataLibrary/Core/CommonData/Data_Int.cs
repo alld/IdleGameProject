@@ -1,3 +1,4 @@
+using DG.DemiEditor;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -509,6 +510,9 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         public static int Convert_CharToScale(string m_value)
         {
+            if (m_value.IsNullOrEmpty())
+                return 0;
+
             m_value = m_value.ToUpper();
 
             int changeNumber = 0;
@@ -524,6 +528,21 @@ namespace IdleGame.Data.Numeric
             }
 
             return changeNumber;
+        }
+
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
@@ -839,6 +858,20 @@ namespace IdleGame.Data.Numeric
         public static bool operator >=(SimpleInt a, SimpleInt b)
         {
             return a > b || a == b;
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
         }
     }
 }
