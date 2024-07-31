@@ -16,7 +16,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [상태] 현재 진행중인 메인 스테이지의 고유 인덱스입니다.
         /// </summary>
-        public int stage_curIndex = 0;
+        public int stage_curIndex = 1001;
 
         /// <summary>
         /// [상태] 현재 진행중인 메인 스테이지의 웨이브 단계입니다.

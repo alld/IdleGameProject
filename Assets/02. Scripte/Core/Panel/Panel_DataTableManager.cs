@@ -137,6 +137,7 @@ namespace IdleGame.Core.Panel.DataTable
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.next_stage, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.wave_num, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_effect, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.story, dataSegment[index++]);
@@ -148,7 +149,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.boss_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.boss_battletime, dataSegment[index++]);
 
-                Library_DataTable.stage.Add(parsingData.index, parsingData);
+                Library_DataTable.stage.Add(parsingData.stage_id, parsingData);
             }
         }
 
@@ -166,8 +167,21 @@ namespace IdleGame.Core.Panel.DataTable
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_name, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_type, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.mon_max_hp, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.mon_attack, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_skill, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.experience_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.gold_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.colleague_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.proprty, dataSegment[index++]);
 
-                Library_DataTable.monster.Add(parsingData.index, parsingData);
+                Library_DataTable.monster.Add(parsingData.monster_id, parsingData);
             }
         }
 

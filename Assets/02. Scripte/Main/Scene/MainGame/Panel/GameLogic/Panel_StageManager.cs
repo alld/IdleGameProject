@@ -150,7 +150,7 @@ namespace IdleGame.Main.GameLogic
                 if (Library_DataTable.stage.ContainsKey(Global_Data.PlayProgress.stage_curIndex))
                 {
                     Global_Data.PlayProgress.stage_curWave = 0;
-                    Global_Data.PlayProgress.stage_curIndex++;
+                    Global_Data.PlayProgress.stage_curIndex = mainStage.next_stage;
 
                     Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
 

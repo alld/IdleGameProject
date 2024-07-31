@@ -18,6 +18,11 @@ namespace IdleGame.Data
         public int stage_id = -1;
 
         /// <summary>
+        /// [데이터] 스테이지가 끝난 이후 다음 스테이지로 넘어가는 인덱스입니다.
+        /// </summary>
+        public int next_stage = -1;
+
+        /// <summary>
         /// [데이터] 스테이지에 구성된 웨이브 갯수를 나타냅니다. 
         /// </summary>
         public int wave_num = 0;
@@ -33,7 +38,7 @@ namespace IdleGame.Data
         public bool story = false;
 
         /// <summary>
-        /// [데이터] 스토리에 해당하는 아이디입니다.. 
+        /// [데이터] 스토리에 해당하는 아이디입니다.
         /// </summary>
         public int story_id = -1;
 
