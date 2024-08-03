@@ -1,5 +1,6 @@
 using IdleGame.Core.Unit;
 using IdleGame.Main.GameLogic;
+using UnityEngine;
 
 namespace IdleGame.Main.Unit
 {
@@ -32,6 +33,8 @@ namespace IdleGame.Main.Unit
         protected override void Logic_SearchTarget_Base()
         {
             _target = Panel_StageManager.Unit_Player;
+
+            _dd.target_movePoint = new Vector3(_target.transform.position.x + ability.attackRange, _target.transform.position.y);
 
             base.Logic_SearchTarget_Base();
         }

@@ -1,0 +1,25 @@
+using IdleGame.Data;
+
+namespace IdleGame.Core.Unit
+{
+    /// <summary>
+    /// [데이터] 유닛의 기본 스텟 구조를 정의합니다. 
+    /// </summary>
+    public struct Data_UnitAbility
+    {
+        /// <summary>
+        /// [데이터] 유닛의 공격 사거리입니다. 
+        /// </summary>
+        public float attackRange;
+
+        public static explicit operator Data_UnitAbility(Data_Monster m_data) => new Data_UnitAbility(m_data);
+
+        /// <summary>
+        /// [생성자] 몬스터 데이터를 기본형으로 변환시킵니다.
+        /// </summary>
+        public Data_UnitAbility(Data_Monster m_data)
+        {
+            attackRange = m_data.attack_range;
+        }
+    }
+}

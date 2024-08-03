@@ -19,6 +19,11 @@ namespace IdleGame.Core.Unit
         protected Data_UnitComponent _componenet;
 
         /// <summary>
+        /// [데이터] 유닛의 기본 능력치를 나타냅니다. 
+        /// </summary>
+        public Data_UnitAbility ability;
+
+        /// <summary>
         /// [데이터] 유닛이 판단하는데 필요한 기본 정보들을 담습니다. 
         /// </summary>
         protected Data_UnitDynamicData _dd;
@@ -340,6 +345,7 @@ namespace IdleGame.Core.Unit
             float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * temp_speed;
 
             transform.DOMove(_dd.target_movePoint, moveTime)
+                .SetEase(Ease.Linear)
                 .OnComplete(
                 () =>
                 {
@@ -361,8 +367,7 @@ namespace IdleGame.Core.Unit
             // TODO :: 상속된 곳에서 알맞게 대상을 써치해야함. (적은 플레이어를, 플레이어와 동료는 (기획미정) 가깝던,, 우선도가 있던.. 적을 타겟팅함)
             _target._onBroadcastDie += Logic_TargetClear_Base;
 
-            // TODO 유닛의 사거리 요소 포함// 동료및 플레이어 유닛은 이동하지않기때문에 무브포인트를 계산하지않음.
-            _dd.target_movePoint = _target.transform.position;
+
         }
 
         /// <summary>

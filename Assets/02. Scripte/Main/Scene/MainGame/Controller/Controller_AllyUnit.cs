@@ -14,6 +14,7 @@ namespace IdleGame.Main.Unit
         protected override void Logic_SearchTarget_Base()
         {
             Controller_EnemyUnit compareUnit = null;
+            _dd.target_movePoint = transform.position;
 
             if (Panel_StageManager.Unit_Monsters.Count == 0) return;
             else if (Panel_StageManager.Unit_Monsters.Count == 1)
