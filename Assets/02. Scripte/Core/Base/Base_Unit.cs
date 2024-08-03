@@ -1,6 +1,7 @@
 using DG.Tweening;
 using IdleGame.Core.Pool;
 using IdleGame.Data.Base;
+using IdleGame.Data.Numeric;
 using System.Collections;
 using UnityEngine;
 
@@ -58,9 +59,9 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public void Logic_Init(Data_UnitType m_type)
         {
-            Logic_SetModule(m_type.type, m_type.index);
-
             Logic_Init();
+
+            Logic_SetModule(m_type.type, m_type.index);
         }
 
         /// <summary>
@@ -163,7 +164,9 @@ namespace IdleGame.Core.Unit
         {
             // TODO :: 임시 정의. 상속하여 처리하도록 
 
-            Logic_Act_AttackMove();
+            if (_target == null)
+
+                Logic_Act_AttackMove();
         }
 
         /// <summary>
@@ -187,7 +190,12 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public virtual void Logic_Act_AttackMove()
         {
-            if (_target == null) Logic_SearchTarget_Base();
+            if (_target == null)
+                if (!Logic_SearchTarget_Base())
+                {
+                    Logic_SetAction(eUnitState.Idle);
+                    return;
+                }
 
             Logic_ChangeState(eUnitState.Move, eUnitState.Attack);
 
@@ -206,13 +214,14 @@ namespace IdleGame.Core.Unit
         /// [기능] 공격받는 행위가 들어오면 피격에대한 동작을 취합니다.
         /// <br> TODO :: 매개변수로 피해량을 넘겨받아서 처리합니다. </br>
         /// </summary>
-        public virtual void Logic_Act_Damaged()
+        public virtual void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
+            ability.hp -= m_damage;
+
             // TODO 데미지 엔진에서 계산을 한번 때림 결과값을 보고 체력이 남으면 피격 연출, 있으면 다음 행동은 사망처리
-            if (0 > 0)
+            if (ability.hp <= 0)
             {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);
-                StartCoroutine(Logic_OperatorAct());
             }
 
             Logic_Action_Attacked();
@@ -281,7 +290,10 @@ namespace IdleGame.Core.Unit
         protected virtual IEnumerator Logic_Action_Idle(float m_delayTime = 0)
         {
             transform.DOKill();
+            Logic_StopAction();
             Logic_ChangeState(eUnitState.Idle, m_delayTime == 0 ? eUnitState.None : _state.cur);
+
+            if (m_delayTime == 0) yield break;
 
             yield return new WaitForSeconds(m_delayTime);
 
@@ -292,9 +304,12 @@ namespace IdleGame.Core.Unit
         {
             Sound_Damaged();
             // TODO 피격 연출 
-
-            if (_state.next == eUnitState.Die)
+            if (isDie || _state.next == eUnitState.Die)
+            {
                 StartCoroutine(Logic_OperatorAct());
+                Debug.Log("사망 확인");
+                return;
+            }
         }
 
         protected IEnumerator Logic_Action_Attack()
@@ -305,7 +320,7 @@ namespace IdleGame.Core.Unit
             while (true)
             {
                 // TODO 피해량을 한번 계산해서 매개변수로 넘깁니다.
-                _target.Logic_Act_Damaged();
+                _target.Logic_Act_Damaged(this, ability.damage);
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
@@ -362,12 +377,11 @@ namespace IdleGame.Core.Unit
         /// <summary>
         /// [기능] 현재 타겟을 찾지 못한 경우 대상을 물색합니다. 
         /// </summary>
-        protected virtual void Logic_SearchTarget_Base()
+        protected virtual bool Logic_SearchTarget_Base()
         {
-            // TODO :: 상속된 곳에서 알맞게 대상을 써치해야함. (적은 플레이어를, 플레이어와 동료는 (기획미정) 가깝던,, 우선도가 있던.. 적을 타겟팅함)
-            _target._onBroadcastDie += Logic_TargetClear_Base;
+            _target._onBroadcastDie += Logic_ReTryTargetClear_Base;
 
-
+            return _target != null;
         }
 
         /// <summary>
@@ -377,11 +391,26 @@ namespace IdleGame.Core.Unit
         {
             if (_target != null)
             {
-                _target._onBroadcastDie -= Logic_TargetClear_Base;
+                _target._onBroadcastDie -= Logic_ReTryTargetClear_Base;
                 _target = null;
             }
 
             Logic_StopAction();
+        }
+
+        /// <summary>
+        /// [초기화] 기존 타겟을 정리한 이후에, 새로운 행동을 찾습니다. 
+        /// </summary>
+        protected virtual void Logic_ReTryTargetClear_Base()
+        {
+            Logic_TargetClear_Base();
+
+            if (_state.cur == eUnitState.Die)
+                return;
+
+
+            Logic_ChangeState(eUnitState.Clear);
+            StartCoroutine(Logic_OperatorAct());
         }
 
         /// <summary>

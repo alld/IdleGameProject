@@ -103,6 +103,7 @@ namespace IdleGame.Core.Panel.Pool
                 _activeList.RemoveAt(m_object.GetPoolIndex);
                 m_object.Pool_SetPoolData(ePoolType.None);
                 m_object.gameObject.SetActive(false);
+                m_object.transform.SetParent(_parent);
             }
 
             /// <summary>

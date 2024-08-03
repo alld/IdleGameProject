@@ -1,4 +1,5 @@
 using IdleGame.Data;
+using IdleGame.Data.Numeric;
 
 namespace IdleGame.Core.Unit
 {
@@ -7,6 +8,17 @@ namespace IdleGame.Core.Unit
     /// </summary>
     public struct Data_UnitAbility
     {
+        /// <summary>
+        /// [데이터] 현재 체력
+        /// </summary>
+        public ExactInt hp;
+
+        /// <summary>
+        /// [데이터] 피해량
+        /// </summary>
+        public ExactInt damage;
+
+
         /// <summary>
         /// [데이터] 유닛의 공격 사거리입니다. 
         /// </summary>
@@ -20,6 +32,8 @@ namespace IdleGame.Core.Unit
         public Data_UnitAbility(Data_Monster m_data)
         {
             attackRange = m_data.attack_range;
+            hp = (ExactInt)m_data.mon_max_hp;
+            damage = (ExactInt)m_data.mon_attack;
         }
     }
 }

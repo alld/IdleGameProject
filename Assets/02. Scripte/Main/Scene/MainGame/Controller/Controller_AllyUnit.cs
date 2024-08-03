@@ -1,5 +1,7 @@
 using IdleGame.Core.Unit;
+using IdleGame.Data.Numeric;
 using IdleGame.Main.GameLogic;
+using UnityEngine;
 
 namespace IdleGame.Main.Unit
 {
@@ -9,23 +11,52 @@ namespace IdleGame.Main.Unit
     /// </summary>
     public abstract class Controller_AllyUnit : Base_Unit
     {
+        protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
+        {
+            base.Logic_SetModule(m_type, m_index);
+
+            _dd.attackDelay = new WaitForSeconds(1f);
+
+            ability = new Data_UnitAbility()
+            {
+                attackRange = 1,
+                damage = new ExactInt(10),
+                hp = new ExactInt(1000),
+            };
+        }
+
         #region 보조 기능
 
-        protected override void Logic_SearchTarget_Base()
+        protected override bool Logic_SearchTarget_Base()
         {
             Controller_EnemyUnit compareUnit = null;
             _dd.target_movePoint = transform.position;
 
-            if (Panel_StageManager.Unit_Monsters.Count == 0) return;
+            if (Panel_StageManager.Unit_Monsters.Count == 0) return false;
             else if (Panel_StageManager.Unit_Monsters.Count == 1)
+            {
+                if (Panel_StageManager.Unit_Monsters[0].isDie)
+                {
+                    Logic_SetAction(eUnitState.Idle);
+                    return false;
+                }
                 _target = Panel_StageManager.Unit_Monsters[0];
+            }
             else
             {
                 // 조건 :: 현재 기준, 가장 가까운 유닛을 탐색함.
-                compareUnit = Panel_StageManager.Unit_Monsters[0];
 
-                for (int i = 1; i < Panel_StageManager.Unit_Monsters.Count; i++)
+                for (int i = 0; i < Panel_StageManager.Unit_Monsters.Count; i++)
                 {
+                    if (Panel_StageManager.Unit_Monsters[i].isDie)
+                        continue;
+
+                    if (_target == null)
+                    {
+                        compareUnit = Panel_StageManager.Unit_Monsters[i];
+                        continue;
+                    }
+
                     if (Panel_StageManager.Unit_Monsters[i].transform.position.x >= compareUnit.transform.position.x)
                         continue;
 
@@ -33,9 +64,15 @@ namespace IdleGame.Main.Unit
                 }
 
                 _target = compareUnit;
+
+                if (_target == null)
+                {
+                    Logic_SetAction(eUnitState.Idle);
+                    return false;
+                }
             }
 
-            base.Logic_SearchTarget_Base();
+            return base.Logic_SearchTarget_Base();
         }
         #endregion
     }

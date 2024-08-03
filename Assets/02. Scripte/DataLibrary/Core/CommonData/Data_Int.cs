@@ -204,6 +204,9 @@ namespace IdleGame.Data.Numeric
         }
 
 
+        public static explicit operator ExactInt(int b) => new ExactInt(b);
+        public static explicit operator ExactInt(long b) => new ExactInt(b);
+
         public static ExactInt operator +(ExactInt a, ExactInt b)
         {
             if (a.IsPositive != b.IsPositive)
@@ -484,9 +487,37 @@ namespace IdleGame.Data.Numeric
             return a < b || a == b;
         }
 
+        public static bool operator <=(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a <= num_b;
+        }
+
+        public static bool operator <=(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a <= num_b;
+        }
+
         public static bool operator >=(ExactInt a, ExactInt b)
         {
             return a > b || a == b;
+        }
+
+        public static bool operator >=(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a >= num_b;
+        }
+
+        public static bool operator >=(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a >= num_b;
         }
 
         public static ExactInt Parse(string m_value)

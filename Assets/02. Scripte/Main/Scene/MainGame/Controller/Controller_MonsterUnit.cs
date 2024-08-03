@@ -13,8 +13,6 @@ namespace IdleGame.Main.Unit
             base.Logic_SetModule(m_type, m_index);
 
             ability = (Data_UnitAbility)Library_DataTable.monster[m_index];
-
-            UnityEngine.Debug.Log("Ss");
         }
     }
 }

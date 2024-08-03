@@ -11,7 +11,6 @@ namespace IdleGame.Main.Unit
     {
 
 
-
         #region 생명주기
         protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
         {
