@@ -77,7 +77,7 @@ namespace IdleGame.Main
 
             //------ 임시 -------//
 
-            Library_DataTable.stage[Global_Data.PlayProgress.stage_curWave].currentWave = Global_Data.PlayProgress.stage_curWave;
+            Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex].currentWave = Global_Data.PlayProgress.stage_curWave;
             _stage.Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
             _stage.Logic_StageStart();
 

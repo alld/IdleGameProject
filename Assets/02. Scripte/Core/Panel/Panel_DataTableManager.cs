@@ -190,7 +190,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_QuestTable(string[] m_dataArray)
         {
-            Library_DataTable.stage.Clear();
+            Library_DataTable.quest.Clear();
 
             for (int i = 0; i < m_dataArray.Length; i++)
             {
