@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4899552197331160162}
   - component: {fileID: 534394663135488260}
+  - component: {fileID: 6582423273962080136}
   - component: {fileID: 6080089478097488984}
   m_Layer: 0
   m_Name: T_CurrentGold
@@ -45,6 +46,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 11227498107846081}
   m_CullTransparentMesh: 1
+--- !u!114 &6582423273962080136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11227498107846081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbec989a052e78644847f1737bf73da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  t_text: {fileID: 6080089478097488984}
+  kind_base: 0
+  kind_basic_index: -1
 --- !u!114 &6080089478097488984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2973,6 +2989,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1484627017029010494}
+  - component: {fileID: 792123935261118895}
   m_Layer: 0
   m_Name: Gold
   m_TagString: Untagged
@@ -3000,6 +3017,24 @@ RectTransform:
   m_AnchoredPosition: {x: -63.321, y: 0}
   m_SizeDelta: {x: 223.4, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &792123935261118895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6307607491648235178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2efcfdcb97c0a8e41a3da11f5d0aa478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rect: {fileID: 1484627017029010494}
+  _dc:
+    t_display: {fileID: 6582423273962080136}
+    type: 1
+    obj_box: {fileID: 7682279804319295304}
+    endPoint: {x: 0, y: 0, z: 0}
 --- !u!1 &7111880809943945773
 GameObject:
   m_ObjectHideFlags: 0

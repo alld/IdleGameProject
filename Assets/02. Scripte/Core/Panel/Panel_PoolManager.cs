@@ -51,21 +51,23 @@ namespace IdleGame.Core.Panel.Pool
             /// <summary>
             /// [생성자] 기본형을 구성합니다.
             /// </summary>
-            public Data_Pool(ePoolType m_type, Base_PoolObject m_prefab)
+            public Data_Pool(ePoolType m_type, Base_PoolObject m_prefab, Transform m_trans)
             {
                 _type = m_type;
                 _prefab = m_prefab;
-                _parent = Base_Engine.Pool.transform;
+                _parent = m_trans;
+                m_trans.SetParent(Base_Engine.Pool.transform);
             }
 
             /// <summary>
             /// [생성자] 기본형을 구성합니다.
             /// </summary>
-            public Data_Pool(ePoolType m_type, Base_PoolObject m_prefab, int m_size)
+            public Data_Pool(ePoolType m_type, Base_PoolObject m_prefab, Transform m_trans, int m_size)
             {
                 _type = m_type;
                 _prefab = m_prefab;
-                _parent = Base_Engine.Pool.transform;
+                _parent = m_trans;
+                m_trans.SetParent(Base_Engine.Pool.transform);
                 sizeUpRange = m_size;
             }
 
@@ -74,7 +76,7 @@ namespace IdleGame.Core.Panel.Pool
             /// </summary>
             public void Init()
             {
-                int initSize = sizeUpRange * 10;
+                int initSize = sizeUpRange == 1 ? 1 : sizeUpRange * 10;
 
                 Recall();
 
@@ -101,6 +103,7 @@ namespace IdleGame.Core.Panel.Pool
                 _activeList.RemoveAt(m_object.GetPoolIndex);
                 m_object.Pool_SetPoolData(ePoolType.None);
                 m_object.gameObject.SetActive(false);
+                m_object.transform.SetParent(_parent);
             }
 
             /// <summary>
@@ -119,7 +122,7 @@ namespace IdleGame.Core.Panel.Pool
             /// </summary>
             private bool TryAutoSizeUp()
             {
-                if (autoLock) return false;
+                if (autoLock) return _deActiveList.Count != 0;
                 if (_deActiveList.Count > 3) return true;
 
                 for (int i = 0; i < sizeUpRange; i++)
@@ -176,17 +179,62 @@ namespace IdleGame.Core.Panel.Pool
             }
         }
 
+        /// <summary>
+        /// [데이터] 풀에 등록시키기 위한 기본 데이터 구조입니다.
+        /// </summary>
+        [System.Serializable]
+        private struct Data_PoolType
+        {
+            /// <summary>
+            /// [캐시] 풀에 적용되는 타입 종류입니다.
+            /// </summary>
+            public ePoolType type;
+
+            /// <summary>
+            /// [캐시] 풀에 적용되는 프리팹입니다.
+            /// </summary>
+            public Base_PoolObject prefab;
+
+            /// <summary>
+            /// [캐시] 한번에 생성되는 풀 사이즈입니다.
+            /// </summary>
+            public int poolSize;
+        }
+
+        /// <summary>
+        /// [캐시] 실제 적용된 풀리스트입니다. 
+        /// </summary>
         private Dictionary<ePoolType, Data_Pool> poolList = new Dictionary<ePoolType, Data_Pool>();
+
+        /// <summary>
+        /// [데이터] 풀리스트에 등록 할 데이터 정보입니다.
+        /// </summary>
+        [SerializeField]
+        private Data_PoolType[] registerPoolList;
+
+
+        protected override void Logic_Init_Custom()
+        {
+            for (int i = 0; i < registerPoolList.Length; i++)
+            {
+                Logic_RegisterPool(registerPoolList[i].type, registerPoolList[i].prefab, registerPoolList[i].poolSize);
+            }
+
+            poolList[ePoolType.Player].autoLock = true;
+        }
 
         /// <summary>
         /// [기능] 새로운 풀을 등록시킵니다.
         /// </summary>
-        private void Logic_RegisterPool(ePoolType m_type, Base_PoolObject m_prefab)
+        private void Logic_RegisterPool(ePoolType m_type, Base_PoolObject m_prefab, int m_poolSize = 0)
         {
             if (poolList.ContainsKey(m_type))
                 return;
 
-            poolList.Add(m_type, new Data_Pool(m_type, m_prefab));
+            if (m_poolSize == 0)
+                poolList.Add(m_type, new Data_Pool(m_type, m_prefab, new GameObject(m_type.ToString()).transform));
+            else
+                poolList.Add(m_type, new Data_Pool(m_type, m_prefab, new GameObject(m_type.ToString()).transform, m_poolSize));
 
             poolList[m_type].Init();
         }

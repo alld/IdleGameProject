@@ -1,9 +1,14 @@
 using IdleGame.Core;
+using IdleGame.Core.Unit;
 using IdleGame.Data;
 using IdleGame.Data.Base;
 using IdleGame.Data.Common.Log;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Pool;
 using IdleGame.Main.Scene.Main;
+using IdleGame.Main.Unit;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IdleGame.Main.GameLogic
@@ -45,6 +50,20 @@ namespace IdleGame.Main.GameLogic
         [SerializeField]
         private Vector3 enemyAppearPos;
 
+        /// <summary>
+        /// [상태] 스테이지 게임이 진행중인지를 나타냅니다. 
+        /// </summary>
+        public static bool IsPlayingGame = false;
+
+        /// <summary>
+        /// [캐시] 현재 게임중인 플레이어 유닛입니다.
+        /// </summary>
+        public static Controller_PlayerUnit Unit_Player;
+
+        /// <summary>
+        /// [캐시] 스테이지에 등장한 몬스터 수입니다.
+        /// </summary>
+        public static List<Controller_EnemyUnit> Unit_Monsters = new List<Controller_EnemyUnit>();
 
         /// <summary>
         /// [설정] 새로운 스테이지 정보를 설정합니다. 
@@ -75,17 +94,34 @@ namespace IdleGame.Main.GameLogic
         }
 
         /// <summary>
+        /// [기능] 다음 웨이브나 스테이지로 진행을 시도합니다.
+        /// </summary>
+        public bool Logic_TryNextLevel()
+        {
+            if (Unit_Monsters.Count != 0) return false;
+
+            Logic_NextLevel();
+
+            return true;
+        }
+
+        /// <summary>
         /// [기능] 다음 레벨을 진행시킵니다. 
         /// </summary>
         public void Logic_NextLevel()
         {
+            Unit_Monsters.Clear();
             mainStage.currentWave++;
-            if (mainStage.currentWave > mainStage.wave_num)
+            Global_Data.PlayProgress.stage_curWave = mainStage.currentWave;
+
+            if (mainStage.currentWave >= mainStage.wave_num)
                 Logic_TryNextStage();
 
             Logic_SetLevel(mainStage.currentWave);
             Logic_MonsterPush();
             Logic_PlayerSetting();
+
+            StartCoroutine(Logic_TempAppear());
         }
 
         /// <summary>
@@ -95,9 +131,10 @@ namespace IdleGame.Main.GameLogic
         {
             for (int i = 0; i < mainStage.monster_max[mainStage.currentWave]; i++)
             {
-                //GameObject monster = GameManager.Pool.GetObject();
-                //monster.transform.SetParent((GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
-                //monster.transform.localPosition = enemyStartPos;
+                var monster = GameManager.Pool.Logic_GetObject(ePoolType.Enemy, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
+                monster.transform.localPosition = enemyStartPos;
+                monster.gameObject.SetActive(true);
+                (monster as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Enemy, mainStage.monster_id[0]));
             }
         }
 
@@ -106,8 +143,12 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_PlayerSetting()
         {
-            var player = GameManager.Pool.Logic_GetObject(ePoolType.Unit, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            if (Unit_Player != null) return;
+
+            var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
             player.transform.localPosition = playerStartPos[0];
+            player.gameObject.SetActive(true);
+            (player as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Player, 0));
         }
 
         /// <summary>
@@ -125,9 +166,23 @@ namespace IdleGame.Main.GameLogic
         public void Logic_TryNextStage()
         {
             mainStage.procedures = eProcedures.Exhaustion;
-            if (true)
-                GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
-            //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
+            if (true) // 메인 스테이지인지를 판단함, 아닌 경우 ChangeStage를 진행해서 메인스테이지로 전환을 시도함
+            {
+                if (Library_DataTable.stage.ContainsKey(Global_Data.PlayProgress.stage_curIndex))
+                {
+                    Global_Data.PlayProgress.stage_curWave = 0;
+                    Global_Data.PlayProgress.stage_curIndex = mainStage.next_stage;
+
+                    Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+
+                    GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
+                    //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
+                }
+                else
+                {
+                    //todo :: 더이상 진행할 스테이지가 존재하지않는 경우 처리...
+                }
+            }
             else
                 Logic_ChangeStage();
         }
@@ -172,7 +227,22 @@ namespace IdleGame.Main.GameLogic
         public void Logic_StageStart()
         {
             // TODO 임시..
+            mainStage.currentWave--;
             Logic_NextLevel();
+
+            IsPlayingGame = true;
+        }
+
+        private IEnumerator Logic_TempAppear()
+        {
+            while (IsPlayingGame == false)
+                yield return null;
+
+            Unit_Player.Logic_Act_Appear();
+            for (int i = 0; i < Unit_Monsters.Count; i++)
+            {
+                Unit_Monsters[i].Logic_Act_Appear();
+            }
         }
     }
 }

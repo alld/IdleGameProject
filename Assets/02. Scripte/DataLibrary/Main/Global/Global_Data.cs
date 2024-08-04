@@ -14,7 +14,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] Global_Data에서 취급되는 데이터 종류의 수입니다. 
         /// </summary>
-        public static int DataCount = 3;
+        public static int DataCount = -1;
 
         /// <summary>
         /// [데이터] 세이브데이터의 가장 기본적인 데이터 구성들에대한 정보들을 담고 있습니다.
@@ -32,6 +32,11 @@ namespace IdleGame.Data
         public static Data_Option Option = new Data_Option();
 
         /// <summary>
+        /// [데이터] 플레이어가 게임을 진행하면서 이루어진 진행상황이나 상태 값 들을 담습니다. 
+        /// </summary>
+        public static Data_PlayProgress PlayProgress = new Data_PlayProgress();
+
+        /// <summary>
         /// [데이터] 개발 과정에서 사용되어지는 에디터 설정입니다.
         /// </summary>
         public static Data_EditorSetting Editor = new Data_EditorSetting();
@@ -46,7 +51,8 @@ namespace IdleGame.Data
             {
                 Main,
                 Player,
-                Option
+                Option,
+                PlayProgress
             };
 
             DataCount = dataList.Count;
@@ -77,6 +83,7 @@ namespace IdleGame.Data
             Main = m_datas[0] as Data_MainSave;
             Player = m_datas[1] as Data_Player;
             Option = m_datas[2] as Data_Option;
+            PlayProgress = m_datas[3] as Data_PlayProgress;
         }
     }
 }

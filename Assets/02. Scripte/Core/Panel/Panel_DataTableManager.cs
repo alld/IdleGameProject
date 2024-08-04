@@ -46,6 +46,8 @@ namespace IdleGame.Core.Panel.DataTable
         private void Logic_LoadData_FristInit()
         {
             Logic_TryLoadData(eDataTableType.Stage);
+            Logic_TryLoadData(eDataTableType.Monster);
+            Logic_TryLoadData(eDataTableType.Quest);
         }
 
 
@@ -84,6 +86,12 @@ namespace IdleGame.Core.Panel.DataTable
                 case eDataTableType.Stage:
                     Convert_StageTable(m_dataArray);
                     break;
+                case eDataTableType.Monster:
+                    Convert_MonsterTable(m_dataArray);
+                    break;
+                case eDataTableType.Quest:
+                    Convert_QuestTable(m_dataArray);
+                    break;
                 case eDataTableType.ShareText:
                     Convert_CommonTextTable(m_dataArray);
                     Global_TextData.OnChangeLanguage();
@@ -114,7 +122,9 @@ namespace IdleGame.Core.Panel.DataTable
             }
         }
 
-
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 스테이지에 대한 데이터를 파싱합니다. 
+        /// </summary>
         private void Convert_StageTable(string[] m_dataArray)
         {
             Library_DataTable.stage.Clear();
@@ -127,6 +137,7 @@ namespace IdleGame.Core.Panel.DataTable
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.next_stage, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.wave_num, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_effect, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.story, dataSegment[index++]);
@@ -138,10 +149,60 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.boss_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.boss_battletime, dataSegment[index++]);
 
-                Library_DataTable.stage.Add(parsingData.index, parsingData);
+                Library_DataTable.stage.Add(parsingData.stage_id, parsingData);
             }
         }
 
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 몬스터 테이블에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_MonsterTable(string[] m_dataArray)
+        {
+            Library_DataTable.monster.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Monster parsingData = new Data_Monster();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_name, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.monster_type, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.mon_max_hp, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.mon_attack, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_skill, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.experience_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.gold_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.colleague_reward, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.proprty, dataSegment[index++]);
+
+                Library_DataTable.monster.Add(parsingData.monster_id, parsingData);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 퀘스트에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_QuestTable(string[] m_dataArray)
+        {
+            Library_DataTable.quest.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Quest parsingData = new Data_Quest();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.quest.Add(parsingData.index, parsingData);
+            }
+        }
         /// <summary>
         /// [변환] 값을 적절하게 파싱해줍니다.
         /// </summary>

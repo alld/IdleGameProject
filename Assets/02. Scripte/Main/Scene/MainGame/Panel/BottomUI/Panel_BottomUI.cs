@@ -43,11 +43,11 @@ namespace IdleGame.Main.Scene.Main.UI
                 case eUIPage.Dungeon:
                 case eUIPage.Mine:
                 case eUIPage.Shop:
-                    if (Global_Data.Player.currentPage == m_changePage && _pages[index].Logic_GetIsShowPopup())
+                    if (Global_Data.PlayProgress.currentPage == m_changePage && _pages[index].Logic_GetIsShowPopup())
                         goto case eUIPage.AbilityUpgrade;
 
-                    if (Global_Data.Player.currentPage != eUIPage.AbilityUpgrade && _pages[(int)Global_Data.Player.currentPage].Logic_GetIsShowPopup())
-                        _pages[(int)Global_Data.Player.currentPage].OnClickClose_Base();
+                    if (Global_Data.PlayProgress.currentPage != eUIPage.AbilityUpgrade && _pages[(int)Global_Data.PlayProgress.currentPage].Logic_GetIsShowPopup())
+                        _pages[(int)Global_Data.PlayProgress.currentPage].OnClickClose_Base();
 
                     _pages[index].OnClickOpen_Base();
                     break;
@@ -55,7 +55,7 @@ namespace IdleGame.Main.Scene.Main.UI
                     break;
             }
 
-            Global_Data.Player.currentPage = m_changePage;
+            Global_Data.PlayProgress.currentPage = m_changePage;
         }
 
 

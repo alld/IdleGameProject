@@ -6,8 +6,15 @@ namespace IdleGame.Data.Pool
     public enum ePoolType
     {
         None = 0,
-        /// <summary> [종류] 유닛 </summary>
-        Unit,
+        /// <summary> [종류] 플레이어 유닛 </summary>
+        Player,
+        /// <summary> [종류] 동료 유닛 </summary>
+        Party,
+        /// <summary> [종류] 적 유닛 ]</summary>
+        Enemy,
+
+        /// <summary> [종류] 보상 오브젝트 </summary>
+        Currency,
 
     }
 

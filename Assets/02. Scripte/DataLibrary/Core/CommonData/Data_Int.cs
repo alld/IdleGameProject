@@ -1,7 +1,9 @@
+using DG.DemiEditor;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace IdleGame.Data.Numeric
 {
@@ -10,12 +12,33 @@ namespace IdleGame.Data.Numeric
         public const int Int = 1000;
     }
 
+    /// <summary>
+    /// [데이터] 단위 환산식 수식에 사용되는 커스텀 숫자입니다. 
+    /// </summary>
     [Serializable]
     public struct ExactInt
     {
+        /// <summary>
+        /// [데이터] 단위별 해당하는 값입니다.
+        /// </summary>
         public List<int> Value;
+        /// <summary>
+        /// [데이터] 현재 숫자의 단위 값입니다.
+        /// </summary>
         public int Scale;
+        /// <summary>
+        /// [데이터] 표현된 값이 음수인지, 양수인지를 나타냅니다. 
+        /// </summary>
         public bool IsPositive;
+
+        /// <summary>
+        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 숫자만을 담습니다.
+        /// </summary>
+        private static StringBuilder _Sb_digit = new StringBuilder(10);
+        /// <summary>
+        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 문자만을 담습니다. 
+        /// </summary>
+        private static StringBuilder _Sb_letter = new StringBuilder(10);
 
         // Value 값에 IntLimit 이상의 값이 들어가지 않는 것을 원칙으로 한다.
         public ExactInt(int value, bool isPositive = true, int scale = 0)
@@ -180,6 +203,9 @@ namespace IdleGame.Data.Numeric
             }
         }
 
+
+        public static explicit operator ExactInt(int b) => new ExactInt(b);
+        public static explicit operator ExactInt(long b) => new ExactInt(b);
 
         public static ExactInt operator +(ExactInt a, ExactInt b)
         {
@@ -461,9 +487,93 @@ namespace IdleGame.Data.Numeric
             return a < b || a == b;
         }
 
+        public static bool operator <=(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a <= num_b;
+        }
+
+        public static bool operator <=(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a <= num_b;
+        }
+
         public static bool operator >=(ExactInt a, ExactInt b)
         {
             return a > b || a == b;
+        }
+
+        public static bool operator >=(ExactInt a, int b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a >= num_b;
+        }
+
+        public static bool operator >=(ExactInt a, long b)
+        {
+            ExactInt num_b = new ExactInt(b);
+
+            return a >= num_b;
+        }
+
+        public static ExactInt Parse(string m_value)
+        {
+            _Sb_digit.Clear();
+            _Sb_letter.Clear();
+
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                if (char.IsDigit(m_value[i]))
+                    _Sb_digit.Append(m_value[i]);
+                else
+                    _Sb_letter.Append(m_value[i]);
+            }
+
+            return new ExactInt(_Sb_digit.Length == 0 ? 0 : int.Parse(_Sb_digit.ToString()), Convert_CharToScale(_Sb_letter.ToString()));
+        }
+
+        /// <summary>
+        /// [변환] 입력받은 문자를 토대로 스케일값을 반환합니다. 
+        /// </summary>
+        public static int Convert_CharToScale(string m_value)
+        {
+            if (m_value.IsNullOrEmpty())
+                return 0;
+
+            m_value = m_value.ToUpper();
+
+            int changeNumber = 0;
+
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                if (Char.IsDigit(m_value[i]))
+                    continue;
+
+                int charDigit = m_value[i];
+                if (charDigit >= 65 && charDigit <= 90)
+                    changeNumber += (charDigit - 64) * (int)Math.Pow(26, i);
+            }
+
+            return changeNumber;
+        }
+
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
@@ -779,6 +889,20 @@ namespace IdleGame.Data.Numeric
         public static bool operator >=(SimpleInt a, SimpleInt b)
         {
             return a > b || a == b;
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        /// <summary>
+        /// [사용하지않음]
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
         }
     }
 }

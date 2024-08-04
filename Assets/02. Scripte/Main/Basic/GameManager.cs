@@ -1,4 +1,5 @@
 using IdleGame.Core.Procedure;
+using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
@@ -48,6 +49,10 @@ namespace IdleGame.Main
                 Logic_RegisterManager();
                 Logic_RegisterEvent();
                 Logic_ManagerInit();
+
+
+                // 역할 :: 데이터 크기 설정을 한번 해주기 위해서 호출함
+                Global_Data.GetSaveDatas();
             }
             else
             {
@@ -72,7 +77,8 @@ namespace IdleGame.Main
 
             //------ 임시 -------//
 
-            _stage.Logic_SetStage(Library_DataTable.stage[0]);
+            Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex].currentWave = Global_Data.PlayProgress.stage_curWave;
+            _stage.Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
             _stage.Logic_StageStart();
 
             //--------------------//
@@ -80,6 +86,14 @@ namespace IdleGame.Main
             Event.CallEvent(eGlobalEventType.Game_Start);
         }
 
+
+        /// <summary>
+        /// [기능] 다음 스테이지나 웨이브로 진행을 시도합니다.
+        /// </summary>
+        public bool Logic_TryNextLevel()
+        {
+            return _stage.Logic_TryNextLevel();
+        }
 
         private void OnApplicationQuit()
         {
