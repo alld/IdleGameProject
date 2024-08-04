@@ -87,6 +87,14 @@ namespace IdleGame.Main
         }
 
 
+        /// <summary>
+        /// [기능] 다음 스테이지나 웨이브로 진행을 시도합니다.
+        /// </summary>
+        public bool Logic_TryNextLevel()
+        {
+            return _stage.Logic_TryNextLevel();
+        }
+
         private void OnApplicationQuit()
         {
             Save.Logic_Save(true);

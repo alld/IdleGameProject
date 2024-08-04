@@ -42,6 +42,8 @@ namespace IdleGame.Main.Unit
             base.Logic_RemoveModule();
 
             Panel_StageManager.Unit_Monsters.Remove(this);
+
+            GameManager.Main.Logic_TryNextLevel();
         }
 
         #endregion

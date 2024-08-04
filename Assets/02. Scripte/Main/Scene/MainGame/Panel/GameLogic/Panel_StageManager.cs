@@ -51,6 +51,11 @@ namespace IdleGame.Main.GameLogic
         private Vector3 enemyAppearPos;
 
         /// <summary>
+        /// [상태] 스테이지 게임이 진행중인지를 나타냅니다. 
+        /// </summary>
+        public static bool IsPlayingGame = false;
+
+        /// <summary>
         /// [캐시] 현재 게임중인 플레이어 유닛입니다.
         /// </summary>
         public static Controller_PlayerUnit Unit_Player;
@@ -89,6 +94,18 @@ namespace IdleGame.Main.GameLogic
         }
 
         /// <summary>
+        /// [기능] 다음 웨이브나 스테이지로 진행을 시도합니다.
+        /// </summary>
+        public bool Logic_TryNextLevel()
+        {
+            if (Unit_Monsters.Count != 0) return false;
+
+            Logic_NextLevel();
+
+            return true;
+        }
+
+        /// <summary>
         /// [기능] 다음 레벨을 진행시킵니다. 
         /// </summary>
         public void Logic_NextLevel()
@@ -97,12 +114,14 @@ namespace IdleGame.Main.GameLogic
             mainStage.currentWave++;
             Global_Data.PlayProgress.stage_curWave = mainStage.currentWave;
 
-            if (mainStage.currentWave > mainStage.wave_num)
+            if (mainStage.currentWave >= mainStage.wave_num)
                 Logic_TryNextStage();
 
             Logic_SetLevel(mainStage.currentWave);
             Logic_MonsterPush();
             Logic_PlayerSetting();
+
+            StartCoroutine(Logic_TempAppear());
         }
 
         /// <summary>
@@ -124,6 +143,8 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_PlayerSetting()
         {
+            if (Unit_Player != null) return;
+
             var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
             player.transform.localPosition = playerStartPos[0];
             player.gameObject.SetActive(true);
@@ -209,12 +230,13 @@ namespace IdleGame.Main.GameLogic
             mainStage.currentWave--;
             Logic_NextLevel();
 
-            StartCoroutine(Logic_TempAppear());
+            IsPlayingGame = true;
         }
 
         private IEnumerator Logic_TempAppear()
         {
-            yield return null;
+            while (IsPlayingGame == false)
+                yield return null;
 
             Unit_Player.Logic_Act_Appear();
             for (int i = 0; i < Unit_Monsters.Count; i++)
