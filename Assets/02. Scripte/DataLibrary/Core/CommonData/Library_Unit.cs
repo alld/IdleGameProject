@@ -135,6 +135,11 @@ namespace IdleGame.Core.Unit
         public WaitForSeconds attackDelay;
 
         /// <summary>
+        /// [데이터] 플레이어 유닛인지를 판단합니다. 동료 유닛도 포함됩니다.
+        /// </summary>
+        public bool isPlayerUnit;
+
+        /// <summary>
         /// [초기화] 모든 데이터를 지웁니다.
         /// </summary>
         public void Clear()
@@ -143,6 +148,7 @@ namespace IdleGame.Core.Unit
             startPosition = Vector3.zero;
             sycleTime = null;
             attackDelay = null;
+            isPlayerUnit = false;
         }
     }
 }

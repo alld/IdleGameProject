@@ -218,7 +218,6 @@ namespace IdleGame.Core.Unit
         {
             ability.hp -= m_damage;
 
-            // TODO 데미지 엔진에서 계산을 한번 때림 결과값을 보고 체력이 남으면 피격 연출, 있으면 다음 행동은 사망처리
             if (ability.hp <= 0)
             {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);
@@ -332,8 +331,6 @@ namespace IdleGame.Core.Unit
         {
             transform.DOKill();
             Logic_ChangeState(eUnitState.Die);
-
-            // TODO :: 보상 정보를 보상 매니저? 재화 매니저? 아무튼 그쪽으로 전달
 
             _onBroadcastDie?.Invoke();
             Sound_Die();

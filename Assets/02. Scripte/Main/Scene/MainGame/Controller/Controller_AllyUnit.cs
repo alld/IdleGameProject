@@ -16,6 +16,7 @@ namespace IdleGame.Main.Unit
             base.Logic_SetModule(m_type, m_index);
 
             _dd.attackDelay = new WaitForSeconds(1f);
+            _dd.isPlayerUnit = true;
 
             ability = new Data_UnitAbility()
             {

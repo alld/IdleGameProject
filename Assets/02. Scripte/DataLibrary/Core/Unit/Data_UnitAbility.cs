@@ -18,6 +18,10 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public ExactInt damage;
 
+        /// <summary>
+        /// [데이터] 유닛의 아이디입니다. 
+        /// </summary>
+        public int Id;
 
         /// <summary>
         /// [데이터] 유닛의 공격 사거리입니다. 
@@ -34,6 +38,8 @@ namespace IdleGame.Core.Unit
             attackRange = m_data.attack_range;
             hp = (ExactInt)m_data.mon_max_hp;
             damage = (ExactInt)m_data.mon_attack;
+
+            Id = m_data.monster_id;
         }
     }
 }

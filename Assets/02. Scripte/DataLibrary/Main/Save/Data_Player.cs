@@ -22,11 +22,11 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 골드 재화 보유량입니다.
         /// </summary>
-        public ExactInt cc_Gold;
+        public ExactInt cc_Gold = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 특성 포인트 보유량입니다. 
         /// </summary>
-        public ExactInt cc_Ability;
+        public ExactInt cc_Ability = new ExactInt(0);
     }
 }

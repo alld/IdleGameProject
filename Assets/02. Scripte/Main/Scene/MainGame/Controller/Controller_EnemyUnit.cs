@@ -1,4 +1,7 @@
+using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
+using IdleGame.Data.Common;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using IdleGame.Main.GameLogic;
 using UnityEngine;
@@ -12,6 +15,13 @@ namespace IdleGame.Main.Unit
     public abstract class Controller_EnemyUnit : Base_Unit
     {
 
+        protected override void Logic_Action_Die()
+        {
+            Base_Engine.Reward.Logic_SendCurrency(eCurrencyType.Gold, Library_DataTable.monster[ability.Id].gold_reward, transform.position);
+
+            base.Logic_Action_Die();
+        }
+
         public override void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
             base.Logic_Act_Damaged(m_attacker, m_damage);
@@ -22,6 +32,7 @@ namespace IdleGame.Main.Unit
         {
             base.Logic_SetModule(m_type, m_index);
             _dd.attackDelay = new WaitForSeconds(1f);
+            _dd.isPlayerUnit = false;
 
             Panel_StageManager.Unit_Monsters.Add(this);
         }

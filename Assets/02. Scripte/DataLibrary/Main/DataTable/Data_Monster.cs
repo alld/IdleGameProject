@@ -58,12 +58,12 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 보상 경험치입니다.
         /// </summary>
-        public float experience_reward = -1;
+        public long experience_reward = -1;
 
         /// <summary>
-        /// [데이터] 보상 경험치입니다.
+        /// [데이터] 보상 재화입니다..
         /// </summary>
-        public float gold_reward = -1;
+        public long gold_reward = -1;
 
         /// <summary>
         /// [데이터] 동료 보상유무를 나타냅니다.

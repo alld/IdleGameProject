@@ -13,6 +13,9 @@ namespace IdleGame.Data.Pool
         /// <summary> [종류] 적 유닛 ]</summary>
         Enemy,
 
+        /// <summary> [종류] 보상 오브젝트 </summary>
+        Currency,
+
     }
 
     public class Library_Pool

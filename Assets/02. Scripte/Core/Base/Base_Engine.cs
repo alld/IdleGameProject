@@ -1,5 +1,6 @@
 using IdleGame.Core.Module.EventSystem;
 using IdleGame.Core.Module.Scene;
+using IdleGame.Core.Panel;
 using IdleGame.Core.Panel.DataTable;
 using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Core.Panel.Pool;
@@ -77,6 +78,16 @@ namespace IdleGame.Core.Procedure
         public static Panel_PoolManager Pool;
 
         /// <summary>
+        /// [캐시] 재화 매니저 입니다.
+        /// </summary>
+        public static Panel_CurrencyManager Currency;
+
+        /// <summary>
+        /// [캐시] 보상 매니저 입니다..
+        /// </summary>
+        public static Panel_RewardManager Reward;
+
+        /// <summary>
         /// [상태] 지속적인 호출을 제한하기위해서 최초 실행 유무를 판단합니다.
         /// </summary>
         [Tooltip("\nture : 최초 1회 실행되었습니다. \nfalse : 한번도 실행된 적이 없습니다.")]
@@ -115,6 +126,8 @@ namespace IdleGame.Core.Procedure
             Table = _obj_logic.GetComponentInChildren<Panel_DataTableManager>();
             Sound = _obj_logic.GetComponentInChildren<Panel_SoundManager>();
             Pool = _obj_logic.GetComponentInChildren<Panel_PoolManager>();
+            Currency = _obj_logic.GetComponentInChildren<Panel_CurrencyManager>();
+            Reward = _obj_logic.GetComponentInChildren<Panel_RewardManager>();
             _managerPanels = _obj_logic.GetComponentsInChildren<Base_ManagerPanel>();
         }
 
