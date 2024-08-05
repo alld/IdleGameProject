@@ -48,6 +48,9 @@ namespace IdleGame.Core.Panel.DataTable
             Logic_TryLoadData(eDataTableType.Stage);
             Logic_TryLoadData(eDataTableType.Monster);
             Logic_TryLoadData(eDataTableType.Quest);
+            Logic_TryLoadData(eDataTableType.Character);
+            Logic_TryLoadData(eDataTableType.Item);
+            Logic_TryLoadData(eDataTableType.Skill);
         }
 
 
@@ -90,6 +93,15 @@ namespace IdleGame.Core.Panel.DataTable
                     Convert_MonsterTable(m_dataArray);
                     break;
                 case eDataTableType.Quest:
+                    Convert_QuestTable(m_dataArray);
+                    break;
+                case eDataTableType.Character:
+                    Convert_QuestTable(m_dataArray);
+                    break;
+                case eDataTableType.Item:
+                    Convert_QuestTable(m_dataArray);
+                    break;
+                case eDataTableType.Skill:
                     Convert_QuestTable(m_dataArray);
                     break;
                 case eDataTableType.ShareText:
@@ -203,6 +215,64 @@ namespace IdleGame.Core.Panel.DataTable
                 Library_DataTable.quest.Add(parsingData.index, parsingData);
             }
         }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 캐릭터에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_CharacterTable(string[] m_dataArray)
+        {
+            Library_DataTable.character.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Character parsingData = new Data_Character();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.character.Add(parsingData.index, parsingData);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 아이템에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_ItemTable(string[] m_dataArray)
+        {
+            Library_DataTable.item.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Item parsingData = new Data_Item();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.item.Add(parsingData.index, parsingData);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 스킬에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_SkillTable(string[] m_dataArray)
+        {
+            Library_DataTable.skill.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Skill parsingData = new Data_Skill();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.skill.Add(parsingData.index, parsingData);
+            }
+        }
+
         /// <summary>
         /// [변환] 값을 적절하게 파싱해줍니다.
         /// </summary>

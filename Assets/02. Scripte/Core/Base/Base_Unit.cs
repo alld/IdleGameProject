@@ -319,7 +319,7 @@ namespace IdleGame.Core.Unit
             while (true)
             {
                 // TODO 피해량을 한번 계산해서 매개변수로 넘깁니다.
-                _target.Logic_Act_Damaged(this, ability.damage);
+                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(_target.ability, ability.damage));
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
