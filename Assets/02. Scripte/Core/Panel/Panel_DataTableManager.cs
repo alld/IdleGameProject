@@ -4,6 +4,7 @@ using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
+using IdleGame.Data.Numeric;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -271,6 +272,17 @@ namespace IdleGame.Core.Panel.DataTable
 
                 Library_DataTable.skill.Add(parsingData.index, parsingData);
             }
+        }
+
+
+        /// <summary>
+        /// [변환] 커스텀 숫자를 적절하게 파싱해줍니다.
+        /// </summary>
+        private void Convert_ParsingData(ref ExactInt m_parsingData, string m_dataSegment)
+        {
+            if (m_dataSegment == "") return;
+
+            m_parsingData = ExactInt.Parse(m_dataSegment);
         }
 
         /// <summary>
