@@ -29,6 +29,7 @@ namespace IdleGame.Core.Unit
         public float attackRange;
 
         public static explicit operator Data_UnitAbility(Data_Monster m_data) => new Data_UnitAbility(m_data);
+        public static explicit operator Data_UnitAbility(Data_Character m_data) => new Data_UnitAbility(m_data);
 
         /// <summary>
         /// [생성자] 몬스터 데이터를 기본형으로 변환시킵니다.
@@ -40,6 +41,18 @@ namespace IdleGame.Core.Unit
             damage = (ExactInt)m_data.mon_attack;
 
             Id = m_data.monster_id;
+        }
+
+        /// <summary>
+        /// [생성자] 몬스터 데이터를 기본형으로 변환시킵니다.
+        /// </summary>
+        public Data_UnitAbility(Data_Character m_data)
+        {
+            attackRange = m_data.attack_range;
+            hp = (ExactInt)0;
+            damage = (ExactInt)0;
+
+            Id = m_data.character_id;
         }
     }
 }

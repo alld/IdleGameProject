@@ -97,13 +97,13 @@ namespace IdleGame.Core.Panel.DataTable
                     Convert_QuestTable(m_dataArray);
                     break;
                 case eDataTableType.Character:
-                    Convert_QuestTable(m_dataArray);
+                    Convert_CharacterTable(m_dataArray);
                     break;
                 case eDataTableType.Item:
-                    Convert_QuestTable(m_dataArray);
+                    Convert_ItemTable(m_dataArray);
                     break;
                 case eDataTableType.Skill:
-                    Convert_QuestTable(m_dataArray);
+                    Convert_SkillTable(m_dataArray);
                     break;
                 case eDataTableType.ShareText:
                     Convert_CommonTextTable(m_dataArray);
@@ -231,8 +231,16 @@ namespace IdleGame.Core.Panel.DataTable
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.player_value, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.character_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.skill, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.effect, dataSegment[index++]);
 
-                Library_DataTable.character.Add(parsingData.index, parsingData);
+                Library_DataTable.character.Add(parsingData.character_id, parsingData);
             }
         }
 
