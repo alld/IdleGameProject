@@ -150,7 +150,7 @@ namespace IdleGame.Main.GameLogic
             {
                 count += mainStage.monster_num[i];
 
-                if (count < random)
+                if (count >= random)
                 {
                     return mainStage.monster_id[i];
                 }
