@@ -52,8 +52,6 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected Dele_Action _onBroadcastDie;
 
-        protected float temp_speed = 1f;
-
         /// <summary>
         /// [초기화] 유닛을 특정 설정합니다. 
         /// </summary>
@@ -354,7 +352,7 @@ namespace IdleGame.Core.Unit
             transform.DOKill();
             Logic_ChangeState(eUnitState.Move);
 
-            float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * temp_speed;
+            float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * ability.moveSpeed;
 
             transform.DOMove(_dd.target_movePoint, moveTime)
                 .SetEase(Ease.Linear)

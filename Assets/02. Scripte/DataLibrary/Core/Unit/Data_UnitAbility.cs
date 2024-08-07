@@ -24,6 +24,11 @@ namespace IdleGame.Core.Unit
         public int Id;
 
         /// <summary>
+        /// [데이터] 유닛의 이동속도입니다.
+        /// </summary>
+        public float moveSpeed;
+
+        /// <summary>
         /// [데이터] 유닛의 공격 사거리입니다. 
         /// </summary>
         public float attackRange;
@@ -39,6 +44,7 @@ namespace IdleGame.Core.Unit
             attackRange = m_data.attack_range;
             hp = (ExactInt)m_data.mon_max_hp;
             damage = (ExactInt)m_data.mon_attack;
+            moveSpeed = m_data.speed;
 
             Id = m_data.monster_id;
         }
@@ -51,6 +57,7 @@ namespace IdleGame.Core.Unit
             attackRange = m_data.attack_range;
             hp = (ExactInt)0;
             damage = (ExactInt)0;
+            moveSpeed = m_data.speed;
 
             Id = m_data.character_id;
         }

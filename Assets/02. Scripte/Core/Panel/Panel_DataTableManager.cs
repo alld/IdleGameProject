@@ -5,6 +5,7 @@ using IdleGame.Data.Common.Event;
 using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
+using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -80,45 +81,54 @@ namespace IdleGame.Core.Panel.DataTable
                 Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
                 return;
             }
-
-            switch (m_type)
+            try
             {
-                case eDataTableType.GameInfo:
-                    Convert_GameInfo(m_dataArray);
-                    Logic_LoadAllData();
-                    break;
-                case eDataTableType.Stage:
-                    Convert_StageTable(m_dataArray);
-                    break;
-                case eDataTableType.Monster:
-                    Convert_MonsterTable(m_dataArray);
-                    break;
-                case eDataTableType.Quest:
-                    Convert_QuestTable(m_dataArray);
-                    break;
-                case eDataTableType.Character:
-                    Convert_CharacterTable(m_dataArray);
-                    break;
-                case eDataTableType.Item:
-                    Convert_ItemTable(m_dataArray);
-                    break;
-                case eDataTableType.Skill:
-                    Convert_SkillTable(m_dataArray);
-                    break;
-                case eDataTableType.ShareText:
-                    Convert_CommonTextTable(m_dataArray);
-                    Global_TextData.OnChangeLanguage();
-                    break;
-                case eDataTableType.BasicText:
-                    Convert_BasicTextTable(m_dataArray);
-                    Global_TextData.OnChangeLanguage();
-                    break;
-                default:
-                    Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
-                    break;
+                switch (m_type)
+                {
+                    case eDataTableType.GameInfo:
+                        Convert_GameInfo(m_dataArray);
+                        Logic_LoadAllData();
+                        break;
+                    case eDataTableType.Stage:
+                        Convert_StageTable(m_dataArray);
+                        break;
+                    case eDataTableType.Monster:
+                        Convert_MonsterTable(m_dataArray);
+                        break;
+                    case eDataTableType.Quest:
+                        Convert_QuestTable(m_dataArray);
+                        break;
+                    case eDataTableType.Character:
+                        Convert_CharacterTable(m_dataArray);
+                        break;
+                    case eDataTableType.Item:
+                        Convert_ItemTable(m_dataArray);
+                        break;
+                    case eDataTableType.Skill:
+                        Convert_SkillTable(m_dataArray);
+                        break;
+                    case eDataTableType.ShareText:
+                        Convert_CommonTextTable(m_dataArray);
+                        Global_TextData.OnChangeLanguage();
+                        break;
+                    case eDataTableType.BasicText:
+                        Convert_BasicTextTable(m_dataArray);
+                        Global_TextData.OnChangeLanguage();
+                        break;
+                    default:
+                        Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Base_Engine.Log.Logic_PutLog(new Data_Log(e.ToString(), Data_ErrorType.Error_DataParsingFailed, _tag.tag));
+            }
+            finally
+            {
+                Base_Engine.Event.CallEvent(eGlobalEventType.Save_OnResponseStep);
             }
 
-            Base_Engine.Event.CallEvent(eGlobalEventType.Save_OnResponseStep);
         }
 
         #region 데이터 파싱

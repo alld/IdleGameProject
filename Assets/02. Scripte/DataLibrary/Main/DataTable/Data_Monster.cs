@@ -33,7 +33,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터의 이동속도입니다.
         /// </summary>
-        public int speed = -1;
+        public float speed = -1;
 
         /// <summary>
         /// [데이터] 몬스터의 최대 체력입니다.
