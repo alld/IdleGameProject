@@ -19,6 +19,11 @@ namespace IdleGame.Core.Unit
         public ExactInt damage;
 
         /// <summary>
+        /// [데이터] 방어력
+        /// </summary>
+        public ExactInt defense;
+
+        /// <summary>
         /// [데이터] 유닛의 아이디입니다. 
         /// </summary>
         public int Id;
@@ -45,6 +50,7 @@ namespace IdleGame.Core.Unit
             hp = (ExactInt)m_data.mon_max_hp;
             damage = (ExactInt)m_data.mon_attack;
             moveSpeed = m_data.speed;
+            defense = m_data.defense;
 
             Id = m_data.monster_id;
         }
@@ -58,6 +64,7 @@ namespace IdleGame.Core.Unit
             hp = (ExactInt)m_data.hp;
             damage = (ExactInt)m_data.damage;
             moveSpeed = m_data.speed;
+            defense = m_data.defens;
 
             Id = m_data.character_id;
         }

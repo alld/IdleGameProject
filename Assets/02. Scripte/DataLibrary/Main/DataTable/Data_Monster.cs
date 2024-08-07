@@ -1,3 +1,5 @@
+using IdleGame.Data.Numeric;
+
 namespace IdleGame.Data
 {
     /// <summary>
@@ -29,6 +31,11 @@ namespace IdleGame.Data
         /// [데이터] 몬스터의 기본 레벨입니다.
         /// </summary>
         public int level = -1;
+
+        /// <summary>
+        /// [데이터] 몬스터의 방어력입니다.
+        /// </summary>
+        public ExactInt defense = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 몬스터의 이동속도입니다.

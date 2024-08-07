@@ -194,6 +194,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.monster_name, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_type, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.defense, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.mon_max_hp, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
