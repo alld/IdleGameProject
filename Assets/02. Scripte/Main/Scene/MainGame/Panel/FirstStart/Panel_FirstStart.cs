@@ -1,5 +1,6 @@
 using DG.Tweening;
 using IdleGame.Core;
+using IdleGame.Core.Utility;
 using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.DataTable;
@@ -71,7 +72,7 @@ namespace IdleGame.Main.Scene.Main
             GameManager.Table.Logic_TryLoadData(eDataTableType.GameInfo);
 
             while (_step < Library_DataTable.DataTableCount)
-                yield return new WaitForSeconds(0.5f);
+                yield return Utility_Common.WaitForSeconds(0.5f);
 
             Logic_FadeOutScreen();
         }

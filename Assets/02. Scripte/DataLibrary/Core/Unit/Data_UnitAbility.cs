@@ -55,8 +55,8 @@ namespace IdleGame.Core.Unit
         public Data_UnitAbility(Data_Character m_data)
         {
             attackRange = m_data.attack_range;
-            hp = (ExactInt)0;
-            damage = (ExactInt)0;
+            hp = (ExactInt)m_data.hp;
+            damage = (ExactInt)m_data.damage;
             moveSpeed = m_data.speed;
 
             Id = m_data.character_id;

@@ -1,3 +1,5 @@
+using IdleGame.Data.Numeric;
+
 namespace IdleGame.Data
 {
     /// <summary>
@@ -16,16 +18,34 @@ namespace IdleGame.Data
         public bool player_value = false;
 
         /// <summary>
+        /// [데이터] 유닛의 기본 방어력입니다.
+        /// </summary>
+        public ExactInt defens = new ExactInt(0);
+
+        /// <summary>
         /// [데이터] 캐릭터의 고유 ID입니다.
         /// </summary>
         public int character_id = -1;
-
-        public int level;
 
         /// <summary>
         /// [데이터] 해당 캐릭터를 획득 가능한 스테이지 ID입니다
         /// </summary>
         public int stage_id = -1;
+
+        /// <summary>
+        /// [데이터] 해당 유닛의 피해량입니다.
+        /// </summary>
+        public ExactInt damage = new ExactInt(0);
+
+        /// <summary>
+        /// [데이터] 해당 유닛의 피해량입니다.
+        /// </summary>
+        public float attack_speed = 1;
+
+        /// <summary>
+        /// [데이터] 해당 유닛의 체력입니다.
+        /// </summary>
+        public ExactInt hp = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 해당 캐릭터의 이동속도입니다.

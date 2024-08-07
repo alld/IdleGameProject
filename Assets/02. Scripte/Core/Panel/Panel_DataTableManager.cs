@@ -197,6 +197,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.mon_max_hp, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.mon_attack, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_skill, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.experience_reward, dataSegment[index++]);
@@ -242,10 +243,13 @@ namespace IdleGame.Core.Panel.DataTable
 
                 Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.player_value, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.defens, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.character_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
-                Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.damage, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.hp, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.skill, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.effect, dataSegment[index++]);

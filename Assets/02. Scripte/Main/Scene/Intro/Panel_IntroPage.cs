@@ -1,5 +1,6 @@
 using DG.Tweening;
 using IdleGame.Core.GameInfo;
+using IdleGame.Core.Utility;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.DataTable;
 using IdleGame.Main;
@@ -91,12 +92,12 @@ namespace IdleGame.Core.Intro
         /// <summary>
         /// [캐시] 다음 페이지로 전환대기까지 기다리는 시간입니다.
         /// </summary>
-        private WaitForSeconds _delay_Page = new WaitForSeconds(3f);
+        private WaitForSeconds _delay_Page = Utility_Common.WaitForSeconds(3f);
 
         /// <summary>
         /// [캐시] 다음 페이지로 전환대기까지 기다리는 시간입니다.
         /// </summary>
-        private WaitForSeconds _delay_LoadPage = new WaitForSeconds(1f);
+        private WaitForSeconds _delay_LoadPage = Utility_Common.WaitForSeconds(1f);
 
         protected override void Logic_Init_Custom()
         {
@@ -233,7 +234,7 @@ namespace IdleGame.Core.Intro
                     period += ".";
                 }
                 _t_loadingBarPeriod.text = period;
-                yield return new WaitForSeconds(0.5f);
+                yield return Utility_Common.WaitForSeconds(0.5f);
             }
         }
 

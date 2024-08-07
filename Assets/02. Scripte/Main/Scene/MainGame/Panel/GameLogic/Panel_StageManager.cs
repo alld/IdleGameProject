@@ -169,7 +169,7 @@ namespace IdleGame.Main.GameLogic
             var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
             player.transform.localPosition = playerStartPos[0];
             player.gameObject.SetActive(true);
-            (player as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Player, 0));
+            (player as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Player, Global_Data.Player.characterID));
         }
 
         /// <summary>

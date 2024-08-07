@@ -46,6 +46,11 @@ namespace IdleGame.Data
         public int attack_range = -1;
 
         /// <summary>
+        /// [데이터] 공격 속도입니다.
+        /// </summary>
+        public int attack_speed = -1;
+
+        /// <summary>
         /// [데이터] 일반 공격 피해량입니다.
         /// </summary>
         public float mon_attack = -1;

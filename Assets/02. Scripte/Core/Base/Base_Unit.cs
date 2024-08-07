@@ -1,5 +1,6 @@
 using DG.Tweening;
 using IdleGame.Core.Pool;
+using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
 using System.Collections;
@@ -210,7 +211,6 @@ namespace IdleGame.Core.Unit
 
         /// <summary>
         /// [기능] 공격받는 행위가 들어오면 피격에대한 동작을 취합니다.
-        /// <br> TODO :: 매개변수로 피해량을 넘겨받아서 처리합니다. </br>
         /// </summary>
         public virtual void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
@@ -273,7 +273,7 @@ namespace IdleGame.Core.Unit
             Logic_ChangeState(eUnitState.Appear);
 
             Sound_Appear();
-            yield return new WaitForSeconds(2f);
+            yield return Utility_Common.WaitForSeconds(2f);
 
             Logic_ChangeState(eUnitState.None);
             StartCoroutine(Logic_OperatorAct());
@@ -292,7 +292,7 @@ namespace IdleGame.Core.Unit
 
             if (m_delayTime == 0) yield break;
 
-            yield return new WaitForSeconds(m_delayTime);
+            yield return Utility_Common.WaitForSeconds(m_delayTime);
 
             StartCoroutine(Logic_OperatorAct());
         }
@@ -316,7 +316,6 @@ namespace IdleGame.Core.Unit
 
             while (true)
             {
-                // TODO 피해량을 한번 계산해서 매개변수로 넘깁니다.
                 _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(_target.ability, ability.damage));
 
                 Sound_Hit();
