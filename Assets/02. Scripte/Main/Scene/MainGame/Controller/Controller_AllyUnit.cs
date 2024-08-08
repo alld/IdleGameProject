@@ -1,4 +1,6 @@
 using IdleGame.Core.Unit;
+using IdleGame.Core.Utility;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using IdleGame.Main.GameLogic;
 using UnityEngine;
@@ -15,15 +17,10 @@ namespace IdleGame.Main.Unit
         {
             base.Logic_SetModule(m_type, m_index);
 
-            _dd.attackDelay = new WaitForSeconds(1f);
+            _dd.attackDelay = Utility_Common.WaitForSeconds(1f);
             _dd.isPlayerUnit = true;
 
-            ability = new Data_UnitAbility()
-            {
-                attackRange = 1,
-                damage = new ExactInt(10),
-                hp = new ExactInt(1000),
-            };
+            ability = (Data_UnitAbility)Library_DataTable.character[m_index];
         }
 
         #region 보조 기능

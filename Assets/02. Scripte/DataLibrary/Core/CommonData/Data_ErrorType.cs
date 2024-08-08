@@ -85,6 +85,7 @@ namespace IdleGame.Data.Common.Log
         public static readonly Data Error_TryChangeSceneFail = new Data("씬 전환에 실패하였습니다.");
         public static readonly Data Error_TextLoadFailed = new Data("텍스트를 불러오는데 실패하였습니다.");
         public static readonly Data Error_DataLoadFailed = new Data("데이터를 불러오는데 실패하였습니다.");
+        public static readonly Data Error_DataParsingFailed = new Data("데이터를 변환하는 과정에서 문제가 생겼습니다.");
         public static readonly Data Error_NonCompareDataCount = new Data("불러온 데이터가 Global_Data의 형식과 맞지않습니다.");
         #endregion
 

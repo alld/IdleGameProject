@@ -28,5 +28,10 @@ namespace IdleGame.Data
         /// [데이터] 특성 포인트 보유량입니다. 
         /// </summary>
         public ExactInt cc_Ability = new ExactInt(0);
+
+        /// <summary>
+        /// [데이터] 현재 사용중인 캐릭터의 인덱스를 반환합니다. 
+        /// </summary>
+        public int characterID = 1000;
     }
 }

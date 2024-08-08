@@ -1,4 +1,5 @@
 using IdleGame.Core;
+using IdleGame.Core.Utility;
 using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using System;
@@ -29,7 +30,7 @@ namespace IdleGame.Main.GameLogic
         /// <summary>
         /// [캐시] 타이머를 1초단위로 진행시키기위한 딜레이값입니다.
         /// </summary>
-        private WaitForSeconds _delay_1_00f = new WaitForSeconds(1f);
+        private WaitForSeconds _delay_1_00f = Utility_Common.WaitForSeconds(1f);
 
         /// <summary>
         /// [상태] 타이머 정보를 갱신할지를 판단하는 설정데이터입니다.

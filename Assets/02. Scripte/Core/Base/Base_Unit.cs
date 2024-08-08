@@ -1,5 +1,6 @@
 using DG.Tweening;
 using IdleGame.Core.Pool;
+using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
 using System.Collections;
@@ -51,8 +52,6 @@ namespace IdleGame.Core.Unit
         /// [캐시] 죽었을때 자신을 타겟으로 삼고 있는 유닛들에게 정보를 전달합니다. 
         /// </summary>
         protected Dele_Action _onBroadcastDie;
-
-        protected float temp_speed = 1f;
 
         /// <summary>
         /// [초기화] 유닛을 특정 설정합니다. 
@@ -212,7 +211,6 @@ namespace IdleGame.Core.Unit
 
         /// <summary>
         /// [기능] 공격받는 행위가 들어오면 피격에대한 동작을 취합니다.
-        /// <br> TODO :: 매개변수로 피해량을 넘겨받아서 처리합니다. </br>
         /// </summary>
         public virtual void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
@@ -275,7 +273,7 @@ namespace IdleGame.Core.Unit
             Logic_ChangeState(eUnitState.Appear);
 
             Sound_Appear();
-            yield return new WaitForSeconds(2f);
+            yield return Utility_Common.WaitForSeconds(2f);
 
             Logic_ChangeState(eUnitState.None);
             StartCoroutine(Logic_OperatorAct());
@@ -294,7 +292,7 @@ namespace IdleGame.Core.Unit
 
             if (m_delayTime == 0) yield break;
 
-            yield return new WaitForSeconds(m_delayTime);
+            yield return Utility_Common.WaitForSeconds(m_delayTime);
 
             StartCoroutine(Logic_OperatorAct());
         }
@@ -318,8 +316,7 @@ namespace IdleGame.Core.Unit
 
             while (true)
             {
-                // TODO 피해량을 한번 계산해서 매개변수로 넘깁니다.
-                _target.Logic_Act_Damaged(this, ability.damage);
+                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(_target.ability, ability.damage));
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
@@ -354,7 +351,7 @@ namespace IdleGame.Core.Unit
             transform.DOKill();
             Logic_ChangeState(eUnitState.Move);
 
-            float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * temp_speed;
+            float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * ability.moveSpeed;
 
             transform.DOMove(_dd.target_movePoint, moveTime)
                 .SetEase(Ease.Linear)

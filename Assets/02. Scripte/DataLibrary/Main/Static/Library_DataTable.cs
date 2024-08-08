@@ -31,5 +31,20 @@ namespace IdleGame.Data.DataTable
         /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Quest> quest = new Dictionary<int, Data_Quest>();
+
+        /// <summary>
+        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<int, Data_Character> character = new Dictionary<int, Data_Character>();
+
+        /// <summary>
+        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<int, Data_Item> item = new Dictionary<int, Data_Item>();
+
+        /// <summary>
+        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<int, Data_Skill> skill = new Dictionary<int, Data_Skill>();
     }
 }

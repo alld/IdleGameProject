@@ -4,6 +4,8 @@ using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
+using IdleGame.Data.Numeric;
+using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -48,6 +50,9 @@ namespace IdleGame.Core.Panel.DataTable
             Logic_TryLoadData(eDataTableType.Stage);
             Logic_TryLoadData(eDataTableType.Monster);
             Logic_TryLoadData(eDataTableType.Quest);
+            Logic_TryLoadData(eDataTableType.Character);
+            Logic_TryLoadData(eDataTableType.Item);
+            Logic_TryLoadData(eDataTableType.Skill);
         }
 
 
@@ -76,36 +81,54 @@ namespace IdleGame.Core.Panel.DataTable
                 Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
                 return;
             }
-
-            switch (m_type)
+            try
             {
-                case eDataTableType.GameInfo:
-                    Convert_GameInfo(m_dataArray);
-                    Logic_LoadAllData();
-                    break;
-                case eDataTableType.Stage:
-                    Convert_StageTable(m_dataArray);
-                    break;
-                case eDataTableType.Monster:
-                    Convert_MonsterTable(m_dataArray);
-                    break;
-                case eDataTableType.Quest:
-                    Convert_QuestTable(m_dataArray);
-                    break;
-                case eDataTableType.ShareText:
-                    Convert_CommonTextTable(m_dataArray);
-                    Global_TextData.OnChangeLanguage();
-                    break;
-                case eDataTableType.BasicText:
-                    Convert_BasicTextTable(m_dataArray);
-                    Global_TextData.OnChangeLanguage();
-                    break;
-                default:
-                    Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
-                    break;
+                switch (m_type)
+                {
+                    case eDataTableType.GameInfo:
+                        Convert_GameInfo(m_dataArray);
+                        Logic_LoadAllData();
+                        break;
+                    case eDataTableType.Stage:
+                        Convert_StageTable(m_dataArray);
+                        break;
+                    case eDataTableType.Monster:
+                        Convert_MonsterTable(m_dataArray);
+                        break;
+                    case eDataTableType.Quest:
+                        Convert_QuestTable(m_dataArray);
+                        break;
+                    case eDataTableType.Character:
+                        Convert_CharacterTable(m_dataArray);
+                        break;
+                    case eDataTableType.Item:
+                        Convert_ItemTable(m_dataArray);
+                        break;
+                    case eDataTableType.Skill:
+                        Convert_SkillTable(m_dataArray);
+                        break;
+                    case eDataTableType.ShareText:
+                        Convert_CommonTextTable(m_dataArray);
+                        Global_TextData.OnChangeLanguage();
+                        break;
+                    case eDataTableType.BasicText:
+                        Convert_BasicTextTable(m_dataArray);
+                        Global_TextData.OnChangeLanguage();
+                        break;
+                    default:
+                        Base_Engine.Log.Logic_PutLog(new Data_Log($"미 할당된 데이터 로드를 시도하였습니다.\n {m_type}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Base_Engine.Log.Logic_PutLog(new Data_Log(e.ToString(), Data_ErrorType.Error_DataParsingFailed, _tag.tag));
+            }
+            finally
+            {
+                Base_Engine.Event.CallEvent(eGlobalEventType.Save_OnResponseStep);
             }
 
-            Base_Engine.Event.CallEvent(eGlobalEventType.Save_OnResponseStep);
         }
 
         #region 데이터 파싱
@@ -171,9 +194,11 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.monster_name, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_type, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.level, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.defense, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.mon_max_hp, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.mon_attack, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_skill, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.experience_reward, dataSegment[index++]);
@@ -203,6 +228,88 @@ namespace IdleGame.Core.Panel.DataTable
                 Library_DataTable.quest.Add(parsingData.index, parsingData);
             }
         }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 캐릭터에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_CharacterTable(string[] m_dataArray)
+        {
+            Library_DataTable.character.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Character parsingData = new Data_Character();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.player_value, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.defens, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.character_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.damage, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.hp, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.critical_chance, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.critical_strike_rate, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.skill, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.effect, dataSegment[index++]);
+
+                Library_DataTable.character.Add(parsingData.character_id, parsingData);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 아이템에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_ItemTable(string[] m_dataArray)
+        {
+            Library_DataTable.item.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Item parsingData = new Data_Item();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.item.Add(parsingData.index, parsingData);
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 스킬에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_SkillTable(string[] m_dataArray)
+        {
+            Library_DataTable.skill.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_Skill parsingData = new Data_Skill();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.skill.Add(parsingData.index, parsingData);
+            }
+        }
+
+
+        /// <summary>
+        /// [변환] 커스텀 숫자를 적절하게 파싱해줍니다.
+        /// </summary>
+        private void Convert_ParsingData(ref ExactInt m_parsingData, string m_dataSegment)
+        {
+            if (m_dataSegment == "") return;
+
+            m_parsingData = ExactInt.Parse(m_dataSegment);
+        }
+
         /// <summary>
         /// [변환] 값을 적절하게 파싱해줍니다.
         /// </summary>

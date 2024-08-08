@@ -1,5 +1,6 @@
 using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
+using IdleGame.Core.Utility;
 using IdleGame.Data.Common;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
@@ -31,7 +32,7 @@ namespace IdleGame.Main.Unit
         protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
         {
             base.Logic_SetModule(m_type, m_index);
-            _dd.attackDelay = new WaitForSeconds(1f);
+            _dd.attackDelay = Utility_Common.WaitForSeconds(1f);
             _dd.isPlayerUnit = false;
 
             Panel_StageManager.Unit_Monsters.Add(this);

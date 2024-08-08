@@ -1,3 +1,5 @@
+using IdleGame.Data.Numeric;
+
 namespace IdleGame.Data
 {
     /// <summary>
@@ -31,9 +33,14 @@ namespace IdleGame.Data
         public int level = -1;
 
         /// <summary>
+        /// [데이터] 몬스터의 방어력입니다.
+        /// </summary>
+        public ExactInt defense = new ExactInt(0);
+
+        /// <summary>
         /// [데이터] 몬스터의 이동속도입니다.
         /// </summary>
-        public int speed = -1;
+        public float speed = -1;
 
         /// <summary>
         /// [데이터] 몬스터의 최대 체력입니다.
@@ -44,6 +51,11 @@ namespace IdleGame.Data
         /// [데이터] 공격 범위입니다.
         /// </summary>
         public int attack_range = -1;
+
+        /// <summary>
+        /// [데이터] 공격 속도입니다.
+        /// </summary>
+        public int attack_speed = -1;
 
         /// <summary>
         /// [데이터] 일반 공격 피해량입니다.

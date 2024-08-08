@@ -15,9 +15,9 @@ namespace IdleGame.Data.DataTable
         Stage = 3,
         Monster = 4,
         Quest = 5,
-        Temp_6 = 6,
-        Temp_7 = 7,
-        Temp_8,
+        Character = 6,
+        Item = 7,
+        Skill = 8,
         Temp_9,
     }
 

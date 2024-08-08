@@ -1,4 +1,5 @@
 using IdleGame.Core.Procedure;
+using IdleGame.Core.Utility;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Popup;
 using System.Collections;
@@ -97,7 +98,7 @@ namespace IdleGame.Core.Popup
 
         private IEnumerator Logic_AutoClosePopup()
         {
-            yield return new WaitForSeconds(_autoCloseTimer);
+            yield return Utility_Common.WaitForSeconds(_autoCloseTimer);
 
             Logic_Close_Callback();
 
