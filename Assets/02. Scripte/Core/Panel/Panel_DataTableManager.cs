@@ -250,6 +250,8 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.damage, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.hp, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.speed, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.critical_chance, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.critical_strike_rate, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_speed, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.attack_range, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.skill, dataSegment[index++]);

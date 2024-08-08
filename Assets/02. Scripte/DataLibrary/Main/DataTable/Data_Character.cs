@@ -38,6 +38,16 @@ namespace IdleGame.Data
         public ExactInt damage = new ExactInt(0);
 
         /// <summary>
+        /// [데이터] 치명타 확률입니다.
+        /// </summary>
+        public float critical_chance = 1;
+
+        /// <summary>
+        /// [데이터] 치명타 배률입니다.
+        /// </summary>
+        public float critical_strike_rate = 1;
+
+        /// <summary>
         /// [데이터] 해당 유닛의 피해량입니다.
         /// </summary>
         public float attack_speed = 1;

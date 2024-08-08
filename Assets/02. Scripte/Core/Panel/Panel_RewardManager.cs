@@ -42,7 +42,7 @@ namespace IdleGame.Core.Panel
             obj.gameObject.SetActive(true);
 
             //TODO :: 해당 오브젝트가 비활성화 된 경우에, 정산에대한 보장을 해줄수 없음. 완료와, 시작타이밍에서 재화 반영 리스트든 대기열이 있어야함.
-            obj.transform.DOMove(Base_Engine.Currency.Logic_GetEndPoint(m_type), 10)
+            obj.transform.DOMove(Base_Engine.Currency.Logic_GetEndPoint(m_type), 1)
                 .SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
