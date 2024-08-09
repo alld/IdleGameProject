@@ -92,6 +92,11 @@ namespace IdleGame.Data.Common.Event
         /// <summary> [백사이드] 일반적인 게임 화면으로 다시 전환합니다. </summary>
         BackSide_Off,
 
+        /// <summary> [배경컨트롤러] 배경을 움직이게합니다. </summary>
+        Act_BGMoveStart,
+        /// <summary> [배경컨트롤러] 배경의 움직임을 멈춥니다. </summary>
+        Act_BGMoveStop,
+
         TestA,
     }
 }

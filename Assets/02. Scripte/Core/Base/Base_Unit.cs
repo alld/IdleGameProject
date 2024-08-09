@@ -78,7 +78,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_Clear_Base()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
 
             _dd.Clear();
 
@@ -269,7 +269,7 @@ namespace IdleGame.Core.Unit
 
         protected virtual IEnumerator Logic_Action_Appear()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Appear);
 
             Sound_Appear();
@@ -286,7 +286,7 @@ namespace IdleGame.Core.Unit
         /// <returns></returns>
         protected virtual IEnumerator Logic_Action_Idle(float m_delayTime = 0)
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_StopAction();
             Logic_ChangeState(eUnitState.Idle, m_delayTime == 0 ? eUnitState.None : _state.cur);
 
@@ -311,7 +311,7 @@ namespace IdleGame.Core.Unit
 
         protected IEnumerator Logic_Action_Attack()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Attack);
 
             while (true)
@@ -326,7 +326,7 @@ namespace IdleGame.Core.Unit
 
         protected virtual void Logic_Action_Die()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Die);
 
             _onBroadcastDie?.Invoke();
@@ -348,7 +348,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_Action_Move()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Move);
 
             float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * ability.moveSpeed;
@@ -417,6 +417,14 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
+        }
+
+        /// <summary>
+        /// [기능] 상태값 변동없이 이동 행위만을 멈추게합니다. (두트윈 제거)
+        /// </summary>
+        protected virtual void Logic_StopMove_Base()
+        {
+            transform.DOKill();
         }
 
         /// <summary>

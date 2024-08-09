@@ -1,5 +1,7 @@
 using IdleGame.Core.Unit;
+using IdleGame.Data.Common.Event;
 using IdleGame.Main.GameLogic;
+using IdleGame.Main.Scene.Main;
 
 namespace IdleGame.Main.Unit
 {
@@ -10,6 +12,19 @@ namespace IdleGame.Main.Unit
     public class Controller_PlayerUnit : Controller_AllyUnit
     {
 
+        protected override void Logic_StopMove_Base()
+        {
+            base.Logic_StopMove_Base();
+
+            Panel_MainGameScene.Event.CallEvent(eSceneEventType_MainGame.Act_BGMoveStop);
+        }
+
+        protected override void Logic_Action_Move()
+        {
+            base.Logic_Action_Move();
+
+            Panel_MainGameScene.Event.CallEvent(eSceneEventType_MainGame.Act_BGMoveStart, ability.moveSpeed);
+        }
 
         #region 생명주기
         protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
