@@ -189,7 +189,7 @@ namespace IdleGame.Main.GameLogic
             mainStage.procedures = eProcedures.Exhaustion;
             if (true) // 메인 스테이지인지를 판단함, 아닌 경우 ChangeStage를 진행해서 메인스테이지로 전환을 시도함
             {
-                if (Library_DataTable.stage.ContainsKey(Global_Data.PlayProgress.stage_curIndex))
+                if (Library_DataTable.stage.ContainsKey(mainStage.next_stage))
                 {
                     Global_Data.PlayProgress.stage_curWave = 0;
                     Global_Data.PlayProgress.stage_curIndex = mainStage.next_stage;
@@ -201,11 +201,19 @@ namespace IdleGame.Main.GameLogic
                 }
                 else
                 {
-                    //todo :: 더이상 진행할 스테이지가 존재하지않는 경우 처리...
+                    Logic_NoMoreStages();
                 }
             }
             else
                 Logic_ChangeStage();
+        }
+
+        /// <summary>
+        /// [기능] 더이상 진행할 스테이지가 없는 경우 호출됩니다.
+        /// </summary>
+        private void Logic_NoMoreStages()
+        {
+            Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
         }
 
         /// <summary>
