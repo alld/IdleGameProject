@@ -1,3 +1,4 @@
+using IdleGame.Core.Unit;
 using System.Collections.Generic;
 
 namespace IdleGame.Data.DataTable
@@ -15,7 +16,7 @@ namespace IdleGame.Data.DataTable
         /// <summary>
         /// [데이터] 데이터 테이블의 총 갯수를 나타냅니다. 
         /// </summary>
-        public const int DataTableCount = 6;
+        public const int DataTableCount = 7;
 
         /// <summary>
         /// [데이터] 스테이지에대한 모든 정보를 담고 있습니다. 인덱스로 스테이지를 찾을 수 있습니다. 
@@ -46,5 +47,10 @@ namespace IdleGame.Data.DataTable
         /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Skill> skill = new Dictionary<int, Data_Skill>();
+
+        /// <summary>
+        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// </summary>
+        public static Dictionary<(eUnitProperty, eUnitProperty), float> property = new Dictionary<(eUnitProperty, eUnitProperty), float>();
     }
 }

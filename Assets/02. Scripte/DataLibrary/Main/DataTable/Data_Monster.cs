@@ -1,3 +1,4 @@
+using IdleGame.Core.Unit;
 using IdleGame.Data.Numeric;
 
 namespace IdleGame.Data
@@ -85,6 +86,6 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터의 속성입니다. 
         /// </summary>
-        public int proprty = -1;
+        public eUnitProperty proprty = eUnitProperty.None;
     }
 }

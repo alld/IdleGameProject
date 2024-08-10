@@ -1,5 +1,7 @@
+using DG.DemiEditor;
 using IdleGame.Core.Module.DataTable;
 using IdleGame.Core.Procedure;
+using IdleGame.Core.Unit;
 using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.Common.Log;
@@ -53,6 +55,7 @@ namespace IdleGame.Core.Panel.DataTable
             Logic_TryLoadData(eDataTableType.Character);
             Logic_TryLoadData(eDataTableType.Item);
             Logic_TryLoadData(eDataTableType.Skill);
+            Logic_TryLoadData(eDataTableType.Property);
         }
 
 
@@ -106,6 +109,9 @@ namespace IdleGame.Core.Panel.DataTable
                         break;
                     case eDataTableType.Skill:
                         Convert_SkillTable(m_dataArray);
+                        break;
+                    case eDataTableType.Property:
+                        Convert_ProperyTable(m_dataArray);
                         break;
                     case eDataTableType.ShareText:
                         Convert_CommonTextTable(m_dataArray);
@@ -299,13 +305,31 @@ namespace IdleGame.Core.Panel.DataTable
             }
         }
 
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 속성에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_ProperyTable(string[] m_dataArray)
+        {
+            Library_DataTable.property.Clear();
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                for (int j = 0; j < dataSegment.Length; j++)
+                {
+                    Library_DataTable.property.Add(((eUnitProperty)i, (eUnitProperty)j), int.Parse(dataSegment[j]));
+                }
+
+            }
+        }
 
         /// <summary>
         /// [변환] 커스텀 숫자를 적절하게 파싱해줍니다.
         /// </summary>
         private void Convert_ParsingData(ref ExactInt m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment == "") return;
+            if (m_dataSegment.IsNullOrEmpty()) return;
 
             m_parsingData = ExactInt.Parse(m_dataSegment);
         }
@@ -315,7 +339,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment == "") return;
+            if (m_dataSegment.IsNullOrEmpty()) return;
 
             m_parsingData = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(m_dataSegment);
         }
@@ -325,7 +349,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment == "") return;
+            if (m_dataSegment.IsNullOrEmpty()) return;
 
             string[] arrayData = m_dataSegment.Split(",");
             m_parsingData = new T[arrayData.Length];
@@ -340,7 +364,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[][] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment == "") return;
+            if (m_dataSegment.IsNullOrEmpty()) return;
 
             string[] arrayData = m_dataSegment.Split("//");
             m_parsingData = new T[arrayData.Length][];

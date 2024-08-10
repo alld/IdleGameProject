@@ -12,6 +12,21 @@ namespace IdleGame.Core.Unit
     }
 
     /// <summary>
+    /// [종류] 유닛의 속성을 정의합니다.
+    /// </summary>
+    public enum eUnitProperty
+    {
+        None,
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+        a7
+    }
+
+    /// <summary>
     /// [종류] 유닛의 형태를 정의합니다.
     /// </summary>
     public enum eUnitTpye

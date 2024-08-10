@@ -18,7 +18,7 @@ namespace IdleGame.Data.DataTable
         Character = 6,
         Item = 7,
         Skill = 8,
-        Temp_9,
+        Property = 9,
     }
 
 

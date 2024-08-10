@@ -78,6 +78,24 @@ namespace IdleGame.Data.Numeric
             IsPositive = isPositive;
         }
 
+        /// <summary>
+        /// [기능] 퍼센트를 적용합니다. 
+        /// </summary>
+        public void SetPercent(int m_value)
+        {
+            this = this * m_value / 100;
+        }
+
+
+        /// <summary>
+        /// [기능] 퍼센트를 적용합니다. 
+        /// </summary>
+        public void SetPercent(float m_value)
+        {
+            m_value *= 100;
+            SetPercent((int)m_value);
+        }
+
         public static bool CompareZero(ExactInt m_value)
         {
             if (m_value.Scale != 0)
@@ -405,6 +423,16 @@ namespace IdleGame.Data.Numeric
 
             return false;
         }
+
+        public static bool operator >(ExactInt a, int b)
+        {
+            return a > new ExactInt(b);
+        }
+        public static bool operator >(ExactInt a, long b)
+        {
+            return a > new ExactInt(b);
+        }
+
         public static bool operator >(ExactInt a, ExactInt b)
         {
             if (a.IsPositive != b.IsPositive)
@@ -424,6 +452,15 @@ namespace IdleGame.Data.Numeric
             }
 
             return false;
+        }
+
+        public static bool operator <(ExactInt a, int b)
+        {
+            return a < new ExactInt(b);
+        }
+        public static bool operator <(ExactInt a, long b)
+        {
+            return a < new ExactInt(b);
         }
 
         public static bool operator ==(ExactInt a, ExactInt b)

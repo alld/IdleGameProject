@@ -38,6 +38,21 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public float attackRange;
 
+        /// <summary>
+        /// [데이터] 치명타 확률입니다.
+        /// </summary>
+        public float critical_chance;
+
+        /// <summary>
+        /// [데이터] 치명타 배율입니다.
+        /// </summary>
+        public float critical_strike_rate;
+
+        /// <summary>
+        /// [데이터] 유닛의 속성입니다. 
+        /// </summary>
+        public eUnitProperty property;
+
         public static explicit operator Data_UnitAbility(Data_Monster m_data) => new Data_UnitAbility(m_data);
         public static explicit operator Data_UnitAbility(Data_Character m_data) => new Data_UnitAbility(m_data);
 
@@ -51,7 +66,9 @@ namespace IdleGame.Core.Unit
             damage = (ExactInt)m_data.mon_attack;
             moveSpeed = m_data.speed;
             defense = m_data.defense;
-
+            critical_chance = 0;
+            critical_strike_rate = 1;
+            property = m_data.proprty;
             Id = m_data.monster_id;
         }
 
@@ -65,6 +82,9 @@ namespace IdleGame.Core.Unit
             damage = (ExactInt)m_data.damage;
             moveSpeed = m_data.speed;
             defense = m_data.defens;
+            critical_chance = m_data.critical_chance;
+            critical_strike_rate = m_data.critical_strike_rate;
+            property = eUnitProperty.None;
 
             Id = m_data.character_id;
         }

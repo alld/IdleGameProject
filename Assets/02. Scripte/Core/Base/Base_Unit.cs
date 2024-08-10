@@ -316,7 +316,7 @@ namespace IdleGame.Core.Unit
 
             while (true)
             {
-                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(_target.ability, ability.damage));
+                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
