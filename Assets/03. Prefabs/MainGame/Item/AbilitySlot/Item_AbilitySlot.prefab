@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb1e1707e3f17b47b32bf594d1eb556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   i_icon: {fileID: 2467173288344426453}
   t_level: {fileID: 5027169062153577708}
   t_valueTitle: {fileID: 3302473503501975682}
@@ -828,7 +829,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 454454197737209109}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3189454234709766227}
+        m_TargetAssemblyTypeName: IdleGame.Main.Scene.Main.UI.Item_AbilitySlot, Assembly-CSharp
+        m_MethodName: OnClickUpgrade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5120702771999338909
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,7 +1723,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2070706513474371802}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3189454234709766227}
+        m_TargetAssemblyTypeName: IdleGame.Main.Scene.Main.UI.Item_AbilitySlot, Assembly-CSharp
+        m_MethodName: OnClickUpgrade_Mega
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7703251206234737014
 GameObject:
   m_ObjectHideFlags: 0

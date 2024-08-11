@@ -26,6 +26,19 @@ namespace IdleGame.Core.Unit
         a7
     }
 
+
+    /// <summary>
+    /// [종류] 능력치 타입입니다. 
+    /// </summary>
+    public enum eAbilityType
+    {
+        None,
+        /// <summary> 체력 </summary>
+        Hp,
+        /// <summary> 피해량 </summary>
+        Damage,
+    }
+
     /// <summary>
     /// [종류] 유닛의 형태를 정의합니다.
     /// </summary>
