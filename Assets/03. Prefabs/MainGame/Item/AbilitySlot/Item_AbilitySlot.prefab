@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3137751966789250003}
+  - component: {fileID: 3189454234709766227}
   m_Layer: 0
   m_Name: Item_AbilitySlot
   m_TagString: Untagged
@@ -40,6 +41,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3189454234709766227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437323739657869750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb1e1707e3f17b47b32bf594d1eb556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  i_icon: {fileID: 2467173288344426453}
+  t_level: {fileID: 5027169062153577708}
+  t_valueTitle: {fileID: 3302473503501975682}
+  t_value: {fileID: 7733058651558528592}
+  b_upMega: {fileID: 513191961172035750}
+  t_titleMega: {fileID: 280804087403200707}
+  t_priceMega: {fileID: 6789667261032339033}
+  b_upNormal: {fileID: 6558974525444106738}
+  t_titleNormal: {fileID: 6977473732961609806}
+  t_priceNormal: {fileID: 5231807397623369382}
+  price:
+    Value: 
+    Scale: 0
+    IsPositive: 0
 --- !u!1 &482714069943278040
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using IdleGame.Core.Unit;
 using IdleGame.Data.NSave;
 using IdleGame.Data.Numeric;
 
@@ -33,5 +34,10 @@ namespace IdleGame.Data
         /// [데이터] 현재 사용중인 캐릭터의 인덱스를 반환합니다. 
         /// </summary>
         public int characterID = 1000;
+
+        /// <summary>
+        /// [데이터] 플레이어 유닛의 능력치 정보입니다. 
+        /// </summary>
+        public Data_UnitAbility unit_Ability = new Data_UnitAbility();
     }
 }

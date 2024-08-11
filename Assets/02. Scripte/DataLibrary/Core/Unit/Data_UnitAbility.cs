@@ -12,6 +12,10 @@ namespace IdleGame.Core.Unit
         /// [데이터] 현재 체력
         /// </summary>
         public ExactInt hp;
+        /// <summary>
+        /// [기능] 체력을 수정합니다. 
+        /// </summary>
+        public void ModifyHp(ExactInt m_data) => hp = m_data;
 
         /// <summary>
         /// [데이터] 피해량
@@ -88,5 +92,6 @@ namespace IdleGame.Core.Unit
 
             Id = m_data.character_id;
         }
+
     }
 }

@@ -1,4 +1,5 @@
 using IdleGame.Core.Unit;
+using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Main.GameLogic;
 using IdleGame.Main.Scene.Main;
@@ -11,6 +12,7 @@ namespace IdleGame.Main.Unit
     /// </summary>
     public class Controller_PlayerUnit : Controller_AllyUnit
     {
+        public override Data_UnitAbility ability { get => Global_Data.Player.unit_Ability; set => Global_Data.Player.unit_Ability = value; }
 
         protected override void Logic_StopMove_Base()
         {

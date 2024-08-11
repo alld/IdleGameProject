@@ -361,7 +361,7 @@ namespace IdleGame.Data.Numeric
                 throw new DivideByZeroException();
             }
 
-            if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[1] < b.Value[1])) return new ExactInt(0);
+            if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[a.Scale] < b.Value[b.Scale])) return new ExactInt(0);
 
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
