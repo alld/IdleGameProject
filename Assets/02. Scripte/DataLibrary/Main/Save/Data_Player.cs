@@ -1,6 +1,7 @@
 using IdleGame.Core.Unit;
 using IdleGame.Data.NSave;
 using IdleGame.Data.Numeric;
+using System.Collections.Generic;
 
 namespace IdleGame.Data
 {
@@ -39,5 +40,10 @@ namespace IdleGame.Data
         /// [데이터] 플레이어 유닛의 능력치 정보입니다. 
         /// </summary>
         public Data_UnitAbility unit_Ability = new Data_UnitAbility();
+
+        /// <summary>
+        /// [데이터] 현재 업그레이드가 진행된 상태를 나타냅니다. 
+        /// </summary>
+        public Dictionary<eAbilityType, Data_AbilitySlot> slot_Ability = new Dictionary<eAbilityType, Data_AbilitySlot>();
     }
 }

@@ -1,3 +1,4 @@
+using IdleGame.Data.Numeric;
 using UnityEngine;
 
 namespace IdleGame.Core.Unit
@@ -26,6 +27,26 @@ namespace IdleGame.Core.Unit
         a7
     }
 
+    /// <summary>
+    /// [데이터] 저장되는 형태의 강화 데이터입니다.
+    /// </summary>
+    public struct Data_AbilitySlot
+    {
+        /// <summary>
+        /// [데이터] 현재 레벨을 나타냅니다.
+        /// </summary>
+        public int level;
+
+        /// <summary>
+        /// [데이터] 현재 적용된 추가 능력치입니다.
+        /// </summary>
+        public ExactInt value;
+
+        /// <summary>
+        /// [데이터] 현재 적용된 1회 비용입니다.
+        /// </summary>
+        public ExactInt price;
+    }
 
     /// <summary>
     /// [종류] 능력치 타입입니다. 

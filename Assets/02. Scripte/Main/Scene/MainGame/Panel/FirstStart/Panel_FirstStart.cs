@@ -57,7 +57,7 @@ namespace IdleGame.Main.Scene.Main
                 return;
             }
 
-            Global_Data.Player.unit_Ability = (Data_UnitAbility)Library_DataTable.character[1000];
+            Global_Data.FirstSetting();
             // TODO:: 듀토리얼 같은거..넣어야함..
             Logic_FadeOutScreen();
         }
@@ -76,7 +76,7 @@ namespace IdleGame.Main.Scene.Main
             while (_step < Library_DataTable.DataTableCount)
                 yield return Utility_Common.WaitForSeconds(0.5f);
 
-            Global_Data.Player.unit_Ability = (Data_UnitAbility)Library_DataTable.character[1000];
+            Global_Data.FirstSetting();
             Logic_FadeOutScreen();
         }
 
