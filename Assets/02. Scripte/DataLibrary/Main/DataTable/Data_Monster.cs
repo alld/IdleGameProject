@@ -19,6 +19,11 @@ namespace IdleGame.Data
         public int monster_id = -1;
 
         /// <summary>
+        /// [데이터] 몬스터외형 ID입니다.
+        /// </summary>
+        public int mon_shape_id = -1;
+
+        /// <summary>
         /// [데이터] 몬스터의 이름입니다.
         /// </summary>
         public string monster_name = "";
