@@ -58,6 +58,12 @@ namespace IdleGame.Core.Unit
         Hp,
         /// <summary> 피해량 </summary>
         Damage,
+        /// <summary> 체력 회복 </summary>
+        HpRegen,
+        /// <summary> 치명타 배수</summary>
+        CriticalMultiplier,
+        /// <summary> 치명타 확률</summary>
+        CriticalChance,
     }
 
     /// <summary>
