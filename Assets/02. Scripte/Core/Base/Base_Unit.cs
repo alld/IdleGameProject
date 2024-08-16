@@ -42,6 +42,12 @@ namespace IdleGame.Core.Unit
         protected Data_UnitState _state;
 
         /// <summary>
+        /// [캐시] 캐릭터에 적용되는 모습 및 애니메이션입니다. 
+        /// </summary>
+        [SerializeField]
+        protected Animator _ani;
+
+        /// <summary>
         /// [상태] 현재 유닛이 죽은 상태인지를 확인합니다.
         /// </summary>
         public bool isDie => _state.cur == eUnitState.Die;
@@ -326,6 +332,7 @@ namespace IdleGame.Core.Unit
             {
                 try
                 {
+                    _ani.SetTrigger("attack");
                     _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
 
                 }
@@ -369,14 +376,24 @@ namespace IdleGame.Core.Unit
             Logic_ChangeState(eUnitState.Move);
 
             float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * ability.moveSpeed;
+            _ani.SetBool("move", true);
 
-            transform.DOMove(_dd.target_movePoint, moveTime)
-                .SetEase(Ease.Linear)
-                .OnComplete(
-                () =>
-                {
-                    StartCoroutine(Logic_OperatorAct());
-                });
+            try
+            {
+
+                transform.DOMove(_dd.target_movePoint, moveTime)
+                    .SetEase(Ease.Linear)
+                    .OnComplete(
+                    () =>
+                    {
+                        StartCoroutine(Logic_OperatorAct());
+                    });
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
 
             Sound_Move();
         }
@@ -442,6 +459,7 @@ namespace IdleGame.Core.Unit
         protected virtual void Logic_StopMove_Base()
         {
             transform.DOKill();
+            _ani.SetBool("move", false);
         }
 
         /// <summary>

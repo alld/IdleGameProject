@@ -1,4 +1,3 @@
-using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 
@@ -33,10 +32,10 @@ namespace IdleGame.Core.Unit
                 return new ExactInt(0);
             }
 
-            LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
-            if (LastData_IsCritical)
-                result.SetPercent(m_attacker.critical_strike_rate);
-            result.SetPercent(Library_DataTable.property[(m_attacker.property, m_target.property)]);
+            //LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
+            //if (LastData_IsCritical)
+            //    result.SetPercent(m_attacker.critical_strike_rate);
+            //result.SetPercent(Library_DataTable.property[(m_attacker.property, m_target.property)]);
 
             return result;
         }
