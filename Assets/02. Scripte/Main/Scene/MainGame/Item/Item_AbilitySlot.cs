@@ -1,6 +1,8 @@
 using IdleGame.Core;
 using IdleGame.Core.Unit;
 using IdleGame.Data;
+using IdleGame.Data.Common;
+using IdleGame.Data.Common.Event;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,33 +64,81 @@ namespace IdleGame.Main.Scene.Main.UI
         /// [데이터] 1개의 구매 가격입니다.
         /// </summary>
         [HideInInspector]
-        public ExactInt price;
+        public ExactInt price
+        {
+            get { return _price; }
+            set
+            {
+                _price = value;
+                _megaPrice = value * 10;
+            }
+        }
+
+        /// <summary>
+        /// [데이터] 1회 구매 비용입니다. 
+        /// </summary>
+        private ExactInt _price;
+
+        /// <summary>
+        /// [데이터] 10회 구매 비용입니다.
+        /// </summary>
+        private ExactInt _megaPrice;
+
+        public void Start()
+        {
+            GameManager.Event.RegisterEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
+        }
+
+        private void OnDestroy()
+        {
+            GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
+        }
 
         /// <summary>
         /// [기능] UI상태를 업데이트합니다. 
         /// </summary>
         public void Logic_UpdateUI()
         {
-            if (Global_Data.Player.cc_Gold == price)
+            // 조건 :: 1회 사용 돈도 없음
+            if (Global_Data.Player.cc_Gold < _price)
             {
+                b_upNormal.interactable = false;
+                b_upMega.interactable = false;
+            }
+            else
+            {
+                b_upNormal.interactable = true;
 
+                // 조건 :: 10회 살돈은 없음.
+                if (Global_Data.Player.cc_Gold < _megaPrice)
+                {
+                    b_upMega.interactable = false;
+                }
+                else
+                {
+                    b_upMega.interactable = true;
+                }
             }
         }
 
+        #region 콜백 함수
         /// <summary>
-        /// [기능] 
+        /// [기능] 1회 구매를 한 경우
         /// </summary>
         public void OnClickUpgrade()
         {
-
+            GameManager.Currency.Logic_SetAddCurrency(eCurrencyType.Gold, -_price);
+            Global_Data.Player.slot_Ability[type].LevelUp();
         }
 
         /// <summary>
-        /// [기능] 
+        /// [기능] 10회 구매를 한 경우 
         /// </summary>
         public void OnClickUpgrade_Mega()
         {
-
+            GameManager.Currency.Logic_SetAddCurrency(eCurrencyType.Gold, -_megaPrice);
+            Global_Data.Player.slot_Ability[type].LevelUp(10);
         }
+        #endregion
     }
 }

@@ -258,6 +258,12 @@ namespace IdleGame.Data.Numeric
             return a + num_b;
         }
 
+        public static ExactInt operator -(ExactInt a)
+        {
+            a.IsPositive = false;
+            return a;
+        }
+
         public static ExactInt operator -(ExactInt a, ExactInt b)
         {
             if (a.IsPositive != b.IsPositive)

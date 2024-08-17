@@ -45,5 +45,10 @@ namespace IdleGame.Data
         /// [데이터] 현재 업그레이드가 진행된 상태를 나타냅니다. 
         /// </summary>
         public Dictionary<eAbilityType, Data_AbilitySlot> slot_Ability = new Dictionary<eAbilityType, Data_AbilitySlot>();
+
+        public void Set_Unit()
+        {
+
+        }
     }
 }

@@ -46,6 +46,14 @@ namespace IdleGame.Core.Unit
         /// [데이터] 현재 적용된 1회 비용입니다.
         /// </summary>
         public ExactInt price;
+
+        /// <summary>
+        /// [기능] 정해진 레벨만큼 레벨업을 시킵니다. 
+        /// </summary>
+        public void LevelUp(int m_level = 1)
+        {
+            level += m_level;
+        }
     }
 
     /// <summary>
