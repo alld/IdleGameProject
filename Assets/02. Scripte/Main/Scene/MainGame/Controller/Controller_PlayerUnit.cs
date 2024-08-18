@@ -12,7 +12,7 @@ namespace IdleGame.Main.Unit
     /// </summary>
     public class Controller_PlayerUnit : Controller_AllyUnit
     {
-        public override Data_UnitAbility ability { get => Global_Data.Player.unit_Ability; set => Global_Data.Player.unit_Ability = value; }
+        //public override Data_UnitAbility ability { get => Global_Data.Player.unit_Ability; set => Global_Data.Player.unit_Ability = value; }
 
         protected override void Logic_StopMove_Base()
         {
@@ -31,6 +31,8 @@ namespace IdleGame.Main.Unit
         #region 생명주기
         protected override void Logic_SetModule(eUnitTpye m_type, int m_index)
         {
+            ability = Global_Data.Player.unit_Ability;
+
             base.Logic_SetModule(m_type, m_index);
 
             Panel_StageManager.Unit_Player = this;

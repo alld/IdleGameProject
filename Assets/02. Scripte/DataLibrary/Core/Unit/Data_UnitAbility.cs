@@ -6,16 +6,17 @@ namespace IdleGame.Core.Unit
     /// <summary>
     /// [데이터] 유닛의 기본 스텟 구조를 정의합니다. 
     /// </summary>
-    public struct Data_UnitAbility
+    public class Data_UnitAbility
     {
         /// <summary>
         /// [데이터] 현재 체력
         /// </summary>
         public ExactInt hp;
+
         /// <summary>
-        /// [기능] 체력을 수정합니다. 
+        /// [데이터] 현재 최대 체력
         /// </summary>
-        public void ModifyHp(ExactInt m_data) => hp = m_data;
+        public ExactInt maxHp;
 
         /// <summary>
         /// [데이터] 피해량
@@ -67,6 +68,7 @@ namespace IdleGame.Core.Unit
         {
             attackRange = m_data.attack_range;
             hp = (ExactInt)m_data.mon_max_hp;
+            maxHp = hp;
             damage = (ExactInt)m_data.mon_attack;
             moveSpeed = m_data.speed;
             defense = m_data.defense;
@@ -77,12 +79,13 @@ namespace IdleGame.Core.Unit
         }
 
         /// <summary>
-        /// [생성자] 몬스터 데이터를 기본형으로 변환시킵니다.
+        /// [생성자] 캐릭터 데이터를 기본형으로 변환시킵니다.
         /// </summary>
         public Data_UnitAbility(Data_Character m_data)
         {
             attackRange = m_data.attack_range;
             hp = (ExactInt)m_data.hp;
+            maxHp = hp;
             damage = (ExactInt)m_data.damage;
             moveSpeed = m_data.speed;
             defense = m_data.defens;

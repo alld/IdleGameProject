@@ -77,12 +77,12 @@ namespace IdleGame.Main.Scene.Main.UI
         /// <summary>
         /// [데이터] 1회 구매 비용입니다. 
         /// </summary>
-        private ExactInt _price;
+        private ExactInt _price = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 10회 구매 비용입니다.
         /// </summary>
-        private ExactInt _megaPrice;
+        private ExactInt _megaPrice = new ExactInt(0);
 
         public void Start()
         {

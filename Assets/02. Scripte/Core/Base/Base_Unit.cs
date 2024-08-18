@@ -23,16 +23,16 @@ namespace IdleGame.Core.Unit
         /// <summary>
         /// [데이터] 유닛의 기본 능력치를 나타냅니다. 
         /// </summary>
-        protected Data_UnitAbility _ability;
+        public Data_UnitAbility ability;
 
-        /// <summary>
-        /// [데이터] 유닛의 기본 능력치를 나타냅니다. 
-        /// </summary>
-        public virtual Data_UnitAbility ability
-        {
-            get { return _ability; }
-            set { _ability = value; }
-        }
+        ///// <summary>
+        ///// [데이터] 유닛의 기본 능력치를 나타냅니다. 
+        ///// </summary>
+        //public virtual Data_UnitAbility ability
+        //{
+        //    get { return _ability; }
+        //    set { _ability = value; }
+        //}
 
         /// <summary>
         /// [데이터] 유닛이 판단하는데 필요한 기본 정보들을 담습니다. 
@@ -229,7 +229,8 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public virtual void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
-            ability.ModifyHp(ability.hp - m_damage);
+            //ability.ModifyHp(ability.hp - m_damage);
+            ability.hp -= m_damage;
             if (ability.hp <= 0)
             {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);

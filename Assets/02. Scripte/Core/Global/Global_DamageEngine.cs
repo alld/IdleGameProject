@@ -22,7 +22,8 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public static ExactInt Logic_Calculator(Data_UnitAbility m_attacker, Data_UnitAbility m_target, ExactInt m_damage)
         {
-            ExactInt result = m_damage;
+            ExactInt result = new ExactInt(0);
+            result += m_damage;
             result -= m_target.defense;
 
             LastData_IsZeroDamage = result < 0;

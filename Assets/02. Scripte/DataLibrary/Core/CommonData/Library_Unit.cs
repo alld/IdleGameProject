@@ -1,3 +1,4 @@
+using IdleGame.Data;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace IdleGame.Core.Unit
     /// <summary>
     /// [데이터] 저장되는 형태의 강화 데이터입니다.
     /// </summary>
-    public struct Data_AbilitySlot
+    public class Data_AbilitySlot
     {
         /// <summary>
         /// [데이터] 현재 레벨을 나타냅니다.
@@ -48,11 +49,30 @@ namespace IdleGame.Core.Unit
         public ExactInt price;
 
         /// <summary>
+        /// [데이터] 능력 타입입니다.
+        /// </summary>
+        public eAbilityType type;
+
+        /// <summary>
+        /// [초기화] 데이터를 초기화시킵니다.
+        /// </summary>
+        public Data_AbilitySlot Init(eAbilityType m_type)
+        {
+            type = m_type;
+            level = 1;
+            price = new ExactInt(0);
+            value = new ExactInt(0);
+
+            return this;
+        }
+
+        /// <summary>
         /// [기능] 정해진 레벨만큼 레벨업을 시킵니다. 
         /// </summary>
         public void LevelUp(int m_level = 1)
         {
             level += m_level;
+            Global_Data.Player.Update_UnitAb(type);
         }
     }
 

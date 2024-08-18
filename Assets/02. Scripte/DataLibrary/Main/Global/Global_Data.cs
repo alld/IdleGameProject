@@ -2,7 +2,6 @@ using IdleGame.Core.Unit;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.EditorSetting;
 using IdleGame.Data.NSave;
-using IdleGame.Data.Numeric;
 using IdleGame.Data.Option;
 using System;
 using System.Collections.Generic;
@@ -103,12 +102,7 @@ namespace IdleGame.Data
                 if (Player.slot_Ability.ContainsKey(type))
                     continue;
 
-                Player.slot_Ability.Add(type, new Data_AbilitySlot()
-                {
-                    level = 1,
-                    price = new ExactInt(0),
-                    value = new ExactInt(0)
-                });
+                Player.slot_Ability.Add(type, new Data_AbilitySlot().Init(type));
             }
         }
     }
