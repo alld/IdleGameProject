@@ -7,11 +7,6 @@ using System.Text;
 
 namespace IdleGame.Data.Numeric
 {
-    static class DataLimit
-    {
-        public const int Int = 1000;
-    }
-
     /// <summary>
     /// [데이터] 단위 환산식 수식에 사용되는 커스텀 숫자입니다. 
     /// </summary>
@@ -19,9 +14,25 @@ namespace IdleGame.Data.Numeric
     public struct ExactInt
     {
         /// <summary>
+        /// [캐시] 데이터를 구성하는 단위입니다.
+        /// </summary>
+        private const int LimitInt = 1000;
+
+        /// <summary>
+        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 숫자만을 담습니다.
+        /// </summary>
+        private static StringBuilder _Sb_digit = new StringBuilder(10);
+
+        /// <summary>
+        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 문자만을 담습니다. 
+        /// </summary>
+        private static StringBuilder _Sb_letter = new StringBuilder(10);
+
+        #region 구성
+        /// <summary>
         /// [데이터] 단위별 해당하는 값입니다.
         /// </summary>
-        public List<int> Value;
+        public int[] Value;
         /// <summary>
         /// [데이터] 현재 숫자의 단위 값입니다.
         /// </summary>
@@ -30,20 +41,12 @@ namespace IdleGame.Data.Numeric
         /// [데이터] 표현된 값이 음수인지, 양수인지를 나타냅니다. 
         /// </summary>
         public bool IsPositive;
-
-        /// <summary>
-        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 숫자만을 담습니다.
-        /// </summary>
-        private static StringBuilder _Sb_digit = new StringBuilder(10);
-        /// <summary>
-        /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 문자만을 담습니다. 
-        /// </summary>
-        private static StringBuilder _Sb_letter = new StringBuilder(10);
+        #endregion
 
         // Value 값에 IntLimit 이상의 값이 들어가지 않는 것을 원칙으로 한다.
         public ExactInt(int value, bool isPositive = true, int scale = 0)
         {
-            Value = new List<int>(new int[scale + 1]);
+            Value = new int[scale + 1];
             Scale = scale;
             IsPositive = isPositive;
             Value[scale] = value;
@@ -51,7 +54,7 @@ namespace IdleGame.Data.Numeric
 
         public ExactInt(int value, int scale)
         {
-            Value = new List<int>(new int[scale + 1]);
+            Value = new int[scale + 1];
             Scale = scale;
             IsPositive = value >= 0;
             Value[scale] = value;
@@ -60,18 +63,18 @@ namespace IdleGame.Data.Numeric
         public ExactInt(int value)
         {
             Value = ConvertNumber(value);
-            Scale = Value.Count - 1;
+            Scale = Value.Length - 1;
             IsPositive = value >= 0;
         }
 
         public ExactInt(long value)
         {
             Value = ConvertNumber(value);
-            Scale = Value.Count - 1;
+            Scale = Value.Length - 1;
             IsPositive = value >= 0;
         }
 
-        public ExactInt(List<int> value, bool isPositive = true, int scale = 0)
+        public ExactInt(int[] value, bool isPositive = true, int scale = 0)
         {
             Value = value;
             Scale = scale;
@@ -107,12 +110,58 @@ namespace IdleGame.Data.Numeric
             return true;
         }
 
-        public static List<int> ConvertNumber(int m_value)
+        public static void AddValue(ref int[] m_value, int m_target)
+        {
+            int[] newArray = new int[m_value.Length + 1];
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                newArray[i] = m_value[i];
+            }
+            newArray[m_value.Length] = m_target;
+            m_value = newArray;
+        }
+
+        public static void RemoveAtValue(ref int[] m_value, int m_index)
+        {
+            int[] newArray = new int[m_value.Length - 1];
+            for (int i = 0, j = 0; i < m_value.Length; i++)
+            {
+                if (i != m_index)
+                {
+                    newArray[j++] = m_value[i];
+                }
+            }
+            m_value = newArray;
+        }
+
+        public static void RemoveValue(ref int[] m_value, int m_target)
+        {
+            int count = 0;
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                if (m_value[i] != m_target)
+                {
+                    count++;
+                }
+            }
+
+            int[] newArray = new int[count];
+            for (int i = 0, j = 0; i < m_value.Length; i++)
+            {
+                if (m_value[i] != m_target)
+                {
+                    newArray[j++] = m_value[i];
+                }
+            }
+            m_value = newArray;
+        }
+
+        public static int[] ConvertNumber(int m_value)
         {
             return ConvertNumber((long)m_value);
         }
 
-        public static List<int> ConvertNumber(long m_value)
+        public static int[] ConvertNumber(long m_value)
         {
             List<int> result = new List<int>();
             m_value = Math.Abs(m_value);
@@ -128,7 +177,7 @@ namespace IdleGame.Data.Numeric
                 m_value /= 10000;
             }
 
-            return result;
+            return result.ToArray();
         }
 
         public override string ToString()
@@ -137,9 +186,9 @@ namespace IdleGame.Data.Numeric
 
             result += Value.Last().ToString();
 
-            if (Value.Count > 1)
+            if (Value.Length > 1)
             {
-                string decimalString = Value[Value.Count - 2].ToString();
+                string decimalString = Value[Value.Length - 2].ToString();
                 if (decimalString.Length > 2)
                 {
                     result += '.';
@@ -168,20 +217,20 @@ namespace IdleGame.Data.Numeric
 
         private void Normalize()
         {
-            for (int i = 0; i < Value.Count; ++i)
+            for (int i = 0; i < Value.Length; ++i)
             {
-                if (Value[i] < DataLimit.Int) continue;
+                if (Value[i] < LimitInt) continue;
 
-                if (i == Value.Count - 1)
+                if (i == Value.Length - 1)
                 {
-                    Value.Add(0);
+                    AddValue(ref Value, 0);
                 }
 
-                Value[i + 1] += Value[i] / DataLimit.Int;
-                Value[i] %= DataLimit.Int;
+                Value[i + 1] += Value[i] / LimitInt;
+                Value[i] %= LimitInt;
             }
 
-            Scale = Value.Count - 1;
+            Scale = Value.Length - 1;
         }
 
         private static int CompareAbsoluteValues(ExactInt a, ExactInt b)
@@ -191,7 +240,7 @@ namespace IdleGame.Data.Numeric
                 return a.Scale > b.Scale ? 1 : -1;
             }
 
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            for (int i = a.Value.Length - 1; i >= 0; --i)
             {
                 if (a.Value[i] != b.Value[i])
                 {
@@ -209,14 +258,14 @@ namespace IdleGame.Data.Numeric
             {
                 for (int i = 0; i < scaleDiff; ++i)
                 {
-                    b.Value.Add(0);
+                    AddValue(ref a.Value, 0);
                 }
             }
             else if (b.Scale > a.Scale)
             {
                 for (int i = 0; i < scaleDiff; ++i)
                 {
-                    a.Value.Add(0);
+                    AddValue(ref a.Value, 0);
                 }
             }
         }
@@ -234,7 +283,7 @@ namespace IdleGame.Data.Numeric
             }
 
             AlignScales(ref a, ref b);
-            for (int i = 0; i < a.Value.Count; ++i)
+            for (int i = 0; i < a.Value.Length; ++i)
             {
                 a.Value[i] += b.Value[i];
             }
@@ -285,27 +334,27 @@ namespace IdleGame.Data.Numeric
 
             if (comparison > 0)
             {
-                for (int i = 0; i < a.Value.Count; ++i)
+                for (int i = 0; i < a.Value.Length; ++i)
                 {
                     a.Value[i] -= b.Value[i];
                 }
             }
             else
             {
-                for (int i = 0; i < a.Value.Count; ++i)
+                for (int i = 0; i < a.Value.Length; ++i)
                 {
                     a.Value[i] = b.Value[i] - a.Value[i];
                 }
             }
 
-            for (int i = a.Value.Count - 1; i > 0; --i)
+            for (int i = a.Value.Length - 1; i > 0; --i)
             {
                 if (a.Value[i - 1] < 0)
                 {
-                    a.Value[i - 1] += DataLimit.Int;
-                    if (--a.Value[i] == 0 && i == a.Value.Count - 1)
+                    a.Value[i - 1] += LimitInt;
+                    if (--a.Value[i] == 0 && i == a.Value.Length - 1)
                     {
-                        a.Value.RemoveAt(i);
+                        RemoveAtValue(ref a.Value, i);
                     }
                 }
             }
@@ -331,10 +380,10 @@ namespace IdleGame.Data.Numeric
 
         public static ExactInt operator *(ExactInt a, ExactInt b)
         {
-            List<int> resultValue = new List<int>(new int[a.Value.Count + b.Value.Count - 1]);
-            for (int i = 0; i < a.Value.Count; ++i)
+            int[] resultValue = new int[a.Value.Length + b.Value.Length - 1];
+            for (int i = 0; i < a.Value.Length; ++i)
             {
-                for (int j = 0; j < b.Value.Count; ++j)
+                for (int j = 0; j < b.Value.Length; ++j)
                 {
                     resultValue[i + j] += a.Value[i] * b.Value[j];
                 }
@@ -372,23 +421,23 @@ namespace IdleGame.Data.Numeric
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
 
-            int devideValue = b.Value.Last() * DataLimit.Int;
+            int devideValue = b.Value.Last() * LimitInt;
             if (b.Value.Count() > 1)
             {
                 devideValue += b.Value[b.Value.Count() - 2];
             }
             int temp = 0;
-            for (int i = a.Value.Count - 1; i > 0; --i)
+            for (int i = a.Value.Length - 1; i > 0; --i)
             {
-                temp = (temp * DataLimit.Int + a.Value[i]) * DataLimit.Int + a.Value[i - 1];
+                temp = (temp * LimitInt + a.Value[i]) * LimitInt + a.Value[i - 1];
                 a.Value[i] = temp / devideValue;
-                if (i > 0 && a.Value[i] == 0 && i == a.Value.Count - 1)
+                if (i > 0 && a.Value[i] == 0 && i == a.Value.Length - 1)
                 {
-                    a.Value.RemoveAt(i);
+                    RemoveAtValue(ref a.Value, i);
                 }
                 temp %= devideValue;
             }
-            a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value.Last();
+            a.Value[0] = (temp * LimitInt + a.Value[0]) / b.Value.Last();
 
             a.Normalize();
 
@@ -421,7 +470,7 @@ namespace IdleGame.Data.Numeric
                 return a.Scale < b.Scale;
             }
 
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            for (int i = a.Value.Length - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
                 return a.Value[i] < b.Value[i];
@@ -451,7 +500,7 @@ namespace IdleGame.Data.Numeric
                 return a.Scale > b.Scale;
             }
 
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            for (int i = a.Value.Length - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
                 return a.Value[i] > b.Value[i];
@@ -475,7 +524,7 @@ namespace IdleGame.Data.Numeric
 
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
 
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            for (int i = a.Value.Length - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
                 return false;
@@ -502,7 +551,7 @@ namespace IdleGame.Data.Numeric
         {
             if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
 
-            for (int i = a.Value.Count - 1; i >= 0; --i)
+            for (int i = a.Value.Length - 1; i >= 0; --i)
             {
                 if (a.Value[i] == b.Value[i]) continue;
                 return true;
@@ -623,6 +672,8 @@ namespace IdleGame.Data.Numeric
     [Serializable]
     public struct SimpleInt
     {
+        private const int LimitInt = 1000;
+
         public List<int> Value;
         public int Scale;
         public bool IsPositive;
@@ -678,7 +729,7 @@ namespace IdleGame.Data.Numeric
         {
             for (int i = 0; i < Value.Count(); ++i)
             {
-                if (Value[i] >= DataLimit.Int)
+                if (Value[i] >= LimitInt)
                 {
                     if (i == Value.Count() - 1)
                     {
@@ -686,8 +737,8 @@ namespace IdleGame.Data.Numeric
                         Scale++;
                     }
 
-                    Value[i + 1] += Value[i] / DataLimit.Int;
-                    Value[i] %= DataLimit.Int;
+                    Value[i + 1] += Value[i] / LimitInt;
+                    Value[i] %= LimitInt;
                 }
             }
 
@@ -796,7 +847,7 @@ namespace IdleGame.Data.Numeric
                 if (a.Value[i - 1] < 0)
                 {
                     a.Value[i]--;
-                    a.Value[i - 1] += DataLimit.Int;
+                    a.Value[i - 1] += LimitInt;
                 }
             }
 
@@ -840,11 +891,11 @@ namespace IdleGame.Data.Numeric
             a.Scale -= b.Scale;
             a.IsPositive = a.IsPositive == b.IsPositive;
 
-            int devideValue = b.Value[1] * DataLimit.Int + b.Value[0];
-            int temp = (a.Value[1] * DataLimit.Int) + a.Value[0];
+            int devideValue = b.Value[1] * LimitInt + b.Value[0];
+            int temp = (a.Value[1] * LimitInt) + a.Value[0];
             a.Value[1] = temp / devideValue;
             temp = temp % devideValue;
-            a.Value[0] = (temp * DataLimit.Int + a.Value[0]) / b.Value[1];
+            a.Value[0] = (temp * LimitInt + a.Value[0]) / b.Value[1];
 
             if (a.Value[1] == 0 && a.Value[0] != 0)
             {
