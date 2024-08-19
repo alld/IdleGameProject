@@ -32,54 +32,162 @@ namespace IdleGame.Data.Numeric
         /// <summary>
         /// [데이터] 단위별 해당하는 값입니다.
         /// </summary>
-        public int[] Value;
+        public int[] value;
         /// <summary>
         /// [데이터] 현재 숫자의 단위 값입니다.
         /// </summary>
-        public int Scale;
+        public int scale;
         /// <summary>
         /// [데이터] 표현된 값이 음수인지, 양수인지를 나타냅니다. 
+        /// <br> true : 양수</br>
+        /// <br> false : 음수 </br>
         /// </summary>
-        public bool IsPositive;
+        public bool isPositive;
         #endregion
 
-        // Value 값에 IntLimit 이상의 값이 들어가지 않는 것을 원칙으로 한다.
-        public ExactInt(int value, bool isPositive = true, int scale = 0)
+
+        #region 생성자
+        /// <summary>
+        /// [생성자] 모든 구성을 일일이 지정하여 생성합니다. 
+        /// </summary> 
+        public ExactInt(int m_value, bool m_isPositive = true, int m_scale = 0)
         {
-            Value = new int[scale + 1];
-            Scale = scale;
-            IsPositive = isPositive;
-            Value[scale] = value;
+            value = new int[m_scale + 1];
+            scale = m_scale;
+            isPositive = m_isPositive;
+            value[m_scale] = m_value;
         }
 
-        public ExactInt(int value, int scale)
+        /// <summary>
+        /// [생성자] 값과 스케일을 지정하여 생성합니다.
+        /// </summary>
+        public ExactInt(int m_value, int m_scale)
         {
-            Value = new int[scale + 1];
-            Scale = scale;
-            IsPositive = value >= 0;
-            Value[scale] = value;
+            value = new int[m_scale + 1];
+            scale = m_scale;
+            isPositive = m_value >= 0;
+            value[m_scale] = m_value;
         }
 
-        public ExactInt(int value)
+        /// <summary>
+        /// [생성자] 인트를 가지고 
+        /// </summary>
+        public ExactInt(int m_value)
         {
-            Value = ConvertNumber(value);
-            Scale = Value.Length - 1;
-            IsPositive = value >= 0;
+            value = ConvertNumber(m_value);
+            scale = value.Length - 1;
+            isPositive = m_value >= 0;
         }
 
-        public ExactInt(long value)
+        public ExactInt(long m_value)
         {
-            Value = ConvertNumber(value);
-            Scale = Value.Length - 1;
-            IsPositive = value >= 0;
+            value = ConvertNumber(m_value);
+            scale = value.Length - 1;
+            isPositive = m_value >= 0;
         }
 
-        public ExactInt(int[] value, bool isPositive = true, int scale = 0)
+        public ExactInt(int[] m_value, bool m_isPositive = true, int m_scale = 0)
         {
-            Value = value;
-            Scale = scale;
-            IsPositive = isPositive;
+            value = m_value;
+            scale = m_scale;
+            isPositive = m_isPositive;
         }
+
+        #region 형변환
+        public static explicit operator ExactInt(int b) => new ExactInt(b);
+        public static explicit operator ExactInt(long b) => new ExactInt(b);
+
+
+        public override string ToString()
+        {
+            string result = isPositive ? "" : "-";
+
+            result += value.Last().ToString();
+
+            if (value.Length > 1)
+            {
+                string decimalString = value[value.Length - 2].ToString();
+                if (decimalString.Length > 2)
+                {
+                    result += '.';
+                    decimalString = decimalString.Length > 3 ? decimalString : '0' + decimalString;
+                    result += decimalString[1] == '0' ? decimalString[0] : decimalString.Substring(0, 2);
+                }
+            }
+
+            result += ScaleToAlphabet(scale);
+
+            return result;
+        }
+
+
+        public static ExactInt Parse(string m_value)
+        {
+            _Sb_digit.Clear();
+            _Sb_letter.Clear();
+
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                if (char.IsDigit(m_value[i]))
+                    _Sb_digit.Append(m_value[i]);
+                else
+                    _Sb_letter.Append(m_value[i]);
+            }
+
+            return new ExactInt(_Sb_digit.Length == 0 ? 0 : int.Parse(_Sb_digit.ToString()), Convert_CharToScale(_Sb_letter.ToString()));
+        }
+
+        /// <summary>
+        /// [변환] 입력받은 문자를 토대로 스케일값을 반환합니다. 
+        /// </summary>
+        public static int Convert_CharToScale(string m_value)
+        {
+            if (m_value.IsNullOrEmpty())
+                return 0;
+
+            m_value = m_value.ToUpper();
+
+            int changeNumber = 0;
+
+            for (int i = 0; i < m_value.Length; i++)
+            {
+                if (Char.IsDigit(m_value[i]))
+                    continue;
+
+                int charDigit = m_value[i];
+                if (charDigit >= 65 && charDigit <= 90)
+                    changeNumber += (charDigit - 64) * (int)Math.Pow(26, i);
+            }
+
+            return changeNumber;
+        }
+
+        public static int[] ConvertNumber(int m_value)
+        {
+            return ConvertNumber((long)m_value);
+        }
+
+        public static int[] ConvertNumber(long m_value)
+        {
+            List<int> result = new List<int>();
+            m_value = Math.Abs(m_value);
+
+            while (true)
+            {
+                if (m_value < 10000)
+                {
+                    result.Add((int)m_value);
+                    break;
+                }
+
+                m_value /= 10000;
+            }
+
+            return result.ToArray();
+        }
+        #endregion
+        #endregion
+
 
         /// <summary>
         /// [기능] 퍼센트를 적용합니다. 
@@ -99,12 +207,15 @@ namespace IdleGame.Data.Numeric
             SetPercent((int)m_value);
         }
 
+        /// <summary>
+        /// [기능] 해당 값이 0인지를 판단합니다. 
+        /// </summary>
         public static bool CompareZero(ExactInt m_value)
         {
-            if (m_value.Scale != 0)
+            if (m_value.scale != 0)
                 return false;
 
-            if (m_value.Value[0] != 0)
+            if (m_value.value[0] != 0)
                 return false;
 
             return true;
@@ -156,136 +267,21 @@ namespace IdleGame.Data.Numeric
             m_value = newArray;
         }
 
-        public static int[] ConvertNumber(int m_value)
-        {
-            return ConvertNumber((long)m_value);
-        }
 
-        public static int[] ConvertNumber(long m_value)
-        {
-            List<int> result = new List<int>();
-            m_value = Math.Abs(m_value);
+        #region 연산자 재정의
+        #region 사칙연산
 
-            while (true)
-            {
-                if (m_value < 10000)
-                {
-                    result.Add((int)m_value);
-                    break;
-                }
-
-                m_value /= 10000;
-            }
-
-            return result.ToArray();
-        }
-
-        public override string ToString()
-        {
-            string result = IsPositive ? "" : "-";
-
-            result += Value.Last().ToString();
-
-            if (Value.Length > 1)
-            {
-                string decimalString = Value[Value.Length - 2].ToString();
-                if (decimalString.Length > 2)
-                {
-                    result += '.';
-                    decimalString = decimalString.Length > 3 ? decimalString : '0' + decimalString;
-                    result += decimalString[1] == '0' ? decimalString[0] : decimalString.Substring(0, 2);
-                }
-            }
-
-            result += ScaleToAlphabet(Scale);
-
-            return result;
-        }
-
-        public static string ScaleToAlphabet(int scale)
-        {
-            string result = string.Empty;
-            while (scale > 0)
-            {
-                scale--; // 1을 빼서 0부터 시작하도록 조정
-                int remainder = scale % 26;
-                result = (char)(remainder + 'a') + result;
-                scale /= 26;
-            }
-            return result;
-        }
-
-        private void Normalize()
-        {
-            for (int i = 0; i < Value.Length; ++i)
-            {
-                if (Value[i] < LimitInt) continue;
-
-                if (i == Value.Length - 1)
-                {
-                    AddValue(ref Value, 0);
-                }
-
-                Value[i + 1] += Value[i] / LimitInt;
-                Value[i] %= LimitInt;
-            }
-
-            Scale = Value.Length - 1;
-        }
-
-        private static int CompareAbsoluteValues(ExactInt a, ExactInt b)
-        {
-            if (a.Scale != b.Scale)
-            {
-                return a.Scale > b.Scale ? 1 : -1;
-            }
-
-            for (int i = a.Value.Length - 1; i >= 0; --i)
-            {
-                if (a.Value[i] != b.Value[i])
-                {
-                    return a.Value[i] > b.Value[i] ? 1 : -1;
-                }
-            }
-
-            return 0;
-        }
-
-        private static void AlignScales(ref ExactInt a, ref ExactInt b)
-        {
-            int scaleDiff = Math.Abs(a.Scale - b.Scale);
-            if (a.Scale > b.Scale)
-            {
-                for (int i = 0; i < scaleDiff; ++i)
-                {
-                    AddValue(ref a.Value, 0);
-                }
-            }
-            else if (b.Scale > a.Scale)
-            {
-                for (int i = 0; i < scaleDiff; ++i)
-                {
-                    AddValue(ref a.Value, 0);
-                }
-            }
-        }
-
-
-        public static explicit operator ExactInt(int b) => new ExactInt(b);
-        public static explicit operator ExactInt(long b) => new ExactInt(b);
-
+        #region 더하기
         public static ExactInt operator +(ExactInt a, ExactInt b)
         {
-            if (a.IsPositive != b.IsPositive)
-            {
-                b.IsPositive = !b.IsPositive;
+            // 조건 :: 
+            if (a.isPositive != b.isPositive)
                 return a - b;
-            }
 
             AlignScales(ref a, ref b);
-            for (int i = 0; i < a.Value.Length; ++i)
+            for (int i = 0; i < a.value.Length; ++i)
             {
-                a.Value[i] += b.Value[i];
+                a.value[i] += b.value[i];
             }
 
             a.Normalize();
@@ -309,18 +305,18 @@ namespace IdleGame.Data.Numeric
 
         public static ExactInt operator -(ExactInt a)
         {
-            a.IsPositive = false;
+            a.isPositive = false;
             return a;
         }
-
+        #endregion
+        #region 빼기
         public static ExactInt operator -(ExactInt a, ExactInt b)
         {
-            if (a.IsPositive != b.IsPositive)
-            {
-                b.IsPositive = !b.IsPositive;
+            b.isPositive = !b.isPositive;
 
+            if (a.isPositive != b.isPositive)
                 return a + b;
-            }
+
 
             int comparison = CompareAbsoluteValues(a, b);
 
@@ -330,31 +326,31 @@ namespace IdleGame.Data.Numeric
             }
 
             AlignScales(ref a, ref b);
-            a.IsPositive = comparison > 0 ? a.IsPositive : !a.IsPositive;
+            a.isPositive = comparison > 0 ? a.isPositive : !a.isPositive;
 
             if (comparison > 0)
             {
-                for (int i = 0; i < a.Value.Length; ++i)
+                for (int i = 0; i < a.value.Length; ++i)
                 {
-                    a.Value[i] -= b.Value[i];
+                    a.value[i] -= b.value[i];
                 }
             }
             else
             {
-                for (int i = 0; i < a.Value.Length; ++i)
+                for (int i = 0; i < a.value.Length; ++i)
                 {
-                    a.Value[i] = b.Value[i] - a.Value[i];
+                    a.value[i] = b.value[i] - a.value[i];
                 }
             }
 
-            for (int i = a.Value.Length - 1; i > 0; --i)
+            for (int i = a.value.Length - 1; i > 0; --i)
             {
-                if (a.Value[i - 1] < 0)
+                if (a.value[i - 1] < 0)
                 {
-                    a.Value[i - 1] += LimitInt;
-                    if (--a.Value[i] == 0 && i == a.Value.Length - 1)
+                    a.value[i - 1] += LimitInt;
+                    if (--a.value[i] == 0 && i == a.value.Length - 1)
                     {
-                        RemoveAtValue(ref a.Value, i);
+                        RemoveAtValue(ref a.value, i);
                     }
                 }
             }
@@ -377,20 +373,21 @@ namespace IdleGame.Data.Numeric
 
             return a - num_b;
         }
-
+        #endregion
+        #region 곱하기
         public static ExactInt operator *(ExactInt a, ExactInt b)
         {
-            int[] resultValue = new int[a.Value.Length + b.Value.Length - 1];
-            for (int i = 0; i < a.Value.Length; ++i)
+            int[] resultValue = new int[a.value.Length + b.value.Length - 1];
+            for (int i = 0; i < a.value.Length; ++i)
             {
-                for (int j = 0; j < b.Value.Length; ++j)
+                for (int j = 0; j < b.value.Length; ++j)
                 {
-                    resultValue[i + j] += a.Value[i] * b.Value[j];
+                    resultValue[i + j] += a.value[i] * b.value[j];
                 }
             }
 
-            bool resultIsPositive = a.IsPositive == b.IsPositive;
-            ExactInt result = new ExactInt(resultValue, resultIsPositive, a.Scale + b.Scale);
+            bool resultIsPositive = a.isPositive == b.isPositive;
+            ExactInt result = new ExactInt(resultValue, resultIsPositive, a.scale + b.scale);
             result.Normalize();
             return result;
         }
@@ -409,35 +406,38 @@ namespace IdleGame.Data.Numeric
             return a * num_b;
         }
 
+        #endregion
+        #region 나누기
+
         public static ExactInt operator /(ExactInt a, ExactInt b)
         {
-            if (b.Value.Last() == 0)
+            if (CompareZero(a) || CompareZero(b))
             {
-                throw new DivideByZeroException();
+                return new ExactInt(0);
             }
 
-            if (a.Scale < b.Scale || (a.Scale == b.Scale && a.Value[a.Scale] < b.Value[b.Scale])) return new ExactInt(0);
+            if (a.scale < b.scale || (a.scale == b.scale && a.value[a.scale] < b.value[b.scale])) return new ExactInt(0);
 
-            a.Scale -= b.Scale;
-            a.IsPositive = a.IsPositive == b.IsPositive;
+            a.scale -= b.scale;
+            a.isPositive = a.isPositive == b.isPositive;
 
-            int devideValue = b.Value.Last() * LimitInt;
-            if (b.Value.Count() > 1)
+            int devideValue = b.value.Last() * LimitInt;
+            if (b.value.Count() > 1)
             {
-                devideValue += b.Value[b.Value.Count() - 2];
+                devideValue += b.value[b.value.Count() - 2];
             }
             int temp = 0;
-            for (int i = a.Value.Length - 1; i > 0; --i)
+            for (int i = a.value.Length - 1; i > 0; --i)
             {
-                temp = (temp * LimitInt + a.Value[i]) * LimitInt + a.Value[i - 1];
-                a.Value[i] = temp / devideValue;
-                if (i > 0 && a.Value[i] == 0 && i == a.Value.Length - 1)
+                temp = (temp * LimitInt + a.value[i]) * LimitInt + a.value[i - 1];
+                a.value[i] = temp / devideValue;
+                if (i > 0 && a.value[i] == 0 && i == a.value.Length - 1)
                 {
-                    RemoveAtValue(ref a.Value, i);
+                    RemoveAtValue(ref a.value, i);
                 }
                 temp %= devideValue;
             }
-            a.Value[0] = (temp * LimitInt + a.Value[0]) / b.Value.Last();
+            a.value[0] = (temp * LimitInt + a.value[0]) / b.value.Last();
 
             a.Normalize();
 
@@ -458,22 +458,28 @@ namespace IdleGame.Data.Numeric
             return a / num_b;
         }
 
+        #endregion
+
+        #endregion
+
+        #region 비교 연산자
+
         public static bool operator <(ExactInt a, ExactInt b)
         {
-            if (a.IsPositive != b.IsPositive)
+            if (a.isPositive != b.isPositive)
             {
-                return !a.IsPositive;
+                return !a.isPositive;
             }
 
-            if (a.Scale != b.Scale)
+            if (a.scale != b.scale)
             {
-                return a.Scale < b.Scale;
+                return a.scale < b.scale;
             }
 
-            for (int i = a.Value.Length - 1; i >= 0; --i)
+            for (int i = a.value.Length - 1; i >= 0; --i)
             {
-                if (a.Value[i] == b.Value[i]) continue;
-                return a.Value[i] < b.Value[i];
+                if (a.value[i] == b.value[i]) continue;
+                return a.value[i] < b.value[i];
             }
 
             return false;
@@ -490,20 +496,20 @@ namespace IdleGame.Data.Numeric
 
         public static bool operator >(ExactInt a, ExactInt b)
         {
-            if (a.IsPositive != b.IsPositive)
+            if (a.isPositive != b.isPositive)
             {
-                return a.IsPositive;
+                return a.isPositive;
             }
 
-            if (a.Scale != b.Scale)
+            if (a.scale != b.scale)
             {
-                return a.Scale > b.Scale;
+                return a.scale > b.scale;
             }
 
-            for (int i = a.Value.Length - 1; i >= 0; --i)
+            for (int i = a.value.Length - 1; i >= 0; --i)
             {
-                if (a.Value[i] == b.Value[i]) continue;
-                return a.Value[i] > b.Value[i];
+                if (a.value[i] == b.value[i]) continue;
+                return a.value[i] > b.value[i];
             }
 
             return false;
@@ -522,11 +528,11 @@ namespace IdleGame.Data.Numeric
         {
             if (CompareZero(a) == CompareZero(b)) return true;
 
-            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return false;
+            if (a.isPositive != b.isPositive || a.scale != b.scale) return false;
 
-            for (int i = a.Value.Length - 1; i >= 0; --i)
+            for (int i = a.value.Length - 1; i >= 0; --i)
             {
-                if (a.Value[i] == b.Value[i]) continue;
+                if (a.value[i] == b.value[i]) continue;
                 return false;
             }
 
@@ -549,11 +555,11 @@ namespace IdleGame.Data.Numeric
 
         public static bool operator !=(ExactInt a, ExactInt b)
         {
-            if (a.IsPositive != b.IsPositive || a.Scale != b.Scale) return true;
+            if (a.isPositive != b.isPositive || a.scale != b.scale) return true;
 
-            for (int i = a.Value.Length - 1; i >= 0; --i)
+            for (int i = a.value.Length - 1; i >= 0; --i)
             {
-                if (a.Value[i] == b.Value[i]) continue;
+                if (a.value[i] == b.value[i]) continue;
                 return true;
             }
 
@@ -612,45 +618,80 @@ namespace IdleGame.Data.Numeric
             return a >= num_b;
         }
 
-        public static ExactInt Parse(string m_value)
+        #endregion
+
+        #endregion
+
+
+        public static string ScaleToAlphabet(int scale)
         {
-            _Sb_digit.Clear();
-            _Sb_letter.Clear();
-
-            for (int i = 0; i < m_value.Length; i++)
+            string result = string.Empty;
+            while (scale > 0)
             {
-                if (char.IsDigit(m_value[i]))
-                    _Sb_digit.Append(m_value[i]);
-                else
-                    _Sb_letter.Append(m_value[i]);
+                scale--; // 1을 빼서 0부터 시작하도록 조정
+                int remainder = scale % 26;
+                result = (char)(remainder + 'a') + result;
+                scale /= 26;
             }
-
-            return new ExactInt(_Sb_digit.Length == 0 ? 0 : int.Parse(_Sb_digit.ToString()), Convert_CharToScale(_Sb_letter.ToString()));
+            return result;
         }
 
         /// <summary>
-        /// [변환] 입력받은 문자를 토대로 스케일값을 반환합니다. 
+        /// [기능] 기본 규격에 맞쳐서 값을 재정렬시킵니다. 
         /// </summary>
-        public static int Convert_CharToScale(string m_value)
+        private void Normalize()
         {
-            if (m_value.IsNullOrEmpty())
-                return 0;
-
-            m_value = m_value.ToUpper();
-
-            int changeNumber = 0;
-
-            for (int i = 0; i < m_value.Length; i++)
+            for (int i = 0; i < value.Length; ++i)
             {
-                if (Char.IsDigit(m_value[i]))
-                    continue;
+                if (value[i] < LimitInt) continue;
 
-                int charDigit = m_value[i];
-                if (charDigit >= 65 && charDigit <= 90)
-                    changeNumber += (charDigit - 64) * (int)Math.Pow(26, i);
+                if (i == value.Length - 1)
+                {
+                    AddValue(ref value, 0);
+                }
+
+                value[i + 1] += value[i] / LimitInt;
+                value[i] %= LimitInt;
             }
 
-            return changeNumber;
+            scale = value.Length - 1;
+        }
+
+        private static int CompareAbsoluteValues(ExactInt a, ExactInt b)
+        {
+            if (a.scale != b.scale)
+            {
+                return a.scale > b.scale ? 1 : -1;
+            }
+
+            for (int i = a.value.Length - 1; i >= 0; --i)
+            {
+                if (a.value[i] != b.value[i])
+                {
+                    return a.value[i] > b.value[i] ? 1 : -1;
+                }
+            }
+
+            return 0;
+        }
+
+        private static void AlignScales(ref ExactInt a, ref ExactInt b)
+        {
+            int scaleDiff = Math.Abs(a.scale - b.scale);
+            if (a.scale > b.scale)
+            {
+                for (int i = 0; i < scaleDiff; ++i)
+                {
+                    AddValue(ref a.value, 0);
+                }
+            }
+            else if (b.scale > a.scale)
+            {
+                for (int i = 0; i < scaleDiff; ++i)
+                {
+                    AddValue(ref a.value, 0);
+                }
+            }
         }
 
         /// <summary>
