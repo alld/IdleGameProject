@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace IdleGame.Data.Numeric
 {
@@ -14,9 +15,14 @@ namespace IdleGame.Data.Numeric
     public struct ExactInt
     {
         /// <summary>
-        /// [캐시] 데이터를 구성하는 단위입니다.
+        /// [데이터] 데이터를 구성하는 단위입니다.
         /// </summary>
         private const int LimitInt = 1000;
+
+        /// <summary>
+        /// [데이터] 데이터가 계산되는 환산 단위입니다.
+        /// </summary>
+        private const int UnitScale = 10000;
 
         /// <summary>
         /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 숫자만을 담습니다.
@@ -43,6 +49,11 @@ namespace IdleGame.Data.Numeric
         /// <br> false : 음수 </br>
         /// </summary>
         public bool isPositive;
+        // 겟터 셋터를 이용해서 관리함. 
+        /// <summary>
+        /// [데이터] 최근에 수정된 상태인지를 확인합니다. 
+        /// </summary>
+        private bool _isUpdated;
         #endregion
 
 
@@ -56,6 +67,7 @@ namespace IdleGame.Data.Numeric
             scale = m_scale;
             isPositive = m_isPositive;
             value[m_scale] = m_value;
+            _isUpdated = true;
         }
 
         /// <summary>
@@ -67,6 +79,7 @@ namespace IdleGame.Data.Numeric
             scale = m_scale;
             isPositive = m_value >= 0;
             value[m_scale] = m_value;
+            _isUpdated = true;
         }
 
         /// <summary>
@@ -77,6 +90,7 @@ namespace IdleGame.Data.Numeric
             value = ConvertNumber(m_value);
             scale = value.Length - 1;
             isPositive = m_value >= 0;
+            _isUpdated = true;
         }
 
         public ExactInt(long m_value)
@@ -84,6 +98,7 @@ namespace IdleGame.Data.Numeric
             value = ConvertNumber(m_value);
             scale = value.Length - 1;
             isPositive = m_value >= 0;
+            _isUpdated = true;
         }
 
         public ExactInt(int[] m_value, bool m_isPositive = true, int m_scale = 0)
@@ -91,12 +106,18 @@ namespace IdleGame.Data.Numeric
             value = m_value;
             scale = m_scale;
             isPositive = m_isPositive;
+            _isUpdated = true;
         }
 
         #region 형변환
         public static explicit operator ExactInt(int b) => new ExactInt(b);
         public static explicit operator ExactInt(long b) => new ExactInt(b);
 
+        public static ExactInt operator -(ExactInt a)
+        {
+            a.isPositive = false;
+            return a;
+        }
 
         public override string ToString()
         {
@@ -174,13 +195,13 @@ namespace IdleGame.Data.Numeric
 
             while (true)
             {
-                if (m_value < 10000)
+                if (m_value < UnitScale)
                 {
                     result.Add((int)m_value);
                     break;
                 }
 
-                m_value /= 10000;
+                m_value /= UnitScale;
             }
 
             return result.ToArray();
@@ -274,20 +295,53 @@ namespace IdleGame.Data.Numeric
         #region 더하기
         public static ExactInt operator +(ExactInt a, ExactInt b)
         {
-            // 조건 :: 
+            // 역할 :: 결과적으로 덧셈연산이 아닌, 뺄셈인 경우 뺄셈으로 넘김
             if (a.isPositive != b.isPositive)
-                return a - b;
-
-            AlignScales(ref a, ref b);
-            for (int i = 0; i < a.value.Length; ++i)
             {
-                a.value[i] += b.value[i];
+                b.isPositive = !b.isPositive;
+                return a - b;
             }
 
-            a.Normalize();
 
-            return a;
+            bool isOverFlow = false;
+            ExactInt result = new ExactInt(0, Mathf.Max(a.value.Length, b.value.Length));
+
+            // 역할 :: result에 두 값을 더하여 반영함
+            for (int i = 0; i < result.value.Length; ++i)
+            {
+                if (isOverFlow)
+                {
+                    isOverFlow = false;
+                    a.value[i] += 1;
+                }
+
+                result.value[i] = a.value[i] + b.value[i];
+                if (result.value[i] >= UnitScale)
+                {
+                    isOverFlow = true;
+                    result.value[i] -= UnitScale;
+                }
+            }
+
+            // 역할 :: 최종적으로 넘침이 발생한 경우 단위를 늘려줘야함
+            if (isOverFlow)
+            {
+                ExactInt tempValue = new ExactInt(0, result.scale + 1);
+
+                for (int i = 0; i < result.value.Length; i++)
+                {
+                    tempValue.value[i] = result.value[i];
+                }
+                tempValue.value[tempValue.scale] += 1;
+
+                result = tempValue;
+            }
+
+            // 역할 :: 최종적으로 계산된 값에 부호를 변경해준다.
+            result.isPositive = a.isPositive;
+            return result;
         }
+
 
         public static ExactInt operator +(ExactInt a, int b)
         {
@@ -303,61 +357,79 @@ namespace IdleGame.Data.Numeric
             return a + num_b;
         }
 
-        public static ExactInt operator -(ExactInt a)
-        {
-            a.isPositive = false;
-            return a;
-        }
         #endregion
         #region 빼기
         public static ExactInt operator -(ExactInt a, ExactInt b)
         {
             b.isPositive = !b.isPositive;
-
+            // 역할 :: 결과적으로 뺄셈 연산이 아닌 덧셈인 경우 덧셈으로 넘김
             if (a.isPositive != b.isPositive)
-                return a + b;
-
-
-            int comparison = CompareAbsoluteValues(a, b);
-
-            if (comparison == 0)
             {
-                return new ExactInt(0);
+                return a + b;
             }
 
-            AlignScales(ref a, ref b);
-            a.isPositive = comparison > 0 ? a.isPositive : !a.isPositive;
+            int availableIndex = 0;
+            ExactInt result = new ExactInt(0, Mathf.Max(a.value.Length, b.value.Length));
+            bool isPositive = a >= b;
+            a.isPositive = true;
+            b.isPositive = true;
 
-            if (comparison > 0)
+            // 역할 :: 높은수에서 단순 뺄셈이 계산이 간결해지기에 높은수를 구분함
+            ExactInt higherNumber, lowerNumber;
+            if (a >= b)
             {
-                for (int i = 0; i < a.value.Length; ++i)
-                {
-                    a.value[i] -= b.value[i];
-                }
+                higherNumber = a;
+                lowerNumber = b;
             }
             else
             {
-                for (int i = 0; i < a.value.Length; ++i)
-                {
-                    a.value[i] = b.value[i] - a.value[i];
-                }
+                higherNumber = b;
+                lowerNumber = a;
             }
 
-            for (int i = a.value.Length - 1; i > 0; --i)
+            // 역할 :: 높은수를 기반으로 낮은수를 뺍니다.
+            for (int i = higherNumber.scale; i >= 0; i--)
             {
-                if (a.value[i - 1] < 0)
+                if (lowerNumber.scale >= i)
                 {
-                    a.value[i - 1] += LimitInt;
-                    if (--a.value[i] == 0 && i == a.value.Length - 1)
+                    // 역할 :: 현재 뺄 값이 낮은수보다 낮은 경우, 앞에서 계산된 값을 가져옵니다.
+                    if (higherNumber.value[i] < lowerNumber.value[i])
                     {
-                        RemoveAtValue(ref a.value, i);
+                        higherNumber.value[availableIndex]--;
+                        for (int j = availableIndex; j > i; j++)
+                            higherNumber.value[j] += UnitScale - 1;
+
+                        higherNumber.value[i] += UnitScale;
+                        availableIndex = 0;
                     }
+
+                    // 역할 :: 값을 빼는 부분 
+                    higherNumber.value[i] -= lowerNumber.value[i];
                 }
+
+                // 역할 :: 여유가 있는 수치가 어디부터인지 기록하는 값
+                if (availableIndex == 0 && higherNumber.value[i] > 0)
+                    availableIndex = i;
             }
 
-            a.Normalize();
+            // 역할 :: 결손이 발생한 경우, 스케일이 변경될수 있기때문에 값을 재조정합니다.
+            for (int i = higherNumber.scale; i >= 0; i--)
+            {
+                if (higherNumber.value[i] == 0)
+                    continue;
 
-            return a;
+                result = new ExactInt(0, i);
+                break;
+            }
+
+            // 역할 :: 최종적으로 값을 결과값에 옮깁니다.
+            for (int i = 0; i < result.value.Length; i++)
+            {
+                result.value[i] = higherNumber.value[i];
+            }
+
+            result.isPositive = isPositive;
+            return result;
         }
 
         public static ExactInt operator -(ExactInt a, int b)
@@ -377,18 +449,25 @@ namespace IdleGame.Data.Numeric
         #region 곱하기
         public static ExactInt operator *(ExactInt a, ExactInt b)
         {
-            int[] resultValue = new int[a.value.Length + b.value.Length - 1];
+            ExactInt result = new ExactInt(0, a.scale + b.scale);
+
             for (int i = 0; i < a.value.Length; ++i)
             {
                 for (int j = 0; j < b.value.Length; ++j)
                 {
-                    resultValue[i + j] += a.value[i] * b.value[j];
+                    result.value[i + j] += a.value[i] * b.value[j];
                 }
             }
 
-            bool resultIsPositive = a.isPositive == b.isPositive;
-            ExactInt result = new ExactInt(resultValue, resultIsPositive, a.scale + b.scale);
-            result.Normalize();
+            int overflow = 0;
+            for (int i = 0; i < result.value.Length; i++)
+            {
+                result.value[i] += overflow;
+                overflow = result.value[i] / UnitScale;
+                result.value[i] -= overflow;
+            }
+
+            result.isPositive = a.isPositive == b.isPositive;
             return result;
         }
 
@@ -439,7 +518,6 @@ namespace IdleGame.Data.Numeric
             }
             a.value[0] = (temp * LimitInt + a.value[0]) / b.value.Last();
 
-            a.Normalize();
 
             return a;
         }
@@ -634,64 +712,6 @@ namespace IdleGame.Data.Numeric
                 scale /= 26;
             }
             return result;
-        }
-
-        /// <summary>
-        /// [기능] 기본 규격에 맞쳐서 값을 재정렬시킵니다. 
-        /// </summary>
-        private void Normalize()
-        {
-            for (int i = 0; i < value.Length; ++i)
-            {
-                if (value[i] < LimitInt) continue;
-
-                if (i == value.Length - 1)
-                {
-                    AddValue(ref value, 0);
-                }
-
-                value[i + 1] += value[i] / LimitInt;
-                value[i] %= LimitInt;
-            }
-
-            scale = value.Length - 1;
-        }
-
-        private static int CompareAbsoluteValues(ExactInt a, ExactInt b)
-        {
-            if (a.scale != b.scale)
-            {
-                return a.scale > b.scale ? 1 : -1;
-            }
-
-            for (int i = a.value.Length - 1; i >= 0; --i)
-            {
-                if (a.value[i] != b.value[i])
-                {
-                    return a.value[i] > b.value[i] ? 1 : -1;
-                }
-            }
-
-            return 0;
-        }
-
-        private static void AlignScales(ref ExactInt a, ref ExactInt b)
-        {
-            int scaleDiff = Math.Abs(a.scale - b.scale);
-            if (a.scale > b.scale)
-            {
-                for (int i = 0; i < scaleDiff; ++i)
-                {
-                    AddValue(ref a.value, 0);
-                }
-            }
-            else if (b.scale > a.scale)
-            {
-                for (int i = 0; i < scaleDiff; ++i)
-                {
-                    AddValue(ref a.value, 0);
-                }
-            }
         }
 
         /// <summary>
