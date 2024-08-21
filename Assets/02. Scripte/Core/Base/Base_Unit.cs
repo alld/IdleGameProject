@@ -337,7 +337,7 @@ namespace IdleGame.Core.Unit
                     _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
 
                 }
-                catch (System.Exception)
+                catch (System.Exception e)
                 {
 
                     throw;

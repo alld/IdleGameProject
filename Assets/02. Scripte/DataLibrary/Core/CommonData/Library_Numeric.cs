@@ -304,7 +304,7 @@ namespace IdleGame.Data.Numeric
 
 
             bool isOverFlow = false;
-            ExactInt result = new ExactInt(0, Mathf.Max(a.value.Length, b.value.Length));
+            ExactInt result = new ExactInt(0, Mathf.Max(a.scale, b.scale));
 
             // 역할 :: result에 두 값을 더하여 반영함
             for (int i = 0; i < result.value.Length; ++i)
@@ -361,15 +361,15 @@ namespace IdleGame.Data.Numeric
         #region 빼기
         public static ExactInt operator -(ExactInt a, ExactInt b)
         {
-            b.isPositive = !b.isPositive;
             // 역할 :: 결과적으로 뺄셈 연산이 아닌 덧셈인 경우 덧셈으로 넘김
             if (a.isPositive != b.isPositive)
             {
+                b.isPositive = !b.isPositive;
                 return a + b;
             }
 
             int availableIndex = 0;
-            ExactInt result = new ExactInt(0, Mathf.Max(a.value.Length, b.value.Length));
+            ExactInt result = new ExactInt();
             bool isPositive = a >= b;
             a.isPositive = true;
             b.isPositive = true;
@@ -604,7 +604,7 @@ namespace IdleGame.Data.Numeric
 
         public static bool operator ==(ExactInt a, ExactInt b)
         {
-            if (CompareZero(a) == CompareZero(b)) return true;
+            if (CompareZero(a) && CompareZero(b)) return true;
 
             if (a.isPositive != b.isPositive || a.scale != b.scale) return false;
 
