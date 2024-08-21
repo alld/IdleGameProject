@@ -211,21 +211,103 @@ namespace IdleGame.Data.Numeric
 
 
         /// <summary>
-        /// [기능] 퍼센트를 적용합니다. 
+        /// [기능] 퍼센트를 적용합니다.  [100]
         /// </summary>
         public void SetPercent(int m_value)
         {
-            this = this * m_value / 100;
+            if (m_value == 0)
+            {
+                this = new ExactInt(0);
+                return;
+            }
+            SetPercent(m_value / 100);
         }
+
 
 
         /// <summary>
         /// [기능] 퍼센트를 적용합니다. 
         /// </summary>
-        public void SetPercent(float m_value)
+        public void SetPercent(double m_value)
         {
-            m_value *= 100;
-            SetPercent((int)m_value);
+            if (m_value == 0)
+            {
+                this = new ExactInt(0);
+                return;
+            }
+            // TODO :: 음수 양수 변환...
+
+            int percentRange = GetDecimalCount(m_value);
+            int multiple = 1;
+            for (int i = 0; i < percentRange; i++)
+            {
+                multiple *= 10;
+            }
+
+            IncreaseDigits(percentRange);
+            this *= (int)(m_value * multiple);
+            DecreaseDigits(percentRange);
+        }
+
+        /// <summary>
+        /// [기능] 자릿수를 늘립니다.
+        /// </summary>
+        public void IncreaseDigits(int m_count = 1)
+        {
+            int[] multiple10 = { 1, 10, 100, 1000, 10000 };
+
+            int addDigit = (m_count % 4) + 1;
+            int addUnit = (m_count + (4 - GetDigitCount(value[scale]))) / 4;
+            int[] result = new int[addUnit + scale];
+            for (int i = 0; i < value.Length; i++)
+            {
+                result[addUnit + i] = ((value[i] * multiple10[addDigit]) % multiple10[addDigit + 1]) + i == 0 ? 0 : (value[i - 1] / multiple10[addDigit + 1]);
+            }
+
+            value = result;
+            scale = result.Length - 1;
+        }
+
+        /// <summary>
+        /// [기능] 자릿수를 줄입니다.
+        /// </summary>
+        public void DecreaseDigits(int m_count = 1)
+        {
+            int[] multiple10 = { 1, 10, 100, 1000, 10000 };
+
+            int addDigit = (m_count % 4) + 1;
+            int addUnit = (m_count + (4 - GetDigitCount(value[scale]))) / 4;
+            int[] result = new int[scale - addUnit];
+            for (int i = 0; i < value.Length; i++)
+            {
+                //result[addUnit + i] = ((value[i] * multiple10[addDigit]) % multiple10[addDigit + 1]) + i == 0 ? 0 : (value[i - 1] / multiple10[adaddDigitdUnit + 1]);
+            }
+
+            value = result;
+            scale = result.Length - 1;
+        }
+
+        private int GetDigitCount(int number)
+        {
+            if (number == 0) return 0;
+
+            return (int)Math.Floor(Math.Log10(Math.Abs(number))) + 1;
+        }
+
+        /// <summary>
+        /// [기능] 소수점 자릿수를 구합니다.
+        /// </summary>
+        private int GetDecimalCount(double m_value)
+        {
+            int count = 0;
+
+            while (m_value != Math.Truncate(m_value))
+            {
+                m_value *= 10;
+                count++;
+            }
+
+            return count;
         }
 
         /// <summary>
