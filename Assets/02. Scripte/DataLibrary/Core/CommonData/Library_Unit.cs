@@ -1,3 +1,5 @@
+using IdleGame.Data;
+using IdleGame.Data.Numeric;
 using UnityEngine;
 
 namespace IdleGame.Core.Unit
@@ -9,6 +11,87 @@ namespace IdleGame.Core.Unit
     public struct Data_UnitComponent
     {
 
+    }
+
+    /// <summary>
+    /// [종류] 유닛의 속성을 정의합니다.
+    /// </summary>
+    public enum eUnitProperty
+    {
+        None,
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+        a7
+    }
+
+    /// <summary>
+    /// [데이터] 저장되는 형태의 강화 데이터입니다.
+    /// </summary>
+    public class Data_AbilitySlot
+    {
+        /// <summary>
+        /// [데이터] 현재 레벨을 나타냅니다.
+        /// </summary>
+        public int level;
+
+        /// <summary>
+        /// [데이터] 현재 적용된 추가 능력치입니다.
+        /// </summary>
+        public ExactInt value;
+
+        /// <summary>
+        /// [데이터] 현재 적용된 1회 비용입니다.
+        /// </summary>
+        public ExactInt price;
+
+        /// <summary>
+        /// [데이터] 능력 타입입니다.
+        /// </summary>
+        public eAbilityType type;
+
+        /// <summary>
+        /// [초기화] 데이터를 초기화시킵니다.
+        /// </summary>
+        public Data_AbilitySlot Init(eAbilityType m_type)
+        {
+            type = m_type;
+            level = 1;
+            price = new ExactInt(0);
+            value = new ExactInt(0);
+
+            return this;
+        }
+
+        /// <summary>
+        /// [기능] 정해진 레벨만큼 레벨업을 시킵니다. 
+        /// </summary>
+        public void LevelUp(int m_level = 1)
+        {
+            level += m_level;
+            Global_Data.Player.Update_UnitAb(type);
+        }
+    }
+
+    /// <summary>
+    /// [종류] 능력치 타입입니다. 
+    /// </summary>
+    public enum eAbilityType
+    {
+        None,
+        /// <summary> 체력 </summary>
+        Hp,
+        /// <summary> 피해량 </summary>
+        Damage,
+        /// <summary> 체력 회복 </summary>
+        HpRegen,
+        /// <summary> 치명타 배수</summary>
+        CriticalMultiplier,
+        /// <summary> 치명타 확률</summary>
+        CriticalChance,
     }
 
     /// <summary>

@@ -25,12 +25,27 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public Data_UnitAbility ability;
 
+        ///// <summary>
+        ///// [데이터] 유닛의 기본 능력치를 나타냅니다. 
+        ///// </summary>
+        //public virtual Data_UnitAbility ability
+        //{
+        //    get { return _ability; }
+        //    set { _ability = value; }
+        //}
+
         /// <summary>
         /// [데이터] 유닛이 판단하는데 필요한 기본 정보들을 담습니다. 
         /// </summary>
         protected Data_UnitDynamicData _dd;
 
         protected Data_UnitState _state;
+
+        /// <summary>
+        /// [캐시] 캐릭터에 적용되는 모습 및 애니메이션입니다. 
+        /// </summary>
+        [SerializeField]
+        protected Animator _ani;
 
         /// <summary>
         /// [상태] 현재 유닛이 죽은 상태인지를 확인합니다.
@@ -78,7 +93,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_Clear_Base()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
 
             _dd.Clear();
 
@@ -214,8 +229,8 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public virtual void Logic_Act_Damaged(Base_Unit m_attacker, ExactInt m_damage)
         {
+            //ability.ModifyHp(ability.hp - m_damage);
             ability.hp -= m_damage;
-
             if (ability.hp <= 0)
             {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);
@@ -269,7 +284,7 @@ namespace IdleGame.Core.Unit
 
         protected virtual IEnumerator Logic_Action_Appear()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Appear);
 
             Sound_Appear();
@@ -286,7 +301,7 @@ namespace IdleGame.Core.Unit
         /// <returns></returns>
         protected virtual IEnumerator Logic_Action_Idle(float m_delayTime = 0)
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_StopAction();
             Logic_ChangeState(eUnitState.Idle, m_delayTime == 0 ? eUnitState.None : _state.cur);
 
@@ -311,12 +326,22 @@ namespace IdleGame.Core.Unit
 
         protected IEnumerator Logic_Action_Attack()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Attack);
 
             while (true)
             {
-                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(_target.ability, ability.damage));
+                try
+                {
+                    _ani.SetTrigger("attack");
+                    _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
+
+                }
+                catch (System.Exception e)
+                {
+
+                    throw;
+                }
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
@@ -326,7 +351,7 @@ namespace IdleGame.Core.Unit
 
         protected virtual void Logic_Action_Die()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Die);
 
             _onBroadcastDie?.Invoke();
@@ -348,18 +373,28 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_Action_Move()
         {
-            transform.DOKill();
+            Logic_StopMove_Base();
             Logic_ChangeState(eUnitState.Move);
 
             float moveTime = Vector3.Distance(transform.position, _dd.target_movePoint) * ability.moveSpeed;
+            _ani.SetBool("move", true);
 
-            transform.DOMove(_dd.target_movePoint, moveTime)
-                .SetEase(Ease.Linear)
-                .OnComplete(
-                () =>
-                {
-                    StartCoroutine(Logic_OperatorAct());
-                });
+            try
+            {
+
+                transform.DOMove(_dd.target_movePoint, moveTime)
+                    .SetEase(Ease.Linear)
+                    .OnComplete(
+                    () =>
+                    {
+                        StartCoroutine(Logic_OperatorAct());
+                    });
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
 
             Sound_Move();
         }
@@ -417,6 +452,15 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
+        }
+
+        /// <summary>
+        /// [기능] 상태값 변동없이 이동 행위만을 멈추게합니다. (두트윈 제거)
+        /// </summary>
+        protected virtual void Logic_StopMove_Base()
+        {
+            transform.DOKill();
+            _ani.SetBool("move", false);
         }
 
         /// <summary>

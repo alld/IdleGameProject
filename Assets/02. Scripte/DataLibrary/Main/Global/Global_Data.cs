@@ -1,3 +1,5 @@
+using IdleGame.Core.Unit;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.EditorSetting;
 using IdleGame.Data.NSave;
 using IdleGame.Data.Option;
@@ -84,6 +86,24 @@ namespace IdleGame.Data
             Player = m_datas[1] as Data_Player;
             Option = m_datas[2] as Data_Option;
             PlayProgress = m_datas[3] as Data_PlayProgress;
+        }
+
+        /// <summary>
+        /// [초기화] 처음 데이터가 활용된 경우 해당 기능을 통해서 초기 데이터를 할당해줍니다. 
+        /// <br> 라이브러리가 초기화된 직후에 호출되어야합니다. </br>
+        /// </summary>
+        public static void FirstSetting()
+        {
+            Player.unit_Ability = (Data_UnitAbility)Library_DataTable.character[1000];
+            foreach (eAbilityType type in Enum.GetValues(typeof(eAbilityType)))
+            {
+                if (type == eAbilityType.None)
+                    continue;
+                if (Player.slot_Ability.ContainsKey(type))
+                    continue;
+
+                Player.slot_Ability.Add(type, new Data_AbilitySlot().Init(type));
+            }
         }
     }
 }

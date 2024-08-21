@@ -115,13 +115,14 @@ namespace IdleGame.Main.GameLogic
             Global_Data.PlayProgress.stage_curWave = mainStage.currentWave;
 
             if (mainStage.currentWave >= mainStage.wave_num)
+            {
                 Logic_TryNextStage();
+                return;
+            }
 
             Logic_SetLevel(mainStage.currentWave);
-            Logic_MonsterPush();
-            Logic_PlayerSetting();
 
-            StartCoroutine(Logic_TempAppear());
+            Logic_StageStart();
         }
 
         /// <summary>
@@ -189,23 +190,35 @@ namespace IdleGame.Main.GameLogic
             mainStage.procedures = eProcedures.Exhaustion;
             if (true) // 메인 스테이지인지를 판단함, 아닌 경우 ChangeStage를 진행해서 메인스테이지로 전환을 시도함
             {
-                if (Library_DataTable.stage.ContainsKey(Global_Data.PlayProgress.stage_curIndex))
+                if (Library_DataTable.stage.ContainsKey(mainStage.next_stage))
                 {
                     Global_Data.PlayProgress.stage_curWave = 0;
                     Global_Data.PlayProgress.stage_curIndex = mainStage.next_stage;
 
                     Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
 
+                    Logic_StageStart();
+
                     GameManager.Log.Logic_PutLog(new Data_Log("다음 스테이지로 진행함"));
                     //todo::스테이지 테이블에서 새로운 데이터를 가져옵니다.
                 }
                 else
                 {
-                    //todo :: 더이상 진행할 스테이지가 존재하지않는 경우 처리...
+                    Logic_NoMoreStages();
                 }
             }
             else
                 Logic_ChangeStage();
+        }
+
+        /// <summary>
+        /// [기능] 더이상 진행할 스테이지가 없는 경우 호출됩니다.
+        /// </summary>
+        private void Logic_NoMoreStages()
+        {
+            Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+
+            Logic_StageStart();
         }
 
         /// <summary>
@@ -215,7 +228,8 @@ namespace IdleGame.Main.GameLogic
         {
             Logic_StageUIUpdate();
 
-            // TODO :: 몬스터 종류에 맞쳐서 오브젝트 풀에서 가져와 필드에 셋팅합니다. 
+            Logic_MonsterPush();
+            Logic_PlayerSetting();
         }
 
         /// <summary>
@@ -247,9 +261,7 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         public void Logic_StageStart()
         {
-            // TODO 임시..
-            mainStage.currentWave--;
-            Logic_NextLevel();
+            StartCoroutine(Logic_TempAppear());
 
             IsPlayingGame = true;
         }

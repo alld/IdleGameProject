@@ -1,5 +1,7 @@
+using IdleGame.Core.Procedure;
 using IdleGame.Data;
 using IdleGame.Data.Common;
+using IdleGame.Data.Common.Event;
 using IdleGame.Data.Numeric;
 using System;
 using System.Collections.Generic;
@@ -108,12 +110,15 @@ namespace IdleGame.Core.Panel
                             Logic_UpdateCurrency(currencyType);
                         }
                     }
+                    Base_Engine.Event.CallEvent(eGlobalEventType.Currency_Update);
                     break;
                 case eCurrencyType.Gold:
                     _dc[m_type].t_display.SetText(Global_Data.Player.cc_Gold.ToString());
+                    Base_Engine.Event.CallEvent(eGlobalEventType.Currency_UpdateGold);
                     break;
                 case eCurrencyType.Ability:
                     _dc[m_type].t_display.SetText(Global_Data.Player.cc_Ability.ToString());
+                    Base_Engine.Event.CallEvent(eGlobalEventType.Currency_UpdateAbility);
                     break;
             }
         }

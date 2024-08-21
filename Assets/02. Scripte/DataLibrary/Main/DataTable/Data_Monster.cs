@@ -1,3 +1,4 @@
+using IdleGame.Core.Unit;
 using IdleGame.Data.Numeric;
 
 namespace IdleGame.Data
@@ -16,6 +17,11 @@ namespace IdleGame.Data
         /// [데이터] 몬스터에 할당된 고유 ID입니다.
         /// </summary>
         public int monster_id = -1;
+
+        /// <summary>
+        /// [데이터] 몬스터외형 ID입니다.
+        /// </summary>
+        public int mon_shape_id = -1;
 
         /// <summary>
         /// [데이터] 몬스터의 이름입니다.
@@ -85,6 +91,6 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터의 속성입니다. 
         /// </summary>
-        public int proprty = -1;
+        public eUnitProperty proprty = eUnitProperty.None;
     }
 }

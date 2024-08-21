@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3137751966789250003}
+  - component: {fileID: 3189454234709766227}
   m_Layer: 0
   m_Name: Item_AbilitySlot
   m_TagString: Untagged
@@ -40,6 +41,33 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3189454234709766227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437323739657869750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb1e1707e3f17b47b32bf594d1eb556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  i_icon: {fileID: 2467173288344426453}
+  t_level: {fileID: 5027169062153577708}
+  t_valueTitle: {fileID: 3302473503501975682}
+  t_value: {fileID: 7733058651558528592}
+  b_upMega: {fileID: 513191961172035750}
+  t_titleMega: {fileID: 280804087403200707}
+  t_priceMega: {fileID: 6789667261032339033}
+  b_upNormal: {fileID: 6558974525444106738}
+  t_titleNormal: {fileID: 6977473732961609806}
+  t_priceNormal: {fileID: 5231807397623369382}
+  price:
+    Value: 
+    Scale: 0
+    IsPositive: 0
 --- !u!1 &482714069943278040
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +637,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100,000
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
   m_sharedMaterial: {fileID: -1691878722938302546, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
@@ -801,7 +829,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 454454197737209109}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3189454234709766227}
+        m_TargetAssemblyTypeName: IdleGame.Main.Scene.Main.UI.Item_AbilitySlot, Assembly-CSharp
+        m_MethodName: OnClickUpgrade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5120702771999338909
 GameObject:
   m_ObjectHideFlags: 0
@@ -883,7 +923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lv. 999
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
   m_sharedMaterial: {fileID: -1691878722938302546, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
@@ -1293,8 +1333,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -101.5, y: -16}
-  m_SizeDelta: {x: 201.815, y: 40}
+  m_AnchoredPosition: {x: 11.296, y: -16}
+  m_SizeDelta: {x: 427.41, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1318901767624846811
 CanvasRenderer:
@@ -1339,7 +1379,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +99.5B
+  m_text: ' -'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
   m_sharedMaterial: {fileID: -1691878722938302546, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
@@ -1445,8 +1485,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -154, y: 25}
-  m_SizeDelta: {x: 100, y: 40}
+  m_AnchoredPosition: {x: 10.5, y: 25}
+  m_SizeDelta: {x: 429, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6148962616008166614
 CanvasRenderer:
@@ -1683,7 +1723,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2070706513474371802}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3189454234709766227}
+        m_TargetAssemblyTypeName: IdleGame.Main.Scene.Main.UI.Item_AbilitySlot, Assembly-CSharp
+        m_MethodName: OnClickUpgrade_Mega
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7703251206234737014
 GameObject:
   m_ObjectHideFlags: 0
@@ -1877,7 +1929,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100,000
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
   m_sharedMaterial: {fileID: -1691878722938302546, guid: 221d1e212c8a0ca46ba4e45560e936b6, type: 2}
