@@ -201,6 +201,7 @@ namespace IdleGame.Data.Numeric
                     break;
                 }
 
+                result.Add((int)(m_value % UnitScale));
                 m_value /= UnitScale;
             }
 
@@ -244,7 +245,6 @@ namespace IdleGame.Data.Numeric
                 multiple *= 10;
             }
 
-            IncreaseDigits(percentRange);
             this *= (int)(m_value * multiple);
             DecreaseDigits(percentRange);
         }
@@ -275,12 +275,13 @@ namespace IdleGame.Data.Numeric
         {
             int[] multiple10 = { 1, 10, 100, 1000, 10000 };
 
-            int addDigit = (m_count % 4) + 1;
+            int addDigit = (m_count % 4);
             int addUnit = (m_count + (4 - GetDigitCount(value[scale]))) / 4;
-            int[] result = new int[scale - addUnit];
-            for (int i = 0; i < value.Length; i++)
+            int originSize = scale - addUnit;
+            int[] result = new int[originSize + 1];
+            for (int i = 0; i < result.Length; i++)
             {
-                //result[addUnit + i] = ((value[i] * multiple10[addDigit]) % multiple10[addDigit + 1]) + i == 0 ? 0 : (value[i - 1] / multiple10[adaddDigitdUnit + 1]);
+                result[i] = ((i + 1) <= scale ? ((value[i + 1] % multiple10[addDigit]) * multiple10[4 - addDigit]) : 0) + (value[i] / multiple10[addDigit]);
             }
 
             value = result;
