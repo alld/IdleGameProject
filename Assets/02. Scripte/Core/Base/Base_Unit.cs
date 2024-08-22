@@ -331,17 +331,8 @@ namespace IdleGame.Core.Unit
 
             while (true)
             {
-                try
-                {
-                    _ani.SetTrigger("attack");
-                    _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
-
-                }
-                catch (System.Exception e)
-                {
-
-                    throw;
-                }
+                _ani.SetTrigger("attack");
+                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
 
                 Sound_Hit();
                 yield return _dd.attackDelay;

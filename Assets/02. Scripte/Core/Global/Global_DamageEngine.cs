@@ -1,3 +1,4 @@
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 
@@ -22,10 +23,20 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public static ExactInt Logic_Calculator(Data_UnitAbility m_attacker, Data_UnitAbility m_target, ExactInt m_damage)
         {
+            // 역할 :: 기본 데미지 계산
             ExactInt result = new ExactInt(0);
-            result += m_damage;
-            result -= m_target.defense;
+            ExactInt cri = m_damage;
+            ExactInt basic = m_damage - m_target.defense;
+            ExactInt pro = m_damage;
+            result += basic;
 
+            // 역할 :: 치명타 계산
+            LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
+            if (LastData_IsCritical)
+                cri.SetPercent(m_attacker.critical_strike_rate);
+            result += cri;
+
+            // 역할 :: 추가 계산 방지
             LastData_IsZeroDamage = result < 0;
             if (LastData_IsZeroDamage)
             {
@@ -33,10 +44,9 @@ namespace IdleGame.Core.Unit
                 return new ExactInt(0);
             }
 
-            //LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
-            //if (LastData_IsCritical)
-            //    result.SetPercent(m_attacker.critical_strike_rate);
-            //result.SetPercent(Library_DataTable.property[(m_attacker.property, m_target.property)]);
+            // 역할 :: 속성 계산
+            pro.SetPercent(Library_DataTable.property[(m_attacker.property, m_target.property)]);
+            result += pro;
 
             return result;
         }
