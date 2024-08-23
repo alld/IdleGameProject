@@ -49,13 +49,10 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Logic_LoadData_FristInit()
         {
-            Logic_TryLoadData(eDataTableType.Stage);
-            Logic_TryLoadData(eDataTableType.Monster);
-            Logic_TryLoadData(eDataTableType.Quest);
-            Logic_TryLoadData(eDataTableType.Character);
-            Logic_TryLoadData(eDataTableType.Item);
-            Logic_TryLoadData(eDataTableType.Skill);
-            Logic_TryLoadData(eDataTableType.Property);
+            for (int i = 3; i < Library_DataTable.DataTableCount; i++)
+            {
+                Logic_TryLoadData((eDataTableType)i);
+            }
         }
 
 
@@ -112,6 +109,13 @@ namespace IdleGame.Core.Panel.DataTable
                         break;
                     case eDataTableType.Property:
                         Convert_ProperyTable(m_dataArray);
+                        break;
+                    case eDataTableType.AbilitySlot_Hp:
+                    case eDataTableType.AbilitySlot_Damage:
+                    case eDataTableType.AbilitySlot_HpRegen:
+                    case eDataTableType.AbilitySlot_CriticalMultiplier:
+                    case eDataTableType.AbilitySlot_CriticalChance:
+                        Convert_AbilitySlotTable(m_dataArray, m_type);
                         break;
                     case eDataTableType.ShareText:
                         Convert_CommonTextTable(m_dataArray);
@@ -323,6 +327,46 @@ namespace IdleGame.Core.Panel.DataTable
                     Library_DataTable.property.Add(((eUnitProperty)i, (eUnitProperty)j), int.Parse(dataSegment[j]));
                 }
 
+            }
+        }
+
+        /// <summary>
+        /// [변환] 데이터 리스트에서, 능력 상승 테이블에 대한 데이터를 파싱합니다. 
+        /// </summary>
+        private void Convert_AbilitySlotTable(string[] m_dataArray, eDataTableType m_type)
+        {
+            Library_DataTable.abilitySlot.Clear();
+
+            eAbilityType dataType = eAbilityType.None;
+            switch (m_type)
+            {
+                case eDataTableType.AbilitySlot_Hp:
+                    dataType = eAbilityType.Hp;
+                    break;
+                case eDataTableType.AbilitySlot_Damage:
+                    dataType = eAbilityType.Damage;
+                    break;
+                case eDataTableType.AbilitySlot_HpRegen:
+                    dataType = eAbilityType.HpRegen;
+                    break;
+                case eDataTableType.AbilitySlot_CriticalMultiplier:
+                    dataType = eAbilityType.CriticalMultiplier;
+                    break;
+                case eDataTableType.AbilitySlot_CriticalChance:
+                    dataType = eAbilityType.CriticalChance;
+                    break;
+            }
+
+
+            for (int i = 0; i < m_dataArray.Length; i++)
+            {
+                int index = 0;
+                Data_AbilitySlot parsingData = new Data_AbilitySlot();
+                string[] dataSegment = m_dataArray[i].Split("\t");
+
+                // Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+
+                Library_DataTable.abilitySlot.Add(dataType, parsingData);
             }
         }
 
