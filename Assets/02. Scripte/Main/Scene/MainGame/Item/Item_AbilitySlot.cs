@@ -86,18 +86,21 @@ namespace IdleGame.Main.Scene.Main.UI
 
         public void Start()
         {
-            GameManager.Event.RegisterEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
+            GameManager.Event.RegisterEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateButtonUI);
+
+            Logic_UpdateUI();
+            Logic_UpdateButtonUI();
         }
 
         private void OnDestroy()
         {
-            GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
+            GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateButtonUI);
         }
 
         /// <summary>
-        /// [기능] UI상태를 업데이트합니다. 
+        /// [기능] UI의 버튼 상태를 갱신합니다. 
         /// </summary>
-        public void Logic_UpdateUI()
+        public void Logic_UpdateButtonUI()
         {
             // 조건 :: 1회 사용 돈도 없음
             if (Global_Data.Player.cc_Gold < _price)
@@ -121,6 +124,18 @@ namespace IdleGame.Main.Scene.Main.UI
             }
         }
 
+        /// <summary>
+        /// [기능] UI의 상태를 갱신시킵니다.
+        /// </summary>
+        public void Logic_UpdateUI()
+        {
+            price = Global_Data.Player.slot_Ability[type].price;
+            t_level.SetText($"Lv. {Global_Data.Player.slot_Ability[type].level}");
+            t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
+            t_priceNormal.SetText(price.ToString());
+            t_priceMega.SetText(_megaPrice.ToString());
+        }
+
         #region 콜백 함수
         /// <summary>
         /// [기능] 1회 구매를 한 경우
@@ -129,6 +144,8 @@ namespace IdleGame.Main.Scene.Main.UI
         {
             GameManager.Currency.Logic_SetAddCurrency(eCurrencyType.Gold, -_price);
             Global_Data.Player.slot_Ability[type].LevelUp();
+
+            Logic_UpdateUI();
         }
 
         /// <summary>
@@ -138,6 +155,8 @@ namespace IdleGame.Main.Scene.Main.UI
         {
             GameManager.Currency.Logic_SetAddCurrency(eCurrencyType.Gold, -_megaPrice);
             Global_Data.Player.slot_Ability[type].LevelUp(10);
+
+            Logic_UpdateUI();
         }
         #endregion
     }

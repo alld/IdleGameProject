@@ -6,6 +6,7 @@ using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Pool;
 using IdleGame.Main.Scene.Main;
+using IdleGame.Main.Scene.Main.UI;
 using IdleGame.Main.Unit;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,12 +22,12 @@ namespace IdleGame.Main.GameLogic
         /// <summary>
         /// [상태] 현재 진행중인 데이터 정보입니다.
         /// </summary>
-        Data_Stage mainStage;
+        private Data_Stage mainStage;
 
         /// <summary>
         /// [상태] 진행중이던 스테이지를 잠시 중단하고 다른 스테이지가 우선 진행될때 진행상황을 저장한 정보입니다.
         /// </summary>
-        Data_Stage subStage;
+        private Data_Stage subStage;
 
         /// <summary>
         /// [데이터] 플레이어 시작 위치입니다. 
@@ -64,6 +65,19 @@ namespace IdleGame.Main.GameLogic
         /// [캐시] 스테이지에 등장한 몬스터 수입니다.
         /// </summary>
         public static List<Controller_EnemyUnit> Unit_Monsters = new List<Controller_EnemyUnit>();
+
+        /// <summary>
+        /// [캐시] 스테이지의 현황을 가시적으로 표현하는 보드입니다.
+        /// </summary>
+        private Graphic_StageBord _bord;
+
+        /// <summary>
+        /// [초기화] 씬에 있는 스테이지 보드를 등록시킵니다.
+        /// </summary>
+        public void Logic_RegisterStageBord(Graphic_StageBord m_bord)
+        {
+            _bord = m_bord;
+        }
 
         /// <summary>
         /// [설정] 새로운 스테이지 정보를 설정합니다. 

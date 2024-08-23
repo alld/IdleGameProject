@@ -3,6 +3,7 @@ using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
+using IdleGame.Main.Scene.Main.UI;
 using UnityEngine;
 
 namespace IdleGame.Main
@@ -87,6 +88,15 @@ namespace IdleGame.Main
         }
 
 
+        #region 스테이지
+        /// <summary>
+        /// [초기화] 씬에 있는 스테이지 보드를 등록시킵니다.
+        /// </summary>
+        public void Logic_RegisterStageBord(Graphic_StageBord m_bord)
+        {
+            _stage.Logic_RegisterStageBord(m_bord);
+        }
+
         /// <summary>
         /// [기능] 다음 스테이지나 웨이브로 진행을 시도합니다.
         /// </summary>
@@ -94,6 +104,7 @@ namespace IdleGame.Main
         {
             return _stage.Logic_TryNextLevel();
         }
+        #endregion
 
         private void OnApplicationQuit()
         {
