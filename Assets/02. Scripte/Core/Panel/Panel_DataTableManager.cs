@@ -140,14 +140,15 @@ namespace IdleGame.Core.Panel.DataTable
         #region 데이터 파싱
         private void Convert_GameInfo(string[] m_dataArray)
         {
-            string[] resultData = m_dataArray[0].Split("\t");
             Library_DataTable.Info.isDataExists = true;
+            Library_DataTable.Info.version = m_dataArray[0].Split("\t")[0];
 
-            Library_DataTable.Info.version = resultData[0];
-
-            for (int i = 1; i < resultData.Length; i += 2)
+            for (int i = 1; i < m_dataArray.Length; i++)
             {
-                Library_DataTable.Info.dataTableList.Add((eDataTableType)((i + 1) / 2), (resultData[i], resultData[i + 1]));
+                string[] resultData = m_dataArray[i].Split("\t");
+                if (string.IsNullOrEmpty(resultData[0]))
+                    break;
+                Library_DataTable.Info.dataTableList.Add((eDataTableType)(i), (resultData[0], resultData[1]));
             }
         }
 

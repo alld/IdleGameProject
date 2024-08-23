@@ -19,6 +19,18 @@ namespace IdleGame.Data.DataTable
         Item = 7,
         Skill = 8,
         Property = 9,
+        AbilitySlot_Hp,
+        AbilitySlot_Damage,
+        AbilitySlot_HpRegen,
+        AbilitySlot_CriticalMultiplier,
+        AbilitySlot_CriticalChance,
+        empty_01,
+        empty_02,
+        empty_03,
+        empty_04,
+        empty_05,
+        empty_06,
+        empty_07,
     }
 
 

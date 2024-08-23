@@ -72,6 +72,8 @@ namespace IdleGame.Core.Unit
         public void LevelUp(int m_level = 1)
         {
             level += m_level;
+            price += 5;
+            value += 5;
             Global_Data.Player.Update_UnitAb(type);
         }
     }
