@@ -30,6 +30,9 @@ namespace IdleGame.Core.Unit
             ExactInt pro = m_damage;
             result += basic;
 
+
+            return result;
+
             // 역할 :: 치명타 계산
             LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
             if (LastData_IsCritical)
