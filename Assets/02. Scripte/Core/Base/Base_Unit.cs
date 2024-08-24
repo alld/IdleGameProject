@@ -331,13 +331,17 @@ namespace IdleGame.Core.Unit
 
             while (true)
             {
+                if (_target == null)
+                    break;
+
+                _dd.isAttacking = true;
                 _ani.SetTrigger("attack");
                 _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
+                _dd.isAttacking = false;
             }
-
         }
 
         protected virtual void Logic_Action_Die()
@@ -414,8 +418,6 @@ namespace IdleGame.Core.Unit
                 _target._onBroadcastDie -= Logic_ReTryTargetClear_Base;
                 _target = null;
             }
-
-            Logic_StopAction();
         }
 
         /// <summary>
@@ -430,6 +432,19 @@ namespace IdleGame.Core.Unit
 
 
             Logic_ChangeState(eUnitState.Clear);
+            if (_dd.isAttacking)
+                StartCoroutine(Logic_DelayOperatorAct());
+            else
+                StartCoroutine(Logic_OperatorAct());
+        }
+
+        /// <summary>
+        /// [기능] 지연시간을 부여하여 현재 행동이 정상적으로 끝맞치도록 기다립니다.
+        /// </summary>
+        public IEnumerator Logic_DelayOperatorAct()
+        {
+            yield return _dd.attackDelay;
+
             StartCoroutine(Logic_OperatorAct());
         }
 

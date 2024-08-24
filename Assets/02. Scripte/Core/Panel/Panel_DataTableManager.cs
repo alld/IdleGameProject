@@ -115,9 +115,8 @@ namespace IdleGame.Core.Panel.DataTable
                     case eDataTableType.AbilitySlot_HpRegen:
                     case eDataTableType.AbilitySlot_CriticalMultiplier:
                     case eDataTableType.AbilitySlot_CriticalChance:
-                        break;
-
                         Convert_AbilitySlotTable(m_dataArray, m_type);
+                        break;
                     case eDataTableType.ShareText:
                         Convert_CommonTextTable(m_dataArray);
                         Global_TextData.OnChangeLanguage();
@@ -364,20 +363,20 @@ namespace IdleGame.Core.Panel.DataTable
                 int index = 0;
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
+                Convert_ParsingData(ref parsingData[i].index, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData[i].level, dataSegment[index++]);
                 switch (dataType)
                 {
                     case eAbilityType.Hp:
                     case eAbilityType.Damage:
                     case eAbilityType.HpRegen:
+                    case eAbilityType.CriticalMultiplier:
                         Convert_ParsingData(ref parsingData[i].value_e, dataSegment[index++]);
                         break;
-                    case eAbilityType.CriticalMultiplier:
                     case eAbilityType.CriticalChance:
                         Convert_ParsingData(ref parsingData[i].value_f, dataSegment[index++]);
                         break;
                 }
-
                 Convert_ParsingData(ref parsingData[i].price, dataSegment[index++]);
             }
             Library_DataTable.abilitySlot.Add(dataType, parsingData);

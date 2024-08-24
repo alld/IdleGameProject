@@ -1,4 +1,5 @@
 using IdleGame.Data;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 
@@ -44,6 +45,11 @@ namespace IdleGame.Core.Unit
         public ExactInt value;
 
         /// <summary>
+        /// [데이터] 현재 적용된 수치 능력치입니다.
+        /// </summary>
+        public float valuef;
+
+        /// <summary>
         /// [데이터] 현재 적용된 1회 비용입니다.
         /// </summary>
         public ExactInt price;
@@ -61,6 +67,7 @@ namespace IdleGame.Core.Unit
             type = m_type;
             level = 1;
             price = new ExactInt(0);
+            valuef = 0;
             value = new ExactInt(0);
 
             return this;
@@ -72,8 +79,11 @@ namespace IdleGame.Core.Unit
         public void LevelUp(int m_level = 1)
         {
             level += m_level;
-            price += 5 * m_level;
-            value += 5 * m_level;
+            price = Library_DataTable.abilitySlot[type][level - 1].price;
+            if (type == eAbilityType.CriticalChance)
+                valuef = Library_DataTable.abilitySlot[type][level - 1].value_f / 100;
+            else
+                value = Library_DataTable.abilitySlot[type][level - 1].value_e;
             Global_Data.Player.Update_UnitAb(type);
         }
     }
@@ -225,6 +235,12 @@ namespace IdleGame.Core.Unit
         public bool isPlayerUnit;
 
         /// <summary>
+        /// [상태] 현재 공격중인지를 나타냅니다. 
+        /// <br> 정확한 타이밍은, 공격한 행위를 하고 공격 대기시간이 걸려있는 상태입니다.</br>
+        /// </summary>
+        public bool isAttacking;
+
+        /// <summary>
         /// [초기화] 모든 데이터를 지웁니다.
         /// </summary>
         public void Clear()
@@ -234,6 +250,7 @@ namespace IdleGame.Core.Unit
             sycleTime = null;
             attackDelay = null;
             isPlayerUnit = false;
+            isAttacking = false;
         }
     }
 }
