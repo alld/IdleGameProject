@@ -71,6 +71,17 @@ namespace IdleGame.Data.Numeric
         }
 
         /// <summary>
+        /// [생성자] 클론과 같이 동일한 값으로 복사합니다.
+        /// </summary>
+        private ExactInt(ExactInt m_copy)
+        {
+            value = (int[])m_copy.value.Clone();
+            scale = m_copy.scale;
+            isPositive = m_copy.isPositive;
+            _isUpdated = m_copy._isUpdated;
+        }
+
+        /// <summary>
         /// [생성자] 값과 스케일을 지정하여 생성합니다.
         /// </summary>
         public ExactInt(int m_value, int m_scale)
@@ -103,7 +114,7 @@ namespace IdleGame.Data.Numeric
 
         public ExactInt(int[] m_value, bool m_isPositive = true, int m_scale = 0)
         {
-            value = m_value;
+            value = (int[])m_value.Clone();
             scale = m_scale;
             isPositive = m_isPositive;
             _isUpdated = true;
@@ -389,16 +400,19 @@ namespace IdleGame.Data.Numeric
             bool isOverFlow = false;
             ExactInt result = new ExactInt(0, Mathf.Max(a.scale, b.scale));
 
+            ExactInt numA = new ExactInt(a);
+            ExactInt numB = new ExactInt(b);
+
             // 역할 :: result에 두 값을 더하여 반영함
             for (int i = 0; i < result.value.Length; ++i)
             {
                 if (isOverFlow)
                 {
                     isOverFlow = false;
-                    a.value[i] += 1;
+                    numA.value[i] += 1;
                 }
 
-                result.value[i] = a.value[i] + b.value[i];
+                result.value[i] = numA.value[i] + numB.value[i];
                 if (result.value[i] >= UnitScale)
                 {
                     isOverFlow = true;
@@ -421,7 +435,7 @@ namespace IdleGame.Data.Numeric
             }
 
             // 역할 :: 최종적으로 계산된 값에 부호를 변경해준다.
-            result.isPositive = a.isPositive;
+            result.isPositive = numA.isPositive;
             return result;
         }
 
@@ -461,13 +475,13 @@ namespace IdleGame.Data.Numeric
             ExactInt higherNumber, lowerNumber;
             if (a >= b)
             {
-                higherNumber = a;
-                lowerNumber = b;
+                higherNumber = new ExactInt(a);
+                lowerNumber = new ExactInt(b);
             }
             else
             {
-                higherNumber = b;
-                lowerNumber = a;
+                higherNumber = new ExactInt(b);
+                lowerNumber = new ExactInt(a);
             }
 
             // 역할 :: 높은수를 기반으로 낮은수를 뺍니다.

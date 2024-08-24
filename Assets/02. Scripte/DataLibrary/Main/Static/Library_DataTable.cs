@@ -1,6 +1,5 @@
 using IdleGame.Core.Unit;
 using System.Collections.Generic;
-using static UnityEditor.LightingExplorerTableColumn;
 
 namespace IdleGame.Data.DataTable
 {
@@ -52,7 +51,7 @@ namespace IdleGame.Data.DataTable
         /// <summary>
         /// [데이터] 능력의 상승 테이블 정보를 담고 있습니다. 
         /// </summary>
-        public static Dictionary<eAbilityType, Data_AbilitySlot> abilitySlot = new Dictionary<eAbilityType, Data_AbilitySlot>();
+        public static Dictionary<eAbilityType, Data_AbilitySlotInfo[]> abilitySlot = new Dictionary<eAbilityType, Data_AbilitySlotInfo[]>();
 
         /// <summary>
         /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 

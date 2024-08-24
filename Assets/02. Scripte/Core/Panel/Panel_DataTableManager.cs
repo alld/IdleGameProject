@@ -115,8 +115,9 @@ namespace IdleGame.Core.Panel.DataTable
                     case eDataTableType.AbilitySlot_HpRegen:
                     case eDataTableType.AbilitySlot_CriticalMultiplier:
                     case eDataTableType.AbilitySlot_CriticalChance:
-                        Convert_AbilitySlotTable(m_dataArray, m_type);
                         break;
+
+                        Convert_AbilitySlotTable(m_dataArray, m_type);
                     case eDataTableType.ShareText:
                         Convert_CommonTextTable(m_dataArray);
                         Global_TextData.OnChangeLanguage();
@@ -357,17 +358,29 @@ namespace IdleGame.Core.Panel.DataTable
                     break;
             }
 
-
+            Data_AbilitySlotInfo[] parsingData = new Data_AbilitySlotInfo[m_dataArray.Length];
             for (int i = 0; i < m_dataArray.Length; i++)
             {
                 int index = 0;
-                Data_AbilitySlot parsingData = new Data_AbilitySlot();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                // Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData[i].level, dataSegment[index++]);
+                switch (dataType)
+                {
+                    case eAbilityType.Hp:
+                    case eAbilityType.Damage:
+                    case eAbilityType.HpRegen:
+                        Convert_ParsingData(ref parsingData[i].value_e, dataSegment[index++]);
+                        break;
+                    case eAbilityType.CriticalMultiplier:
+                    case eAbilityType.CriticalChance:
+                        Convert_ParsingData(ref parsingData[i].value_f, dataSegment[index++]);
+                        break;
+                }
 
-                Library_DataTable.abilitySlot.Add(dataType, parsingData);
+                Convert_ParsingData(ref parsingData[i].price, dataSegment[index++]);
             }
+            Library_DataTable.abilitySlot.Add(dataType, parsingData);
         }
 
         /// <summary>
