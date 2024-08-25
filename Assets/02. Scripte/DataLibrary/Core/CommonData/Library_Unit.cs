@@ -81,7 +81,7 @@ namespace IdleGame.Core.Unit
             level += m_level;
             price = Library_DataTable.abilitySlot[type][level - 1].price;
             if (type == eAbilityType.CriticalChance)
-                valuef = Library_DataTable.abilitySlot[type][level - 1].value_f / 100;
+                valuef = Library_DataTable.abilitySlot[type][level - 1].value_f;
             else
                 value = Library_DataTable.abilitySlot[type][level - 1].value_e;
             Global_Data.Player.Update_UnitAb(type);
@@ -100,10 +100,10 @@ namespace IdleGame.Core.Unit
         Damage,
         /// <summary> 체력 회복 </summary>
         HpRegen,
-        /// <summary> 치명타 배수</summary>
-        CriticalMultiplier,
         /// <summary> 치명타 확률</summary>
         CriticalChance,
+        /// <summary> 치명타 배수</summary>
+        CriticalMultiplier,
     }
 
     /// <summary>

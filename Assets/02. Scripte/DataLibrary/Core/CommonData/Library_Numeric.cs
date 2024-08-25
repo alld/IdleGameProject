@@ -247,6 +247,10 @@ namespace IdleGame.Data.Numeric
                 this = new ExactInt(0);
                 return;
             }
+            else
+            {
+                m_value = Math.Truncate(m_value * 1000000) / 1000000;
+            }
             // TODO :: 음수 양수 변환...
 
             int percentRange = GetDecimalCount(m_value);
@@ -466,7 +470,7 @@ namespace IdleGame.Data.Numeric
             }
 
             int availableIndex = 0;
-            ExactInt result = new ExactInt();
+            ExactInt result = new ExactInt(0);
             bool isPositive = a >= b;
             a.isPositive = true;
             b.isPositive = true;
