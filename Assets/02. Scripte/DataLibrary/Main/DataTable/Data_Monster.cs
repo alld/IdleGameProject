@@ -66,7 +66,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 일반 공격 피해량입니다.
         /// </summary>
-        public float mon_attack = -1;
+        public ExactInt mon_attack = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 공격 스킬 피해량입니다.

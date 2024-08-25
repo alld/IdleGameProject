@@ -91,6 +91,7 @@ namespace IdleGame.Main.GameLogic
             mainStage = m_data;
             mainStage.procedures = eProcedures.Initing;
 
+            _bord.Logic_NewStageSetting(mainStage.wave_num);
             Logic_SetLevel(mainStage.currentWave);
         }
 
@@ -241,6 +242,7 @@ namespace IdleGame.Main.GameLogic
         public void Logic_SetLevel(int m_level)
         {
             Logic_StageUIUpdate();
+            _bord.Logic_SetLevel(m_level);
 
             Logic_MonsterPush();
             Logic_PlayerSetting();

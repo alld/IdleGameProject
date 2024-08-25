@@ -131,7 +131,10 @@ namespace IdleGame.Main.Scene.Main.UI
         {
             price = Global_Data.Player.slot_Ability[type].price;
             t_level.SetText($"Lv. {Global_Data.Player.slot_Ability[type].level}");
-            t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
+            if (type == eAbilityType.CriticalChance)
+                t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].valuef * 100} %");
+            else
+                t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
             t_priceNormal.SetText(price.ToString());
             t_priceMega.SetText(_megaPrice.ToString());
         }

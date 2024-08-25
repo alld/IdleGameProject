@@ -1788,22 +1788,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel_MainGameUI
       objectReference: {fileID: 0}
-    - target: {fileID: 4030824539945689839, guid: c97ca86024c6e8a42a267b8a4f6f778e, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4030824539945689839, guid: c97ca86024c6e8a42a267b8a4f6f778e, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4030824539945689839, guid: c97ca86024c6e8a42a267b8a4f6f778e, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4030824539945689839, guid: c97ca86024c6e8a42a267b8a4f6f778e, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4393590587374533536, guid: c97ca86024c6e8a42a267b8a4f6f778e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

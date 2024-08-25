@@ -158,15 +158,53 @@ namespace IdleGame.Data.Numeric
             _Sb_digit.Clear();
             _Sb_letter.Clear();
 
+            // 역할 :: 정수 변환 시도
+            if (long.TryParse(m_value, out long tryValue))
+                return new ExactInt(tryValue);
+
+            ExactInt result = new ExactInt(0);
+            bool checkUnit = false;
+            bool isFirst = true;
+
+
             for (int i = 0; i < m_value.Length; i++)
             {
+                if (char.IsWhiteSpace(m_value[i]))
+                    continue;
+
                 if (char.IsDigit(m_value[i]))
+                {
+                    checkUnit = false;
                     _Sb_digit.Append(m_value[i]);
+                }
                 else
+                {
+                    checkUnit = true;
                     _Sb_letter.Append(m_value[i]);
+                }
+
+                if ((m_value.Length <= i + 1) || (checkUnit && char.IsDigit(m_value[i + 1])))
+                {
+                    int scale = Convert_CharToScale(_Sb_letter.ToString());
+                    int value = int.Parse(_Sb_digit.ToString());
+
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                        result = new ExactInt(value, scale);
+                    }
+                    else
+                    {
+                        result.value[scale] = value;
+                    }
+
+                    checkUnit = true;
+                    _Sb_digit.Clear();
+                    _Sb_letter.Clear();
+                }
             }
 
-            return new ExactInt(_Sb_digit.Length == 0 ? 0 : int.Parse(_Sb_digit.ToString()), Convert_CharToScale(_Sb_letter.ToString()));
+            return result;
         }
 
         /// <summary>
@@ -416,7 +454,13 @@ namespace IdleGame.Data.Numeric
                     numA.value[i] += 1;
                 }
 
-                result.value[i] = numA.value[i] + numB.value[i];
+                if (numA.scale < i)
+                    result.value[i] = numB.value[i];
+                else if (numB.scale < i)
+                    result.value[i] = numA.value[i];
+                else
+                    result.value[i] = numA.value[i] + numB.value[i];
+
                 if (result.value[i] >= UnitScale)
                 {
                     isOverFlow = true;
@@ -655,11 +699,18 @@ namespace IdleGame.Data.Numeric
                 return a.scale < b.scale;
             }
 
-            for (int i = a.value.Length - 1; i >= 0; --i)
-            {
-                if (a.value[i] == b.value[i]) continue;
-                return a.value[i] < b.value[i];
-            }
+            if (a.isPositive)
+                for (int i = a.value.Length - 1; i >= 0; --i)
+                {
+                    if (a.value[i] == b.value[i]) continue;
+                    return a.value[i] < b.value[i];
+                }
+            else
+                for (int i = a.value.Length - 1; i >= 0; --i)
+                {
+                    if (a.value[i] == b.value[i]) continue;
+                    return a.value[i] > b.value[i];
+                }
 
             return false;
         }
@@ -685,11 +736,18 @@ namespace IdleGame.Data.Numeric
                 return a.scale > b.scale;
             }
 
-            for (int i = a.value.Length - 1; i >= 0; --i)
-            {
-                if (a.value[i] == b.value[i]) continue;
-                return a.value[i] > b.value[i];
-            }
+            if (a.isPositive)
+                for (int i = a.value.Length - 1; i >= 0; --i)
+                {
+                    if (a.value[i] == b.value[i]) continue;
+                    return a.value[i] > b.value[i];
+                }
+            else
+                for (int i = a.value.Length - 1; i >= 0; --i)
+                {
+                    if (a.value[i] == b.value[i]) continue;
+                    return a.value[i] < b.value[i];
+                }
 
             return false;
         }
