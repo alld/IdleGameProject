@@ -16,7 +16,7 @@ namespace IdleGame.Data.DataTable
         /// <summary>
         /// [데이터] 데이터 테이블의 총 갯수를 나타냅니다. 
         /// </summary>
-        public const int DataTableCount = 12;
+        public const int DataTableCount = 15;
 
         /// <summary>
         /// [데이터] 스테이지에대한 모든 정보를 담고 있습니다. 인덱스로 스테이지를 찾을 수 있습니다. 
@@ -34,17 +34,17 @@ namespace IdleGame.Data.DataTable
         public static Dictionary<int, Data_Quest> quest = new Dictionary<int, Data_Quest>();
 
         /// <summary>
-        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// [데이터] 캐릭터에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Character> character = new Dictionary<int, Data_Character>();
 
         /// <summary>
-        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// [데이터] 장착 아이템에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Item> item = new Dictionary<int, Data_Item>();
 
         /// <summary>
-        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// [데이터] 스킬에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
         public static Dictionary<int, Data_Skill> skill = new Dictionary<int, Data_Skill>();
 
@@ -54,8 +54,8 @@ namespace IdleGame.Data.DataTable
         public static Dictionary<eAbilityType, Data_AbilitySlotInfo[]> abilitySlot = new Dictionary<eAbilityType, Data_AbilitySlotInfo[]>();
 
         /// <summary>
-        /// [데이터] 퀘스트에대한 모든 테이블 정보를 담고 있습니다. 
+        /// [데이터] 속성에대한 모든 테이블 정보를 담고 있습니다. 
         /// </summary>
-        public static Dictionary<(eUnitProperty, eUnitProperty), float> property = new Dictionary<(eUnitProperty, eUnitProperty), float>();
+        public static Dictionary<(eUnitProperty, eUnitProperty), int> property = new Dictionary<(eUnitProperty, eUnitProperty), int>();
     }
 }
