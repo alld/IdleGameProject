@@ -9,6 +9,17 @@ using UnityEngine;
 namespace IdleGame.Data.Numeric
 {
     /// <summary>
+    /// [데이터] 참조형 래핑된 커스텀 숫자입니다.
+    /// </summary>
+    public class RefExactInt
+    {
+        /// <summary>
+        /// [데이터] 커스텀 숫자입니다.
+        /// </summary>
+        public ExactInt value = new ExactInt(0);
+    }
+
+    /// <summary>
     /// [데이터] 단위 환산식 수식에 사용되는 커스텀 숫자입니다. 
     /// </summary>
     [Serializable]

@@ -1,9 +1,12 @@
 using DG.Tweening;
+using IdleGame.Core.Job;
 using IdleGame.Core.Pool;
 using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
 using System.Collections;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace IdleGame.Core.Unit
@@ -57,6 +60,11 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected Coroutine _stateAction;
         protected Coroutine StateAction { get; set; }
+
+        /// <summary>
+        /// [데이터] 데미지를 계산해서 담는 임시 데이터입니다.
+        /// </summary>
+        protected NativeArray<int> _tempDamage;
 
         /// <summary>
         /// [캐시] 유닛의 목표 대상입니다. 
@@ -336,7 +344,10 @@ namespace IdleGame.Core.Unit
 
                 _dd.isAttacking = true;
                 _ani.SetTrigger("attack");
-                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
+                RefExactInt result = new RefExactInt();
+                yield return Logic_CalculatorDamage(result);
+
+                _target.Logic_Act_Damaged(this, result.value);
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
@@ -399,6 +410,42 @@ namespace IdleGame.Core.Unit
         #region 보조 기능
 
         /// <summary>
+        /// [기능] 데미지 연산을 워커를 통해 별도로 분리합니다. 
+        /// </summary>
+        protected virtual IEnumerator Logic_CalculatorDamage(RefExactInt m_result)
+        {
+            if (!_tempDamage.IsCreated)
+                ;
+
+            _tempDamage = new NativeArray<int>(m_result.value.value.Length, Allocator.TempJob);
+
+            for (int i = 0; i < _tempDamage.Length; i++)
+            {
+                _tempDamage[i] = m_result.value.value[i];
+            }
+
+            Job_Damage job = new Job_Damage()
+            {
+                attaker = ability,
+                target = _target.ability,
+                damage = _tempDamage
+            };
+
+            JobHandle jobHandle = job.Schedule();
+
+            while (!jobHandle.IsCompleted)
+                yield return null;
+
+            m_result.value = new ExactInt(0);
+
+            job.Clear();
+            jobHandle.Complete();
+            _tempDamage.Dispose();
+        }
+
+
+
+        /// <summary>
         /// [기능] 현재 타겟을 찾지 못한 경우 대상을 물색합니다. 
         /// </summary>
         protected virtual bool Logic_SearchTarget_Base()
@@ -458,6 +505,8 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
+            if (_tempDamage.IsCreated)
+                _tempDamage.Dispose();
         }
 
         /// <summary>
