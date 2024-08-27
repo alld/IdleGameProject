@@ -1,4 +1,5 @@
 using IdleGame.Core.Unit;
+using IdleGame.Data.Numeric;
 using Unity.Collections;
 using Unity.Jobs;
 
@@ -12,7 +13,7 @@ namespace IdleGame.Core.Job
         /// <summary>
         /// [캐시] 계산된 또는 계산할 데미지입니다.
         /// </summary>
-        public NativeArray<int> damage;
+        public ExactInt damage;
 
         /// <summary>
         /// [캐시] 공격하는 본인입니다.
@@ -24,9 +25,14 @@ namespace IdleGame.Core.Job
         /// </summary>
         public Data_UnitAbility target;
 
+        /// <summary>
+        /// [데이터] 계산 결과입니다.
+        /// </summary>
+        public ExactInt result;
+
         public void Execute()
         {
-            Global_DamageEngine.Logic_Calculator(attaker, target, attaker.damage);
+            result = Global_DamageEngine.Logic_Calculator(attaker, target, damage);
         }
 
         /// <summary>

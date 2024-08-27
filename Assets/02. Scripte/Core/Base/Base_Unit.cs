@@ -62,11 +62,6 @@ namespace IdleGame.Core.Unit
         protected Coroutine StateAction { get; set; }
 
         /// <summary>
-        /// [데이터] 데미지를 계산해서 담는 임시 데이터입니다.
-        /// </summary>
-        protected NativeArray<int> _tempDamage;
-
-        /// <summary>
         /// [캐시] 유닛의 목표 대상입니다. 
         /// </summary>
         protected Base_Unit _target;
@@ -103,6 +98,8 @@ namespace IdleGame.Core.Unit
         {
             Logic_StopMove_Base();
 
+            Logic_StopAction();
+
             _dd.Clear();
 
             Logic_ChangeState(eUnitState.Clear);
@@ -114,6 +111,11 @@ namespace IdleGame.Core.Unit
         /// [초기화] 유닛을 초기화 시킵니다. 
         /// </summary>
         protected virtual void Logic_Init_Custom() { }
+
+        protected virtual void OnDestroy()
+        {
+            Logic_RemoveModule();
+        }
 
         #region 유닛 정보
 
@@ -141,7 +143,7 @@ namespace IdleGame.Core.Unit
         {
             Logic_Clear_Base();
 
-            // TODO :: 구성 제거, 구성에대한 내용이 확정되어야함.. 그럴려면 유닛 기본 디자인 형태같은게 확정되어야함.
+            _ani = null;
         }
 
         public override void Pool_Clear()
@@ -149,9 +151,6 @@ namespace IdleGame.Core.Unit
             Logic_RemoveModule();
         }
 
-        /// <summary>
-        /// TODO :: 추후 오브젝트 풀이 적용 되었을때 해당 함수 내용을 반영해야함.
-        /// </summary>
         public override void Pool_Return_Base()
         {
             base.Pool_Return_Base();
@@ -414,21 +413,11 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual IEnumerator Logic_CalculatorDamage(RefExactInt m_result)
         {
-            if (!_tempDamage.IsCreated)
-                ;
-
-            _tempDamage = new NativeArray<int>(m_result.value.value.Length, Allocator.TempJob);
-
-            for (int i = 0; i < _tempDamage.Length; i++)
-            {
-                _tempDamage[i] = m_result.value.value[i];
-            }
-
             Job_Damage job = new Job_Damage()
             {
                 attaker = ability,
                 target = _target.ability,
-                damage = _tempDamage
+                damage = m_result.value
             };
 
             JobHandle jobHandle = job.Schedule();
@@ -436,11 +425,10 @@ namespace IdleGame.Core.Unit
             while (!jobHandle.IsCompleted)
                 yield return null;
 
-            m_result.value = new ExactInt(0);
+            m_result.value = job.result;
 
             job.Clear();
             jobHandle.Complete();
-            _tempDamage.Dispose();
         }
 
 
@@ -505,8 +493,6 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
-            if (_tempDamage.IsCreated)
-                _tempDamage.Dispose();
         }
 
         /// <summary>

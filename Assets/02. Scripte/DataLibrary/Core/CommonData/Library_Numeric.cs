@@ -1,4 +1,6 @@
 using DG.DemiEditor;
+using IdleGame.Core.Utility;
+using PlasticGui.Configuration.CloudEdition;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,6 +67,12 @@ namespace IdleGame.Data.Numeric
         /// [데이터] 최근에 수정된 상태인지를 확인합니다. 
         /// </summary>
         private bool _isUpdated;
+
+        /// <summary>
+        /// [데이터] 해당 커스텀숫자는 배열을 풀링되어 관리되고 있습니다.
+        /// <br> 사용 직후 적절한 조치를 취해야합니다. </br>
+        /// </summary>
+        private bool _isRentData;
         #endregion
 
 
@@ -72,40 +80,44 @@ namespace IdleGame.Data.Numeric
         /// <summary>
         /// [생성자] 모든 구성을 일일이 지정하여 생성합니다. 
         /// </summary> 
-        public ExactInt(int m_value, bool m_isPositive = true, int m_scale = 0)
+        public ExactInt(int m_value, bool m_isPositive = true, int m_scale = 0, bool m_isRent = false)
         {
-            value = new int[m_scale + 1];
+            value = m_isRent ? Utility_Common.mPool_int.Rent(m_scale + 1) : new int[m_scale + 1];
             scale = m_scale;
             isPositive = m_isPositive;
             value[m_scale] = m_value;
             _isUpdated = true;
+            _isRentData = m_isRent;
         }
 
         /// <summary>
-        /// [생성자] 클론과 같이 동일한 값으로 복사합니다.
+        /// [생성자] 클론과 같이 동일한 값으로 복사합니다. 계산식에서만 사용됩니다.
         /// </summary>
         private ExactInt(ExactInt m_copy)
         {
-            value = (int[])m_copy.value.Clone();
+            value = Utility_Common.mPool_int.Rent(m_copy.value.Length);
+            Array.Copy(value, m_copy.value, m_copy.value.Length);
             scale = m_copy.scale;
             isPositive = m_copy.isPositive;
             _isUpdated = m_copy._isUpdated;
+            _isRentData = true;
         }
 
         /// <summary>
         /// [생성자] 값과 스케일을 지정하여 생성합니다.
         /// </summary>
-        public ExactInt(int m_value, int m_scale)
+        public ExactInt(int m_value, int m_scale, bool m_isRent = false)
         {
-            value = new int[m_scale + 1];
+            value = m_isRent ? Utility_Common.mPool_int.Rent(m_scale + 1) : new int[m_scale + 1];
             scale = m_scale;
             isPositive = m_value >= 0;
             value[m_scale] = m_value;
             _isUpdated = true;
+            _isRentData = m_isRent;
         }
 
         /// <summary>
-        /// [생성자] 인트를 가지고 
+        /// [생성자] 정수를 기반으로 커스텀숫자를 생성합니다.
         /// </summary>
         public ExactInt(int m_value)
         {
@@ -113,14 +125,19 @@ namespace IdleGame.Data.Numeric
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
+            _isRentData = false;
         }
 
+        /// <summary>
+        /// [생성자] long형을 기반으로 커스텀숫자를 생성합니다.
+        /// </summary>
         public ExactInt(long m_value)
         {
             value = ConvertNumber(m_value);
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
+            _isRentData = false;
         }
 
         public ExactInt(int[] m_value, bool m_isPositive = true, int m_scale = 0)
@@ -128,6 +145,24 @@ namespace IdleGame.Data.Numeric
             value = (int[])m_value.Clone();
             scale = m_scale;
             isPositive = m_isPositive;
+            _isUpdated = true;
+            _isRentData = false;
+        }
+
+        /// <summary>
+        /// [기능] 데이터를 지워서 반환합니다.
+        /// </summary>
+        public void Clear()
+        {
+            if (!_isRentData)
+                return;
+
+            Utility_Common.mPool_int.Return(value, true);
+
+            _isRentData = false;
+            value = null;
+            scale = 0;
+            isPositive = true;
             _isUpdated = true;
         }
 
@@ -293,6 +328,7 @@ namespace IdleGame.Data.Numeric
         {
             if (m_value == 0)
             {
+                Clear();
                 this = new ExactInt(0);
                 return;
             }
@@ -495,6 +531,9 @@ namespace IdleGame.Data.Numeric
 
             // 역할 :: 최종적으로 계산된 값에 부호를 변경해준다.
             result.isPositive = numA.isPositive;
+
+            numA.Clear();
+            numB.Clear();
             return result;
         }
 
@@ -585,6 +624,8 @@ namespace IdleGame.Data.Numeric
             }
 
             result.isPositive = isPositive;
+            higherNumber.Clear();
+            lowerNumber.Clear();
             return result;
         }
 
