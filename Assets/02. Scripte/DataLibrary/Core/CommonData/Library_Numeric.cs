@@ -1,6 +1,5 @@
 using DG.DemiEditor;
 using IdleGame.Core.Utility;
-using PlasticGui.Configuration.CloudEdition;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,7 +95,7 @@ namespace IdleGame.Data.Numeric
         private ExactInt(ExactInt m_copy)
         {
             value = Utility_Common.mPool_int.Rent(m_copy.value.Length);
-            Array.Copy(value, m_copy.value, m_copy.value.Length);
+            Array.Copy(m_copy.value, value, m_copy.value.Length);
             scale = m_copy.scale;
             isPositive = m_copy.isPositive;
             _isUpdated = m_copy._isUpdated;

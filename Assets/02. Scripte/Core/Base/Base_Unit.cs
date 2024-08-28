@@ -5,7 +5,6 @@ using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
 using System.Collections;
-using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -344,7 +343,8 @@ namespace IdleGame.Core.Unit
                 _dd.isAttacking = true;
                 _ani.SetTrigger("attack");
                 RefExactInt result = new RefExactInt();
-                yield return Logic_CalculatorDamage(result);
+                //yield return Logic_CalculatorDamage(result);
+                result.value = Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage);
 
                 _target.Logic_Act_Damaged(this, result.value);
 
