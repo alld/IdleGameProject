@@ -1,9 +1,12 @@
 using DG.Tweening;
+using IdleGame.Core.Job;
 using IdleGame.Core.Pool;
 using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace IdleGame.Core.Unit
@@ -14,6 +17,19 @@ namespace IdleGame.Core.Unit
     /// </summary>
     public abstract class Base_Unit : Base_PoolObject
     {
+        /// <summary>
+        /// [데이터] 유닛에 할당되는 고유인덱스를 부여하기위한 카운터입니다. 
+        /// <br> 로직 의미상 현재 만들어진 유닛 횟수로 볼수 있습니다. </br>
+        /// </summary>
+        private static int _UnitIndexCount;
+
+        /// <summary>
+        /// [데이터] 현재 사용중인 유닛 리스트입니다.
+        /// </summary>
+        private static Dictionary<int, Base_Unit> _UsedUnitList = new Dictionary<int, Base_Unit>();
+
+        public static Base_Unit GetUsedUnitList(int m_index) => _UsedUnitList[m_index];
+
         /// <summary>
         /// [캐시] 유닛이 공통적으로 사용되어지는 여러 구성요소들을 포함하고 있습니다.
         /// </summary>
@@ -69,6 +85,11 @@ namespace IdleGame.Core.Unit
         protected Dele_Action _onBroadcastDie;
 
         /// <summary>
+        /// [데이터] 스테이지매니저에서 생성되었을때 할당되는 고유 인덱스값입니다. 
+        /// </summary>
+        public int instanceIndex = -1;
+
+        /// <summary>
         /// [초기화] 유닛을 특정 설정합니다. 
         /// </summary>
         public void Logic_Init(Data_UnitType m_type)
@@ -95,6 +116,8 @@ namespace IdleGame.Core.Unit
         {
             Logic_StopMove_Base();
 
+            Logic_StopAction();
+
             _dd.Clear();
 
             Logic_ChangeState(eUnitState.Clear);
@@ -106,6 +129,11 @@ namespace IdleGame.Core.Unit
         /// [초기화] 유닛을 초기화 시킵니다. 
         /// </summary>
         protected virtual void Logic_Init_Custom() { }
+
+        protected virtual void OnDestroy()
+        {
+            Logic_RemoveModule();
+        }
 
         #region 유닛 정보
 
@@ -123,6 +151,9 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_SetModule(eUnitTpye m_type, int m_index)
         {
+            instanceIndex = _UnitIndexCount++;
+            _UsedUnitList.Add(instanceIndex, this);
+
             // TODO :: 구성 설정, 구성에대한 내용이 확정되어야함.. 그럴려면 유닛 기본 디자인 형태같은게 확정되어야함.
         }
 
@@ -133,7 +164,7 @@ namespace IdleGame.Core.Unit
         {
             Logic_Clear_Base();
 
-            // TODO :: 구성 제거, 구성에대한 내용이 확정되어야함.. 그럴려면 유닛 기본 디자인 형태같은게 확정되어야함.
+            _ani.runtimeAnimatorController = null;
         }
 
         public override void Pool_Clear()
@@ -141,11 +172,10 @@ namespace IdleGame.Core.Unit
             Logic_RemoveModule();
         }
 
-        /// <summary>
-        /// TODO :: 추후 오브젝트 풀이 적용 되었을때 해당 함수 내용을 반영해야함.
-        /// </summary>
         public override void Pool_Return_Base()
         {
+            _UsedUnitList.Remove(instanceIndex);
+
             base.Pool_Return_Base();
         }
         #endregion
@@ -336,7 +366,15 @@ namespace IdleGame.Core.Unit
 
                 _dd.isAttacking = true;
                 _ani.SetTrigger("attack");
-                _target.Logic_Act_Damaged(this, Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage));
+                RefExactInt result = new RefExactInt()
+                {
+                    value = new ExactInt(0) + ability.damage
+                };
+
+                yield return Logic_CalculatorDamage(result);
+                //result.value = Global_DamageEngine.Logic_Calculator(ability, _target.ability, ability.damage);
+
+                _target.Logic_Act_Damaged(this, result.value);
 
                 Sound_Hit();
                 yield return _dd.attackDelay;
@@ -376,7 +414,6 @@ namespace IdleGame.Core.Unit
 
             try
             {
-
                 transform.DOMove(_dd.target_movePoint, moveTime)
                     .SetEase(Ease.Linear)
                     .OnComplete(
@@ -397,6 +434,40 @@ namespace IdleGame.Core.Unit
         #endregion
 
         #region 보조 기능
+
+        #region 워커
+        private Job_Damage _job = new Job_Damage();
+        private JobHandle _jobHandle;
+
+        /// <summary>
+        /// [기능] 데미지 연산을 워커를 통해 별도로 분리합니다. 
+        /// </summary>
+        protected virtual IEnumerator Logic_CalculatorDamage(RefExactInt m_result)
+        {
+            _job.Clear();
+
+            _job.SetResult(m_result.value, instanceIndex, _target.instanceIndex);
+            _jobHandle = _job.Schedule();
+
+            while (!_jobHandle.IsCompleted)
+                yield return null;
+
+            _jobHandle.Complete();
+            m_result.value = _job.GetResult();
+
+            _job.Clear();
+        }
+
+        /// <summary>
+        /// [기능] 잡에서 사용한 메모리를 안정적으로 제거합니다.
+        /// </summary>
+        private void Logic_DisposeMemory()
+        {
+            _jobHandle.Complete();
+            _job.Clear();
+        }
+        #endregion
+
 
         /// <summary>
         /// [기능] 현재 타겟을 찾지 못한 경우 대상을 물색합니다. 
@@ -458,6 +529,8 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
+
+            Logic_DisposeMemory();
         }
 
         /// <summary>
@@ -465,6 +538,8 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_StopMove_Base()
         {
+            if (_ani.runtimeAnimatorController == null)
+                return;
             transform.DOKill();
             _ani.SetBool("move", false);
         }

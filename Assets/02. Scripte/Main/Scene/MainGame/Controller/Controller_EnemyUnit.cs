@@ -1,6 +1,7 @@
 using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
 using IdleGame.Core.Utility;
+using IdleGame.Data.Adrees;
 using IdleGame.Data.Common;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
@@ -36,6 +37,8 @@ namespace IdleGame.Main.Unit
             _dd.isPlayerUnit = false;
 
             Panel_StageManager.Unit_Monsters.Add(this);
+
+            _ani.runtimeAnimatorController = Library_Animator.dic_ani[Library_DataTable.monster[m_index].mon_shape_id];
         }
 
         protected override void Logic_RemoveModule()
@@ -60,8 +63,10 @@ namespace IdleGame.Main.Unit
             }
 
             _target = Panel_StageManager.Unit_Player;
-
-            _dd.target_movePoint = new Vector3(_target.transform.position.x + ability.attackRange, _target.transform.position.y);
+            if (_target.transform.position.x + ability.attackRange < transform.position.x)
+                _dd.target_movePoint = new Vector3(_target.transform.position.x + ability.attackRange, _target.transform.position.y);
+            else
+                _dd.target_movePoint = transform.position;
 
             return base.Logic_SearchTarget_Base();
         }

@@ -24,7 +24,7 @@ namespace IdleGame.Main
         /// </summary>
         [Header("GameManager")]
         [SerializeField]
-        private Panel_StageManager _stage;
+        public Panel_StageManager _stage;
 
         /// <summary>
         /// [상태] 게임시작에 제한을 걸기 위해서 적용된 변수입니다. 중복 실행을 방지합니다.

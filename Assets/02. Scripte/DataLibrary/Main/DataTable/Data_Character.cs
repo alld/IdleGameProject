@@ -28,6 +28,11 @@ namespace IdleGame.Data
         public int character_id = -1;
 
         /// <summary>
+        /// [데이터] 캐릭터의 외형 Id입니다.
+        /// </summary>
+        public int shape_id = -1;
+
+        /// <summary>
         /// [데이터] 해당 캐릭터를 획득 가능한 스테이지 ID입니다
         /// </summary>
         public int stage_id = -1;
