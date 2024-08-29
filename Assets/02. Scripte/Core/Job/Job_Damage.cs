@@ -2,8 +2,6 @@ using IdleGame.Core.Unit;
 using IdleGame.Data.Numeric;
 using Unity.Collections;
 using Unity.Jobs;
-using System.Linq;
-using JetBrains.Annotations;
 
 namespace IdleGame.Core.Job
 {
@@ -39,7 +37,19 @@ namespace IdleGame.Core.Job
 
         public void Execute()
         {
-            SetResult(Global_DamageEngine.Logic_Calculator(Base_Unit.GetUsedUnitList(target).ability, Base_Unit.GetUsedUnitList(attaker).ability, GetResult()));
+            SetResult(Global_DamageEngine.Logic_Calculator(Base_Unit.GetUsedUnitList(attaker).ability, Base_Unit.GetUsedUnitList(target).ability, GetResult()));
+        }
+
+
+        /// <summary>
+        /// [기능] 데이터를 설정합니다.
+        /// </summary>
+        public void SetResult(ExactInt m_data, int m_attker, int m_target)
+        {
+            attaker = m_attker;
+            target = m_target;
+
+            SetResult(m_data);
         }
 
         /// <summary>

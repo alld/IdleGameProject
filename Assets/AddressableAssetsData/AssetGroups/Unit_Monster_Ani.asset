@@ -10,11 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: Unit_Monster_Ani
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
-  m_GUID: d727fc1c246e52642a185da1930e0192
-  m_SerializeEntries: []
+  m_GroupName: Unit_Monster_Ani
+  m_GUID: 142ddbc4a86dc0541af4c783a8b04ad8
+  m_SerializeEntries:
+  - m_GUID: 39628981ff53efb4bbbdd28f34001735
+    m_Address: Assets/06. Animation/Unit/Monster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a305a379cd099f546a1c7692988511f5, type: 2}
   m_SchemaSet:

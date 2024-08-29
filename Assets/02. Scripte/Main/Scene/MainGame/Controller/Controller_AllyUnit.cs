@@ -1,5 +1,7 @@
 using IdleGame.Core.Unit;
 using IdleGame.Core.Utility;
+using IdleGame.Data.Adrees;
+using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
 
 namespace IdleGame.Main.Unit
@@ -16,6 +18,8 @@ namespace IdleGame.Main.Unit
 
             _dd.attackDelay = Utility_Common.WaitForSeconds(1f);
             _dd.isPlayerUnit = true;
+
+            _ani.runtimeAnimatorController = Library_Animator.dic_ani[Library_DataTable.character[m_index].shape_id];
         }
 
         #region 보조 기능

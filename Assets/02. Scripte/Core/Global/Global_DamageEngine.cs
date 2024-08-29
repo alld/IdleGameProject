@@ -1,7 +1,5 @@
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
-using System;
-using UnityEngine;
 
 namespace IdleGame.Core.Unit
 {
@@ -38,8 +36,10 @@ namespace IdleGame.Core.Unit
             // 역할 :: 치명타 계산
             LastData_IsCritical = Logic_TryCriticalCalculator(m_attacker.critical_chance);
             if (LastData_IsCritical)
+            {
                 cri.SetPercent(m_attacker.critical_strike_rate);
-            result += cri;
+                result += cri;
+            }
 
             // 역할 :: 추가 계산 방지
             LastData_IsZeroDamage = result < 0;

@@ -258,6 +258,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Convert_ParsingData(ref parsingData.player_value, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.defens, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.character_id, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.shape_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.stage_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.damage, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.hp, dataSegment[index++]);

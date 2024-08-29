@@ -1,14 +1,11 @@
 using DG.Tweening;
 using IdleGame.Core.Job;
 using IdleGame.Core.Pool;
-using IdleGame.Core.Procedure;
 using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
 using IdleGame.Data.Numeric;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -167,7 +164,7 @@ namespace IdleGame.Core.Unit
         {
             Logic_Clear_Base();
 
-            _ani = null;
+            _ani.runtimeAnimatorController = null;
         }
 
         public override void Pool_Clear()
@@ -417,7 +414,6 @@ namespace IdleGame.Core.Unit
 
             try
             {
-
                 transform.DOMove(_dd.target_movePoint, moveTime)
                     .SetEase(Ease.Linear)
                     .OnComplete(
@@ -439,25 +435,38 @@ namespace IdleGame.Core.Unit
 
         #region 보조 기능
 
+        #region 워커
+        private Job_Damage _job = new Job_Damage();
+        private JobHandle _jobHandle;
+
         /// <summary>
         /// [기능] 데미지 연산을 워커를 통해 별도로 분리합니다. 
         /// </summary>
         protected virtual IEnumerator Logic_CalculatorDamage(RefExactInt m_result)
         {
-            Job_Damage job = new Job_Damage();
-            job.SetResult(m_result.value);
+            _job.Clear();
 
-            JobHandle jobHandle = job.Schedule();
+            _job.SetResult(m_result.value, instanceIndex, _target.instanceIndex);
+            _jobHandle = _job.Schedule();
 
-            while (!jobHandle.IsCompleted)
+            while (!_jobHandle.IsCompleted)
                 yield return null;
 
-            jobHandle.Complete();
-            m_result.value = job.GetResult();
+            _jobHandle.Complete();
+            m_result.value = _job.GetResult();
 
-            job.Clear();
+            _job.Clear();
         }
 
+        /// <summary>
+        /// [기능] 잡에서 사용한 메모리를 안정적으로 제거합니다.
+        /// </summary>
+        private void Logic_DisposeMemory()
+        {
+            _jobHandle.Complete();
+            _job.Clear();
+        }
+        #endregion
 
 
         /// <summary>
@@ -520,6 +529,8 @@ namespace IdleGame.Core.Unit
 
             StopCoroutine(_stateAction);
             _stateAction = null;
+
+            Logic_DisposeMemory();
         }
 
         /// <summary>
@@ -527,6 +538,8 @@ namespace IdleGame.Core.Unit
         /// </summary>
         protected virtual void Logic_StopMove_Base()
         {
+            if (_ani.runtimeAnimatorController == null)
+                return;
             transform.DOKill();
             _ani.SetBool("move", false);
         }

@@ -72,6 +72,11 @@ namespace IdleGame.Main.GameLogic
         private Graphic_StageBord _bord;
 
         /// <summary>
+        /// [캐시] 모든 유닛에 관한 애니메이터 컨트롤러 리스트입니다. 
+        /// </summary>
+        public Dictionary<int, Animator> lb_animator = new Dictionary<int, Animator>();
+
+        /// <summary>
         /// [초기화] 씬에 있는 스테이지 보드를 등록시킵니다.
         /// </summary>
         public void Logic_RegisterStageBord(Graphic_StageBord m_bord)
