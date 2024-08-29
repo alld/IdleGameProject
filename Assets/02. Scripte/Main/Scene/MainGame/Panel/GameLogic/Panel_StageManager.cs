@@ -147,10 +147,10 @@ namespace IdleGame.Main.GameLogic
         {
             for (int i = 0; i < mainStage.monster_max[mainStage.currentWave]; i++)
             {
-                var monster = GameManager.Pool.Logic_GetObject(ePoolType.Enemy, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup);
+                var monster = GameManager.Pool.Logic_GetObject(ePoolType.Enemy, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.enemyGroup) as Base_Unit;
                 monster.transform.localPosition = new Vector3(enemyStartPos.x + Random.Range(-1f, 1f), enemyStartPos.y + Random.Range(-1f, 1f));
                 monster.gameObject.SetActive(true);
-                (monster as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Enemy, Logic_GetRandomSelect_MonsterID()));
+                monster.Logic_Init(new Data_UnitType(eUnitTpye.Enemy, Logic_GetRandomSelect_MonsterID()));
             }
         }
 
@@ -182,10 +182,10 @@ namespace IdleGame.Main.GameLogic
         {
             if (Unit_Player != null) return;
 
-            var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup);
+            var player = GameManager.Pool.Logic_GetObject(ePoolType.Player, (GameManager.Panel as Panel_MainGameScene).mainGamePanel.playerGroup) as Base_Unit;
             player.transform.localPosition = playerStartPos[0];
             player.gameObject.SetActive(true);
-            (player as Base_Unit).Logic_Init(new Data_UnitType(eUnitTpye.Player, Global_Data.Player.characterID));
+            player.Logic_Init(new Data_UnitType(eUnitTpye.Player, Global_Data.Player.characterID));
         }
 
         /// <summary>

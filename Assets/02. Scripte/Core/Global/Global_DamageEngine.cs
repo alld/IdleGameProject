@@ -1,5 +1,6 @@
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
+using System;
 using UnityEngine;
 
 namespace IdleGame.Core.Unit
@@ -17,6 +18,9 @@ namespace IdleGame.Core.Unit
         /// [데이터] 마지막 데이터가 0이하의 데미지인지를 확인합니다. 
         /// </summary>
         public static bool LastData_IsZeroDamage;
+
+        private static System.Random random = new System.Random();
+
 
         /// <summary>
         /// [기능] 데미지를 계산하여 최종 데미지량을 반영합니다.
@@ -57,7 +61,7 @@ namespace IdleGame.Core.Unit
         /// </summary>
         public static bool Logic_TryCriticalCalculator(float m_chance)
         {
-            return Random.value < m_chance;
+            return (float)random.NextDouble() < m_chance;
         }
     }
 }

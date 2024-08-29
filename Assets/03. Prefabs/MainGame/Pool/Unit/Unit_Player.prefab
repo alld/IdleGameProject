@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ani: {fileID: 6057365554327491566}
+  instanceIndex: -1
 --- !u!95 &6057365554327491566
 Animator:
   serializedVersion: 7

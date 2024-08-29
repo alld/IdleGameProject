@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ani: {fileID: 1085502410873519980}
+  instanceIndex: -1
 --- !u!95 &1085502410873519980
 Animator:
   serializedVersion: 7

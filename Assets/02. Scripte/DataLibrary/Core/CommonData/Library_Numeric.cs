@@ -42,9 +42,15 @@ namespace IdleGame.Data.Numeric
         private static StringBuilder _Sb_digit = new StringBuilder(10);
 
         /// <summary>
+        /// [캐시] 변환에 사용되는 스트링빌더입니다. 텍스트로 변환할때 사용됩니다.
+        /// </summary>
+        private static StringBuilder _Sb_string = new StringBuilder(10);
+
+        /// <summary>
         /// [캐시] 변환에 사용되는 스트링빌더입니다. 입력받은 스트링중에 문자만을 담습니다. 
         /// </summary>
         private static StringBuilder _Sb_letter = new StringBuilder(10);
+
 
         #region 구성
         /// <summary>
@@ -120,7 +126,7 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         public ExactInt(int m_value)
         {
-            value = ConvertNumber(m_value);
+            value = Convert_Number(m_value);
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
@@ -132,7 +138,7 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         public ExactInt(long m_value)
         {
-            value = ConvertNumber(m_value);
+            value = Convert_Number(m_value);
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
@@ -175,26 +181,59 @@ namespace IdleGame.Data.Numeric
             return a;
         }
 
+        /// <summary>
+        /// [변환] 커스텀 숫자를 문자열로 변환합니다.
+        /// <br> 가장 높은수부터 입력한 단위만큼 표시합니다. </br>
+        /// <br> 0을 입력한 경우 모든 단위를 표시합니다. </br>
+        /// <br> 해당 포멧팅 방식은 소수점을 표시하지않습니다. </br>
+        /// </summary>
+        public string ToString(int m_format, bool m_space = false)
+        {
+            _Sb_string.Clear();
+            _Sb_string.Append(isPositive ? "" : "-");
+
+            if (m_format == 0)
+                m_format = scale + 1;
+
+            for (int i = m_format; i >= 0; i--)
+            {
+                if (value[i] == 0)
+                    continue;
+
+                _Sb_string.Append(value[i].ToString());
+                _Sb_string.Append(Convert_ScaleToString(i));
+
+                if (m_space && i - 1 >= 0)
+                    _Sb_string.Append(" ");
+            }
+
+            return _Sb_string.ToString();
+        }
+
+        /// <summary>
+        /// [변환] 커스텀 숫자를 문자열로 변환합니다.
+        /// <br> 가장 큰 수의 단위를 표시하며 10의 자릿수 이하인경우 소수점 둘째자리 까지 표시합니다.</br>
+        /// </summary>
         public override string ToString()
         {
-            string result = isPositive ? "" : "-";
+            _Sb_string.Clear();
 
-            result += value.Last().ToString();
+            _Sb_string.Append(isPositive ? "" : "-");
 
-            if (value.Length > 1)
+            _Sb_string.Append(value[scale].ToString());
+
+            // 조건 :: 스케일값이 존재하면서, 현재 표시 단위가 십의자릿수 이하임(00xx, 000x)
+            if (scale >= 1 && value[scale] < 100)
             {
-                string decimalString = value[value.Length - 2].ToString();
-                if (decimalString.Length > 2)
+                if (value[scale] < 100 && value[scale - 1] >= 100) // a(00xx) b(xx00)
                 {
-                    result += '.';
-                    decimalString = decimalString.Length > 3 ? decimalString : '0' + decimalString;
-                    result += decimalString[1] == '0' ? decimalString[0] : decimalString.Substring(0, 2);
+                    _Sb_string.Append(".");
+                    _Sb_string.Append(value[scale - 1] / 100);
                 }
             }
 
-            result += ScaleToAlphabet(scale);
-
-            return result;
+            _Sb_string.Append(Convert_ScaleToString(scale));
+            return _Sb_string.ToString();
         }
 
 
@@ -277,12 +316,34 @@ namespace IdleGame.Data.Numeric
             return changeNumber;
         }
 
-        public static int[] ConvertNumber(int m_value)
+        /// <summary>
+        /// [변환] 스케일을 스트링으로 변환합니다.
+        /// </summary>
+        public static string Convert_ScaleToString(int m_scale)
         {
-            return ConvertNumber((long)m_value);
+            _Sb_digit.Clear();
+
+            while (m_scale > 0)
+            {
+                int remainder = m_scale % 26;
+                _Sb_digit.Append((char)(remainder + 'a'));
+                m_scale -= 26;
+            }
+            return _Sb_digit.ToString();
         }
 
-        public static int[] ConvertNumber(long m_value)
+        /// <summary>
+        /// [변환] 정수를 커스텀 숫자에서 사용되는 배열로 변환합니다.
+        /// </summary>
+        public static int[] Convert_Number(int m_value)
+        {
+            return Convert_Number((long)m_value);
+        }
+
+        /// <summary>
+        /// [변환] 숫자(Long)를 커스텀숫자에 사용되는 배열로 변환합니다. 
+        /// </summary>
+        public static int[] Convert_Number(long m_value)
         {
             List<int> result = new List<int>();
             m_value = Math.Abs(m_value);
@@ -492,7 +553,7 @@ namespace IdleGame.Data.Numeric
             ExactInt numB = new ExactInt(b);
 
             // 역할 :: result에 두 값을 더하여 반영함
-            for (int i = 0; i < result.value.Length; ++i)
+            for (int i = 0; i <= result.scale; ++i)
             {
                 if (isOverFlow)
                 {
@@ -519,7 +580,7 @@ namespace IdleGame.Data.Numeric
             {
                 ExactInt tempValue = new ExactInt(0, result.scale + 1);
 
-                for (int i = 0; i < result.value.Length; i++)
+                for (int i = 0; i <= result.scale; i++)
                 {
                     tempValue.value[i] = result.value[i];
                 }
@@ -590,7 +651,7 @@ namespace IdleGame.Data.Numeric
                     if (higherNumber.value[i] < lowerNumber.value[i])
                     {
                         higherNumber.value[availableIndex]--;
-                        for (int j = availableIndex; j > i; j++)
+                        for (int j = availableIndex; j > i; j--)
                             higherNumber.value[j] += UnitScale - 1;
 
                         higherNumber.value[i] += UnitScale;
@@ -617,7 +678,7 @@ namespace IdleGame.Data.Numeric
             }
 
             // 역할 :: 최종적으로 값을 결과값에 옮깁니다.
-            for (int i = 0; i < result.value.Length; i++)
+            for (int i = 0; i <= result.scale; i++)
             {
                 result.value[i] = higherNumber.value[i];
             }
@@ -647,16 +708,16 @@ namespace IdleGame.Data.Numeric
         {
             ExactInt result = new ExactInt(0, a.scale + b.scale);
 
-            for (int i = 0; i < a.value.Length; ++i)
+            for (int i = 0; i <= a.scale; ++i)
             {
-                for (int j = 0; j < b.value.Length; ++j)
+                for (int j = 0; j <= b.scale; ++j)
                 {
                     result.value[i + j] += a.value[i] * b.value[j];
                 }
             }
 
             int overflow = 0;
-            for (int i = 0; i < result.value.Length; i++)
+            for (int i = 0; i <= result.scale; i++)
             {
                 result.value[i] += overflow;
                 overflow = result.value[i] / UnitScale;
@@ -702,11 +763,11 @@ namespace IdleGame.Data.Numeric
                 devideValue += b.value[b.value.Count() - 2];
             }
             int temp = 0;
-            for (int i = a.value.Length - 1; i > 0; --i)
+            for (int i = a.scale; i > 0; --i)
             {
                 temp = (temp * LimitInt + a.value[i]) * LimitInt + a.value[i - 1];
                 a.value[i] = temp / devideValue;
-                if (i > 0 && a.value[i] == 0 && i == a.value.Length - 1)
+                if (i > 0 && a.value[i] == 0 && i == a.scale)
                 {
                     RemoveAtValue(ref a.value, i);
                 }
@@ -751,13 +812,13 @@ namespace IdleGame.Data.Numeric
             }
 
             if (a.isPositive)
-                for (int i = a.value.Length - 1; i >= 0; --i)
+                for (int i = a.scale; i >= 0; --i)
                 {
                     if (a.value[i] == b.value[i]) continue;
                     return a.value[i] < b.value[i];
                 }
             else
-                for (int i = a.value.Length - 1; i >= 0; --i)
+                for (int i = a.scale - 1; i >= 0; --i)
                 {
                     if (a.value[i] == b.value[i]) continue;
                     return a.value[i] > b.value[i];
@@ -788,13 +849,13 @@ namespace IdleGame.Data.Numeric
             }
 
             if (a.isPositive)
-                for (int i = a.value.Length - 1; i >= 0; --i)
+                for (int i = a.scale; i >= 0; --i)
                 {
                     if (a.value[i] == b.value[i]) continue;
                     return a.value[i] > b.value[i];
                 }
             else
-                for (int i = a.value.Length - 1; i >= 0; --i)
+                for (int i = a.scale; i >= 0; --i)
                 {
                     if (a.value[i] == b.value[i]) continue;
                     return a.value[i] < b.value[i];
@@ -818,7 +879,7 @@ namespace IdleGame.Data.Numeric
 
             if (a.isPositive != b.isPositive || a.scale != b.scale) return false;
 
-            for (int i = a.value.Length - 1; i >= 0; --i)
+            for (int i = a.scale; i >= 0; --i)
             {
                 if (a.value[i] == b.value[i]) continue;
                 return false;
@@ -845,7 +906,7 @@ namespace IdleGame.Data.Numeric
         {
             if (a.isPositive != b.isPositive || a.scale != b.scale) return true;
 
-            for (int i = a.value.Length - 1; i >= 0; --i)
+            for (int i = a.scale; i >= 0; --i)
             {
                 if (a.value[i] == b.value[i]) continue;
                 return true;
@@ -910,19 +971,6 @@ namespace IdleGame.Data.Numeric
 
         #endregion
 
-
-        public static string ScaleToAlphabet(int scale)
-        {
-            string result = string.Empty;
-            while (scale > 0)
-            {
-                scale--; // 1을 빼서 0부터 시작하도록 조정
-                int remainder = scale % 26;
-                result = (char)(remainder + 'a') + result;
-                scale /= 26;
-            }
-            return result;
-        }
 
         /// <summary>
         /// [사용하지않음]

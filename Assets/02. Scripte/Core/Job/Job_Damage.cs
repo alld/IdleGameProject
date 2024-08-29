@@ -2,6 +2,7 @@ using IdleGame.Core.Unit;
 using IdleGame.Data.Numeric;
 using Unity.Collections;
 using Unity.Jobs;
+using System.Linq;
 
 namespace IdleGame.Core.Job
 {
@@ -11,28 +12,59 @@ namespace IdleGame.Core.Job
     public struct Job_Damage : IJob
     {
         /// <summary>
-        /// [캐시] 계산된 또는 계산할 데미지입니다.
+        /// [데이터] 공격하는 본인의 인스턴스 인덱스입니다.
         /// </summary>
-        public ExactInt damage;
+        public int attaker;
 
         /// <summary>
-        /// [캐시] 공격하는 본인입니다.
+        /// [데이터] 공격대상의 인스턴스 인덱스입니다.
         /// </summary>
-        public Data_UnitAbility attaker;
-
-        /// <summary>
-        /// [캐시] 공격 대상입니다.
-        /// </summary>
-        public Data_UnitAbility target;
+        public int target;
 
         /// <summary>
         /// [데이터] 계산 결과입니다.
         /// </summary>
-        public ExactInt result;
+        public NativeList<int> result;
+
+        /// <summary>
+        /// [데이터] 결과값의 스케일입니다.
+        /// </summary>
+        public int result_sacle;
+
+        /// <summary>
+        /// [데이터] 결과값의 양수유무를 판단하는 데이터입니다. 
+        /// </summary>
+        public bool result_isPositive;
 
         public void Execute()
         {
-            result = Global_DamageEngine.Logic_Calculator(attaker, target, damage);
+            SetResult(Global_DamageEngine.Logic_Calculator(Base_Unit.GetUsedUnitList(target).ability, Base_Unit.GetUsedUnitList(attaker).ability, GetResult()));
+        }
+
+        /// <summary>
+        /// [기능] 데이터를 설정합니다.
+        /// </summary>
+        public void SetResult(ExactInt m_data)
+        {
+            if (!result.IsCreated)
+                result = new NativeList<int>(Allocator.TempJob);
+
+            result.Clear();
+
+            for (int i = 0; i < m_data.scale + 1; i++)
+            {
+                result.Add(m_data.value[i]);
+            }
+            result_isPositive = m_data.isPositive;
+            result_sacle = m_data.scale;
+        }
+
+        /// <summary>
+        /// [기능] 결과값을 반환합니다.
+        /// </summary>
+        public ExactInt GetResult()
+        {
+            return new ExactInt(result.ToList().ToArray(), result_isPositive, result_sacle);
         }
 
         /// <summary>
@@ -40,8 +72,11 @@ namespace IdleGame.Core.Job
         /// </summary>
         public void Clear()
         {
-            attaker = null;
-            target = null;
+            if (result.IsCreated)
+                result.Dispose();
+
+            attaker = -1;
+            target = -1;
         }
     }
 }
