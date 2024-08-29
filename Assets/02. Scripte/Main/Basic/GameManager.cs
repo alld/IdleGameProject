@@ -24,7 +24,7 @@ namespace IdleGame.Main
         /// </summary>
         [Header("GameManager")]
         [SerializeField]
-        public Panel_StageManager _stage;
+        public Panel_StageManager stage;
 
         /// <summary>
         /// [상태] 게임시작에 제한을 걸기 위해서 적용된 변수입니다. 중복 실행을 방지합니다.
@@ -79,8 +79,8 @@ namespace IdleGame.Main
             //------ 임시 -------//
 
             Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex].currentWave = Global_Data.PlayProgress.stage_curWave;
-            _stage.Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
-            _stage.Logic_StageStart();
+            stage.Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+            stage.Logic_StageStart();
 
             //--------------------//
 
@@ -94,7 +94,7 @@ namespace IdleGame.Main
         /// </summary>
         public void Logic_RegisterStageBord(Graphic_StageBord m_bord)
         {
-            _stage.Logic_RegisterStageBord(m_bord);
+            stage.Logic_RegisterStageBord(m_bord);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace IdleGame.Main
         /// </summary>
         public bool Logic_TryNextLevel()
         {
-            return _stage.Logic_TryNextLevel();
+            return stage.Logic_TryNextLevel();
         }
         #endregion
 
