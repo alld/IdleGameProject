@@ -3,6 +3,7 @@ using IdleGame.Data.Numeric;
 using Unity.Collections;
 using Unity.Jobs;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace IdleGame.Core.Job
 {
@@ -64,7 +65,14 @@ namespace IdleGame.Core.Job
         /// </summary>
         public ExactInt GetResult()
         {
-            return new ExactInt(result.ToList().ToArray(), result_isPositive, result_sacle);
+            int[] value = new int[result.Length];
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                value[i] = result[i];
+            }
+
+            return new ExactInt(value, result_isPositive, result_sacle);
         }
 
         /// <summary>
