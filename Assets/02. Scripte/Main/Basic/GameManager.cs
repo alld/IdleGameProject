@@ -2,6 +2,7 @@ using IdleGame.Core.Procedure;
 using IdleGame.Data;
 using IdleGame.Data.Common.Event;
 using IdleGame.Data.DataTable;
+using IdleGame.Data.Numeric;
 using IdleGame.Main.GameLogic;
 using IdleGame.Main.Scene.Main.UI;
 using UnityEngine;
@@ -40,6 +41,14 @@ namespace IdleGame.Main
         protected override void Awake()
         {
             base.Awake();
+
+            ExactInt A = new ExactInt(10000);
+
+            ExactInt B = new ExactInt(1000);
+
+            Debug.Log(B / A);
+
+            return;
 
             #region 싱글턴
             if (Main == null)

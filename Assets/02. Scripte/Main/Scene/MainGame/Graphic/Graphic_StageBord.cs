@@ -169,8 +169,7 @@ namespace IdleGame.Main.Scene.Main.UI
         public void Logic_UpdateBossHpbar()
         {
             _i_bossHpBar.DOKill();
-
-            //_i_bossHpBar.DOFillAmount (_unit_boss.ability.hp / _unit_boss.ability.maxHp, 0.3f); 
+            _i_bossHpBar.DOFillAmount((_unit_boss.ability.hp / _unit_boss.ability.maxHp).quotient, 0.3f);
         }
 
         /// <summary>

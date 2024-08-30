@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 namespace IdleGame.Data.Numeric
 {
@@ -74,10 +76,9 @@ namespace IdleGame.Data.Numeric
         private bool _isUpdated;
 
         /// <summary>
-        /// [데이터] 해당 커스텀숫자는 배열을 풀링되어 관리되고 있습니다.
-        /// <br> 사용 직후 적절한 조치를 취해야합니다. </br>
+        /// [데이터] 소수점 이하로 나눠졌을때 발생하는 몫
         /// </summary>
-        private bool _isRentData;
+        public float quotient;
         #endregion
 
 
@@ -85,14 +86,14 @@ namespace IdleGame.Data.Numeric
         /// <summary>
         /// [생성자] 모든 구성을 일일이 지정하여 생성합니다. 
         /// </summary> 
-        public ExactInt(int m_value, bool m_isPositive = true, int m_scale = 0, bool m_isRent = false)
+        public ExactInt(int m_value, bool m_isPositive = true, int m_scale = 0)
         {
-            value = m_isRent ? Utility_Common.mPool_int.Rent(m_scale + 1) : new int[m_scale + 1];
+            value = new int[m_scale + 1];
             scale = m_scale;
             isPositive = m_isPositive;
             value[m_scale] = m_value;
             _isUpdated = true;
-            _isRentData = m_isRent;
+            quotient = 0;
         }
 
         /// <summary>
@@ -100,25 +101,26 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         private ExactInt(ExactInt m_copy)
         {
-            value = Utility_Common.mPool_int.Rent(m_copy.value.Length);
-            Array.Copy(m_copy.value, value, m_copy.value.Length);
+            //value = Utility_Common.mPool_int.Rent(m_copy.value.Length);
+            //Array.Copy(m_copy.value, value, m_copy.value.Length);
+            value = (int[])m_copy.value.Clone();
             scale = m_copy.scale;
             isPositive = m_copy.isPositive;
             _isUpdated = m_copy._isUpdated;
-            _isRentData = true;
+            quotient = 0;
         }
 
         /// <summary>
         /// [생성자] 값과 스케일을 지정하여 생성합니다.
         /// </summary>
-        public ExactInt(int m_value, int m_scale, bool m_isRent = false)
+        public ExactInt(int m_value, int m_scale)
         {
-            value = m_isRent ? Utility_Common.mPool_int.Rent(m_scale + 1) : new int[m_scale + 1];
+            value = new int[m_scale + 1];
             scale = m_scale;
             isPositive = m_value >= 0;
             value[m_scale] = m_value;
             _isUpdated = true;
-            _isRentData = m_isRent;
+            quotient = 0;
         }
 
         /// <summary>
@@ -130,7 +132,7 @@ namespace IdleGame.Data.Numeric
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
-            _isRentData = false;
+            quotient = 0;
         }
 
         /// <summary>
@@ -142,7 +144,7 @@ namespace IdleGame.Data.Numeric
             scale = value.Length - 1;
             isPositive = m_value >= 0;
             _isUpdated = true;
-            _isRentData = false;
+            quotient = 0;
         }
 
         public ExactInt(int[] m_value, bool m_isPositive = true, int m_scale = 0)
@@ -151,7 +153,7 @@ namespace IdleGame.Data.Numeric
             scale = m_scale;
             isPositive = m_isPositive;
             _isUpdated = true;
-            _isRentData = false;
+            quotient = 0;
         }
 
         /// <summary>
@@ -159,12 +161,6 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         public void Clear()
         {
-            if (!_isRentData)
-                return;
-
-            Utility_Common.mPool_int.Return(value, true);
-
-            _isRentData = false;
             value = null;
             scale = 0;
             isPositive = true;
@@ -416,10 +412,10 @@ namespace IdleGame.Data.Numeric
         {
             int[] multiple10 = { 1, 10, 100, 1000, 10000 };
 
-            int addDigit = (m_count % 4) + 1;
-            int addUnit = (m_count + (4 - GetDigitCount(value[scale]))) / 4;
-            int[] result = new int[addUnit + scale];
-            for (int i = 0; i < value.Length; i++)
+            int addDigit = ((m_count + GetDigitCount(value[scale])) % 4);
+            int addUnit = ((m_count + GetDigitCount(value[scale])) / 4) + (m_count / 4);
+            int[] result = new int[addUnit + scale + 1];
+            for (int i = 0; i < result.Length; i++)
             {
                 result[addUnit + i] = ((value[i] * multiple10[addDigit]) % multiple10[addDigit + 1]) + i == 0 ? 0 : (value[i - 1] / multiple10[addDigit + 1]);
             }
@@ -453,6 +449,14 @@ namespace IdleGame.Data.Numeric
             if (number == 0) return 0;
 
             return (int)Math.Floor(Math.Log10(Math.Abs(number))) + 1;
+        }
+
+        /// <summary>
+        /// [기능] 현재 값의 단위 갯수를 반환합니다.
+        /// </summary>
+        public int GetUnitCount()
+        {
+            return scale * 4 + value[scale].ToString().Length;
         }
 
         /// <summary>
@@ -752,31 +756,74 @@ namespace IdleGame.Data.Numeric
                 return new ExactInt(0);
             }
 
-            if (a.scale < b.scale || (a.scale == b.scale && a.value[a.scale] < b.value[b.scale])) return new ExactInt(0);
+            if (a == b) return new ExactInt(1);
 
-            a.scale -= b.scale;
-            a.isPositive = a.isPositive == b.isPositive;
+            ExactInt result = new ExactInt(0);
+            ExactInt remainder = new ExactInt(a);
+            float quotient = 0;
+            ExactInt weight = new ExactInt(b);
 
-            int devideValue = b.value.Last() * LimitInt;
-            if (b.value.Count() > 1)
+            if (a < b) // 소수값 반환
             {
-                devideValue += b.value[b.value.Count() - 2];
-            }
-            int temp = 0;
-            for (int i = a.scale; i > 0; --i)
-            {
-                temp = (temp * LimitInt + a.value[i]) * LimitInt + a.value[i - 1];
-                a.value[i] = temp / devideValue;
-                if (i > 0 && a.value[i] == 0 && i == a.scale)
+                remainder.IncreaseDigits(2);
+                float weightCount = 0.01f;
+                bool isFail = false;
+
+                if (remainder < weight)
                 {
-                    RemoveAtValue(ref a.value, i);
+                    remainder.Clear();
+                    weight.Clear();
+
+                    result.quotient = quotient;
+                    return result;
                 }
-                temp %= devideValue;
+
+
+                weight.IncreaseDigits(1);
+                weightCount = 0.1f;
+
+
+                while (true)
+                {
+                    if (isFail)
+                    {
+                        isFail = false;
+                        if (weightCount == 0.1f)
+                        {
+                            weightCount = 0.01f;
+                            weight.DecreaseDigits(1);
+                        }
+                        else
+                            break;
+                    }
+
+                    if (remainder < weight)
+                    {
+                        isFail = true;
+                    }
+                    else
+                    {
+                        quotient += weightCount;
+                        remainder -= weight;
+                    }
+                }
+
+                result = remainder;
+                remainder.Clear();
+                weight.Clear();
+
+                result.quotient = quotient;
+                return result;
             }
-            a.value[0] = (temp * LimitInt + a.value[0]) / b.value.Last();
+            else // 일반 연산 
+            {
+                Debug.Log("일반연산을 구현안했는데 호출됐음. 이건 사실 정상적인상황이 아님, 이 로그를 보면 상황과 함께 제보바람");
+            }
 
+            remainder.Clear();
+            weight.Clear();
 
-            return a;
+            return result;
         }
 
         public static ExactInt operator /(ExactInt a, int b)
