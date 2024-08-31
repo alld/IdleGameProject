@@ -1,8 +1,10 @@
 using DG.Tweening;
 using IdleGame.Core.Job;
 using IdleGame.Core.Pool;
+using IdleGame.Core.Procedure;
 using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
+using IdleGame.Data.Common.Log;
 using IdleGame.Data.Numeric;
 using System.Collections;
 using System.Collections.Generic;
@@ -83,6 +85,11 @@ namespace IdleGame.Core.Unit
         /// [캐시] 죽었을때 자신을 타겟으로 삼고 있는 유닛들에게 정보를 전달합니다. 
         /// </summary>
         protected Dele_Action _onBroadcastDie;
+
+        /// <summary>
+        /// [캐시] 공격 받을때 마다 등록된 대상들에게 정보를 전달합니다. 
+        /// </summary>
+        public Dele_Action _onBroadcastDamaged;
 
         /// <summary>
         /// [데이터] 스테이지매니저에서 생성되었을때 할당되는 고유 인덱스값입니다. 
@@ -261,6 +268,7 @@ namespace IdleGame.Core.Unit
         {
             //ability.ModifyHp(ability.hp - m_damage);
             ability.hp -= m_damage;
+            _onBroadcastDamaged?.Invoke();
             if (ability.hp <= 0)
             {
                 Logic_ChangeState(eUnitState.None, eUnitState.Die);
@@ -424,8 +432,7 @@ namespace IdleGame.Core.Unit
             }
             catch (System.Exception)
             {
-
-                throw;
+                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Error_Unit_ActionMiss, tag + name));
             }
 
             Sound_Move();

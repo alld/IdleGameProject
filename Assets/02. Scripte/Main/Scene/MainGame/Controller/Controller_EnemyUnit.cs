@@ -63,8 +63,9 @@ namespace IdleGame.Main.Unit
             }
 
             _target = Panel_StageManager.Unit_Player;
-            if (_target.transform.position.x + ability.attackRange < transform.position.x)
-                _dd.target_movePoint = new Vector3(_target.transform.position.x + ability.attackRange, _target.transform.position.y);
+            float range = _target.transform.position.x + ((ability.attackRange / 200));
+            if (range < transform.position.x)
+                _dd.target_movePoint = new Vector3(range, _target.transform.position.y);
             else
                 _dd.target_movePoint = transform.position;
 
