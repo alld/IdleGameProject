@@ -1,8 +1,10 @@
 using DG.Tweening;
 using IdleGame.Core.Job;
 using IdleGame.Core.Pool;
+using IdleGame.Core.Procedure;
 using IdleGame.Core.Utility;
 using IdleGame.Data.Base;
+using IdleGame.Data.Common.Log;
 using IdleGame.Data.Numeric;
 using System.Collections;
 using System.Collections.Generic;
@@ -430,8 +432,7 @@ namespace IdleGame.Core.Unit
             }
             catch (System.Exception)
             {
-
-                throw;
+                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Error_Unit_ActionMiss, tag + name));
             }
 
             Sound_Move();
