@@ -101,15 +101,15 @@ namespace IdleGame.Main.Scene.Main.UI
         {
             _t_stageInfo.SetText($"{m_level} - 웨이브 (스테이지 정보없음)");
             Logic_Clear();
-            if (m_level == _maxWave)
+            if (m_level != _maxWave)
             {
-                Logic_ChangeType(true);
+                Logic_ChangeType(false);
 
                 Logic_SetNormalStage(m_level);
             }
             else
             {
-                Logic_ChangeType(false);
+                Logic_ChangeType(true);
 
                 Logic_SetBossStage(m_level);
             }

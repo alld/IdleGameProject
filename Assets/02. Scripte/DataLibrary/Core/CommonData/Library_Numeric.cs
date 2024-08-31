@@ -1,13 +1,10 @@
 using DG.DemiEditor;
-using IdleGame.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 
 namespace IdleGame.Data.Numeric
 {
@@ -412,12 +409,13 @@ namespace IdleGame.Data.Numeric
         {
             int[] multiple10 = { 1, 10, 100, 1000, 10000 };
 
-            int addDigit = ((m_count + GetDigitCount(value[scale])) % 4);
-            int addUnit = ((m_count + GetDigitCount(value[scale])) / 4) + (m_count / 4);
+            int addDigit = m_count % 4;
+            int baseAddUnit = m_count / 4;
+            int addUnit = ((m_count + GetDigitCount(value[scale]) - 1) / 4);
             int[] result = new int[addUnit + scale + 1];
-            for (int i = 0; i < result.Length; i++)
+            for (int i = baseAddUnit; i < result.Length; i++)
             {
-                result[addUnit + i] = ((value[i] * multiple10[addDigit]) % multiple10[addDigit + 1]) + i == 0 ? 0 : (value[i - 1] / multiple10[addDigit + 1]);
+                result[i] = ((i - baseAddUnit) < value.Length ? ((value[i - baseAddUnit] * multiple10[addDigit]) % multiple10[4]) : 0) + ((i - baseAddUnit == 0) ? 0 : (value[i - baseAddUnit - 1] / multiple10[4 - addDigit]));
             }
 
             value = result;

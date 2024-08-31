@@ -981,7 +981,7 @@ MonoBehaviour:
     type: 1
     procedure: 0
   _obj_logic: {fileID: 4770545038441695642}
-  _stage: {fileID: 6288021137394160323}
+  stage: {fileID: 6288021137394160323}
   _time: {fileID: 4660051186149962642}
 --- !u!114 &2423403996741563514
 MonoBehaviour:

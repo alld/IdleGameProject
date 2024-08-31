@@ -118,6 +118,7 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         public bool Logic_TryNextLevel()
         {
+            if (Application.exitCancellationToken.IsCancellationRequested) return false;
             if (Unit_Monsters.Count != 0) return false;
 
             Logic_NextLevel();
