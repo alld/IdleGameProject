@@ -1,4 +1,3 @@
-using DG.DemiEditor;
 using IdleGame.Core.Module.DataTable;
 using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
@@ -8,7 +7,9 @@ using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -90,21 +91,45 @@ namespace IdleGame.Core.Panel.DataTable
                         Logic_LoadAllData();
                         break;
                     case eDataTableType.Stage:
-                        Convert_StageTable(m_dataArray);
+                        Library_DataTable.stage.Clear();
+                        var data_stage = Convert_TsvKeyParse<Data_Stage>(m_dataArray);
+                        for (int i = 0; i < data_stage.Count; i++)
+                            Library_DataTable.stage.Add(data_stage[i].stage_id, data_stage[i]);
+                        //Convert_StageTable(m_dataArray);
                         break;
                     case eDataTableType.Monster:
-                        Convert_MonsterTable(m_dataArray);
+                        Library_DataTable.monster.Clear();
+                        var data_monster = Convert_TsvKeyParse<Data_Monster>(m_dataArray);
+                        for (int i = 0; i < data_monster.Count; i++)
+                            Library_DataTable.monster.Add(data_monster[i].monster_id, data_monster[i]);
+                        //Convert_MonsterTable(m_dataArray);
                         break;
                     case eDataTableType.Quest:
-                        Convert_QuestTable(m_dataArray);
+                        Library_DataTable.quest.Clear();
+                        var data_quest = Convert_TsvKeyParse<Data_Quest>(m_dataArray);
+                        for (int i = 0; i < data_quest.Count; i++)
+                            Library_DataTable.quest.Add(data_quest[i].index, data_quest[i]);
+                        //Convert_QuestTable(m_dataArray);
                         break;
                     case eDataTableType.Character:
-                        Convert_CharacterTable(m_dataArray);
+                        Library_DataTable.character.Clear();
+                        var data_char = Convert_TsvKeyParse<Data_Character>(m_dataArray);
+                        for (int i = 0; i < data_char.Count; i++)
+                            Library_DataTable.character.Add(data_char[i].index, data_char[i]);
+                        //Convert_CharacterTable(m_dataArray);
                         break;
                     case eDataTableType.Item:
-                        Convert_ItemTable(m_dataArray);
+                        Library_DataTable.item.Clear();
+                        var data_item = Convert_TsvKeyParse<Data_Item>(m_dataArray);
+                        for (int i = 0; i < data_item.Count; i++)
+                            Library_DataTable.item.Add(data_item[i].index, data_item[i]);
+                        //Convert_ItemTable(m_dataArray);
                         break;
                     case eDataTableType.Skill:
+                        Library_DataTable.skill.Clear();
+                        var data_skill = Convert_TsvKeyParse<Data_Skill>(m_dataArray);
+                        for (int i = 0; i < data_skill.Count; i++)
+                            Library_DataTable.skill.Add(data_skill[i].index, data_skill[i]);
                         Convert_SkillTable(m_dataArray);
                         break;
                     case eDataTableType.Property:
@@ -152,8 +177,73 @@ namespace IdleGame.Core.Panel.DataTable
                 string[] resultData = m_dataArray[i].Split("\t");
                 if (string.IsNullOrEmpty(resultData[0]))
                     break;
-                Library_DataTable.Info.dataTableList.Add((eDataTableType)(i), (resultData[0], resultData[1]));
+                Library_DataTable.Info.dataTableList.Add((eDataTableType)(i), (Convert_ReplaceGid(resultData[0], resultData[Global_Data.Editor.LocalData_Grid]), resultData[1]));
             }
+        }
+
+        /// <summary>
+        /// [변환] 주소값에서 그리드값을 변경합니다.  
+        /// </summary>
+        static string Convert_ReplaceGid(string m_input, string m_newGid)
+        {
+            if (string.IsNullOrEmpty(m_newGid))
+                return m_input;
+
+            int startIndex = m_input.IndexOf("gid=") + 4;
+            int endIndex = m_input.IndexOf("&", startIndex);
+
+            if (endIndex == -1)
+            {
+                endIndex = m_input.Length;
+            }
+
+            string replaced = m_input.Substring(0, startIndex) + m_newGid + m_input.Substring(endIndex);
+            return replaced;
+        }
+
+        /// <summary>
+        /// [변환] 키값을 기준으로 파싱합니다.
+        /// </summary>
+        public List<T> Convert_TsvKeyParse<T>(string[] m_dataArray) where T : new()
+        {
+            var dataList = new List<T>();
+            var fields = typeof(T).GetFields();
+
+            var headers = m_dataArray[0].Split('\t');
+
+            for (int j = 1; j < m_dataArray.Length; j++)
+            {
+                var values = m_dataArray[j].Split('\t');
+
+                var obj = new T();
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var header = headers[i].Trim();
+                    var value = values[i].Trim().AsSpan();
+
+                    var field = fields.FirstOrDefault(f => f.Name.Equals(header, StringComparison.OrdinalIgnoreCase));
+                    if (field != null)
+                    {
+                        if (field.FieldType == typeof(ExactInt))
+                        {
+                            field.SetValue(obj, new ExactInt(new string(value)));
+                        }
+                        else if (field.FieldType == typeof(int))
+                        {
+                            field.SetValue(obj, int.Parse(new string(value)));
+                        }
+                        else if (field.FieldType == typeof(string))
+                        {
+                            field.SetValue(obj, new string(value));
+                        }
+                    }
+                }
+
+                dataList.Add(obj);
+            }
+
+            return dataList;
         }
 
         /// <summary>
@@ -392,7 +482,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData(ref ExactInt m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             m_parsingData = ExactInt.Parse(m_dataSegment);
         }
@@ -402,7 +492,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             m_parsingData = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(m_dataSegment);
         }
@@ -412,7 +502,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             string[] arrayData = m_dataSegment.Split(",");
             m_parsingData = new T[arrayData.Length];
@@ -427,7 +517,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[][] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             string[] arrayData = m_dataSegment.Split("//");
             m_parsingData = new T[arrayData.Length][];

@@ -6,5 +6,8 @@ namespace IdleGame.Data.EditorSetting
     public class Data_EditorSetting
     {
         public bool unityLog = false;
+
+
+        public int LocalData_Grid = 0;
     }
 }

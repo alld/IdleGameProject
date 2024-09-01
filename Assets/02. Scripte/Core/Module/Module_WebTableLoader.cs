@@ -17,7 +17,7 @@ namespace IdleGame.Core.Module.DataTable
         /// <summary>
         /// [데이터] 게임 데이터 테이블이 존재하는 구글 스프레드시트 기반 주소입니다.
         /// </summary>
-        private string DefaultURL = "https://docs.google.com/spreadsheets/d/1xVP1PT_xdm_GWn5_hVe3_m_eymSgrm04ZmbDAxrHXcU/export?format=tsv&gid=0&range=B2:C100";
+        private string DefaultURL = "https://docs.google.com/spreadsheets/d/1xVP1PT_xdm_GWn5_hVe3_m_eymSgrm04ZmbDAxrHXcU/export?format=tsv&gid=0&range=B2:G100";
 
         /// <summary>
         /// 언어 설정이 포함된 공통 텍스트 주소를 반환합니다.
