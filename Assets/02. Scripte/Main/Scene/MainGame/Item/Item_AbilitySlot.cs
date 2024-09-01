@@ -3,6 +3,7 @@ using IdleGame.Core.Unit;
 using IdleGame.Data;
 using IdleGame.Data.Common;
 using IdleGame.Data.Common.Event;
+using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,6 +62,13 @@ namespace IdleGame.Main.Scene.Main.UI
         public Graphic_Text t_priceNormal;
 
         /// <summary>
+        /// [데이터] 여러개를 살수 있는 메가버튼의 구매 횟수입니다. 
+        /// </summary>
+        private int _megaCount = 10;
+
+        private int _remainCount = -1;
+
+        /// <summary>
         /// [데이터] 1개의 구매 가격입니다.
         /// </summary>
         [HideInInspector]
@@ -70,7 +78,13 @@ namespace IdleGame.Main.Scene.Main.UI
             set
             {
                 _price = value;
-                _megaPrice = value * 10;
+
+                int currentlevel = Global_Data.Player.slot_Ability[type].level;
+                _megaPrice = new ExactInt(0);
+                for (int i = currentlevel; i < currentlevel + _megaCount; i++)
+                {
+                    _megaPrice += Library_DataTable.abilitySlot[type][i].price;
+                }
             }
         }
 
@@ -86,15 +100,12 @@ namespace IdleGame.Main.Scene.Main.UI
 
         public void Start()
         {
-            GameManager.Event.RegisterEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateButtonUI);
-
-            Logic_UpdateUI();
-            Logic_UpdateButtonUI();
+            GameManager.Event.RegisterEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
         }
 
         private void OnDestroy()
         {
-            GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateButtonUI);
+            GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateUI);
         }
 
         /// <summary>
@@ -102,6 +113,15 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void Logic_UpdateButtonUI()
         {
+            if (_remainCount == 0)
+            {
+                b_upNormal.interactable = false;
+                b_upMega.interactable = false;
+                // TODO :: 이벤트 삭제 처리가 원활하게 되지않음.
+                //GameManager.Event.RemoveEvent(eGlobalEventType.Currency_UpdateGold, Logic_UpdateButtonUI);
+                return;
+            }
+
             // 조건 :: 1회 사용 돈도 없음
             if (Global_Data.Player.cc_Gold < _price)
             {
@@ -129,14 +149,39 @@ namespace IdleGame.Main.Scene.Main.UI
         /// </summary>
         public void Logic_UpdateUI()
         {
-            price = Global_Data.Player.slot_Ability[type].price;
-            t_level.SetText($"Lv. {Global_Data.Player.slot_Ability[type].level}");
-            if (type == eAbilityType.CriticalChance)
-                t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].valuef * 100} %");
+            _remainCount = Library_DataTable.abilitySlot[type].Length - Global_Data.Player.slot_Ability[type].level;
+            _megaCount = _remainCount >= 10 ? 10 : _remainCount;
+            if (price != Global_Data.Player.slot_Ability[type].price)
+                price = Global_Data.Player.slot_Ability[type].price;
+
+            if (_remainCount == 0)
+            {
+                t_level.SetText($"Lv. {Global_Data.Player.slot_Ability[type].level}");
+                if (type == eAbilityType.CriticalChance)
+                    t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].valuef * 100} %");
+                else
+                    t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
+
+                t_priceNormal.SetText("Max");
+                t_priceMega.SetText("Max");
+
+                t_titleMega.SetText(string.Empty);
+                t_titleNormal.SetText(string.Empty);
+            }
             else
-                t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
-            t_priceNormal.SetText(price.ToString());
-            t_priceMega.SetText(_megaPrice.ToString());
+            {
+                t_level.SetText($"Lv. {Global_Data.Player.slot_Ability[type].level}");
+                if (type == eAbilityType.CriticalChance)
+                    t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].valuef * 100} %");
+                else
+                    t_value.SetText($"+ {Global_Data.Player.slot_Ability[type].value}");
+                t_priceNormal.SetText(price.ToString());
+                t_priceMega.SetText(_megaPrice.ToString());
+                t_titleMega.SetText($"{_megaCount}배 강화");
+            }
+
+
+            Logic_UpdateButtonUI();
         }
 
         #region 콜백 함수
@@ -157,7 +202,7 @@ namespace IdleGame.Main.Scene.Main.UI
         public void OnClickUpgrade_Mega()
         {
             GameManager.Currency.Logic_SetAddCurrency(eCurrencyType.Gold, -_megaPrice);
-            Global_Data.Player.slot_Ability[type].LevelUp(10);
+            Global_Data.Player.slot_Ability[type].LevelUp(_megaCount);
 
             Logic_UpdateUI();
         }

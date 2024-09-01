@@ -54,6 +54,8 @@ namespace IdleGame.Main
 
                 // 역할 :: 데이터 크기 설정을 한번 해주기 위해서 호출함
                 Global_Data.GetSaveDatas();
+
+                Save.Editor_DeleteSave();
             }
             else
             {

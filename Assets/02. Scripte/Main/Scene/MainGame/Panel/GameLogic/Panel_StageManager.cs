@@ -1,4 +1,5 @@
 using IdleGame.Core;
+using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
 using IdleGame.Data;
 using IdleGame.Data.Base;
@@ -250,8 +251,15 @@ namespace IdleGame.Main.GameLogic
             Logic_StageUIUpdate();
             _bord.Logic_SetLevel(m_level);
 
-            Logic_MonsterPush();
-            Logic_PlayerSetting();
+            try
+            {
+                Logic_MonsterPush();
+                Logic_PlayerSetting();
+            }
+            catch (System.Exception e)
+            {
+                Base_Engine.Log.Logic_PutLog(new Data_Log(e, _tag.tag));
+            }
         }
 
         /// <summary>

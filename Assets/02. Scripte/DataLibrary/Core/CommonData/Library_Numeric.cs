@@ -708,8 +708,12 @@ namespace IdleGame.Data.Numeric
         #region 곱하기
         public static ExactInt operator *(ExactInt a, ExactInt b)
         {
-            ExactInt result = new ExactInt(0, a.scale + b.scale);
+            if (CompareZero(a) || CompareZero(b))
+            {
+                return new ExactInt(0);
+            }
 
+            ExactInt result = new ExactInt(0, a.scale + b.scale);
             for (int i = 0; i <= a.scale; ++i)
             {
                 for (int j = 0; j <= b.scale; ++j)
