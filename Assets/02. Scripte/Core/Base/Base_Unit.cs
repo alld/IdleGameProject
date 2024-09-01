@@ -432,7 +432,7 @@ namespace IdleGame.Core.Unit
             }
             catch (System.Exception)
             {
-                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Error_Unit_ActionMiss, tag + name));
+                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Error_Unit_ActionMiss, name));
             }
 
             Sound_Move();

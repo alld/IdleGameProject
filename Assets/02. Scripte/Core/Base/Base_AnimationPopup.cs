@@ -28,7 +28,7 @@ namespace IdleGame.Core.Popup
             {
                 if (pv_target == null)
                 {
-                    Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, tag));
+                    Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, _tag.tag));
                     if (!transform.GetChild(0).TryGetComponent(out pv_target)) return null;
                 }
                 return pv_target;
@@ -171,7 +171,7 @@ namespace IdleGame.Core.Popup
 
             if (obj_target.TryGetComponent<CanvasGroup>(out CanvasGroup canvas) == false)
             {
-                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, tag));
+                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, _tag.tag));
                 canvas = obj_target.gameObject.AddComponent<CanvasGroup>();
             }
 
@@ -189,7 +189,7 @@ namespace IdleGame.Core.Popup
 
             if (obj_target.TryGetComponent<CanvasGroup>(out CanvasGroup canvas) == false)
             {
-                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, tag));
+                Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Warning_InsufficientSetting, _tag.tag));
                 canvas = obj_target.gameObject.AddComponent<CanvasGroup>();
             }
 

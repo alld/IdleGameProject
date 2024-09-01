@@ -42,7 +42,7 @@ namespace IdleGame.Core.Unit
         /// <summary>
         /// [데이터] 현재 적용된 추가 능력치입니다.
         /// </summary>
-        public ExactInt value;
+        public ExactInt value = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 현재 적용된 수치 능력치입니다.
@@ -52,7 +52,7 @@ namespace IdleGame.Core.Unit
         /// <summary>
         /// [데이터] 현재 적용된 1회 비용입니다.
         /// </summary>
-        public ExactInt price;
+        public ExactInt price = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 능력 타입입니다.
@@ -65,8 +65,8 @@ namespace IdleGame.Core.Unit
         public Data_AbilitySlot Init(eAbilityType m_type)
         {
             type = m_type;
-            level = 1;
-            price = new ExactInt(0);
+            level = 0;
+            price = Library_DataTable.abilitySlot[type][1].price;
             valuef = 0;
             value = new ExactInt(0);
 
@@ -79,7 +79,11 @@ namespace IdleGame.Core.Unit
         public void LevelUp(int m_level = 1)
         {
             level += m_level;
-            price = Library_DataTable.abilitySlot[type][level - 1].price;
+            if (Library_DataTable.abilitySlot[type].Length > level)
+                price = Library_DataTable.abilitySlot[type][level].price;
+            else
+                price = new ExactInt(0);
+
             if (type == eAbilityType.CriticalChance)
                 valuef = Library_DataTable.abilitySlot[type][level - 1].value_f;
             else
