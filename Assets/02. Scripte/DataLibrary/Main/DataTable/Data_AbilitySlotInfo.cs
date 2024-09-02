@@ -10,7 +10,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 테이블 고유 번호입니다.
         /// </summary>
-        public int index;
+        public int idx;
 
         /// <summary>
         /// [데이터] 해당 레벨 수치입니다. 
@@ -20,12 +20,12 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 단위환산형 값입니다.
         /// </summary>
-        public ExactInt value_e;
+        public ExactInt value_exact;
 
         /// <summary>
         /// [데이터] 배율을 표현한 값입니다.
         /// </summary>
-        public float value_f;
+        public float value_float;
 
         /// <summary>
         /// [데이터] 레벨에 해당하는 가격입니다.

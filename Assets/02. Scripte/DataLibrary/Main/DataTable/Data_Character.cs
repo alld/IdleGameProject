@@ -1,3 +1,4 @@
+using IdleGame.Core.Unit;
 using IdleGame.Data.Numeric;
 
 namespace IdleGame.Data
@@ -10,12 +11,12 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 고유 인덱스입니다.
         /// </summary>
-        public int index = -1;
+        public int idx = -1;
 
         /// <summary>
         /// [데이터] 플레이어 데이터인지를 구분합니다.
         /// </summary>
-        public bool player_value = false;
+        public eUnitTpye player_value = eUnitTpye.None;
 
         /// <summary>
         /// [데이터] 유닛의 기본 방어력입니다.

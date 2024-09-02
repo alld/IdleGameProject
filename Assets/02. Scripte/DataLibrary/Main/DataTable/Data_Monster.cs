@@ -11,7 +11,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터 고유 인덱스입니다.
         /// </summary>
-        public int index = -1;
+        public int idx = -1;
 
         /// <summary>
         /// [데이터] 몬스터에 할당된 고유 ID입니다.
@@ -24,9 +24,14 @@ namespace IdleGame.Data
         public int mon_shape_id = -1;
 
         /// <summary>
+        /// [데이터] 배경이 적용되는 ID입니다.
+        /// </summary>
+        public int background_id = -1;
+
+        /// <summary>
         /// [데이터] 몬스터의 이름입니다.
         /// </summary>
-        public string monster_name = "";
+        public string monster_name = string.Empty;
 
         /// <summary>
         /// [데이터] 몬스터의 타입입니다.

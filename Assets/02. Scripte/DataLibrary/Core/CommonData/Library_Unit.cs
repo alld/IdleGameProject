@@ -85,9 +85,9 @@ namespace IdleGame.Core.Unit
                 price = new ExactInt(0);
 
             if (type == eAbilityType.CriticalChance)
-                valuef = Library_DataTable.abilitySlot[type][level - 1].value_f;
+                valuef = Library_DataTable.abilitySlot[type][level - 1].value_float;
             else
-                value = Library_DataTable.abilitySlot[type][level - 1].value_e;
+                value = Library_DataTable.abilitySlot[type][level - 1].value_exact;
             Global_Data.Player.Update_UnitAb(type);
         }
     }
