@@ -1,4 +1,5 @@
 using IdleGame.Core.GameInfo;
+using IdleGame.Data.Base;
 using IdleGame.Data.DataTable;
 using System;
 using UnityEngine;
@@ -61,6 +62,41 @@ namespace IdleGame.Data.Common.Log
                     $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
                     $"내용 : ({((int)m_data)})\n" +
                     m_data.ToString();
+            }
+        }
+
+
+        /// <summary>
+        /// [기능] 에러 타입에대한 로그 포멧을 만듭니다. 
+        /// </summary>
+        /// <param name="m_data"></param>
+        /// <param name="m_tag"></param>
+        /// <param name="m_type"></param>
+        public Data_Log(Data_ErrorType.Data m_data, string m_context, TagInfo m_tag, eLogType m_type = eLogType.Error)
+        {
+            type = m_type;
+
+            if (string.IsNullOrEmpty(m_tag.tag))
+            {
+                content =
+                    $"발생 지점 : " + Application.productName + "\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
+                    $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
+                    $"플랫폼 : " + Application.platform + "\n" +
+                    $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
+                    $"내용 : ({((int)m_data)})\n" +
+                    m_data.ToString() + "\n" + m_context;
+            }
+            else
+            {
+                content =
+                    $"발생 지점 : " + Application.productName + "::" + m_tag.tag + "\n" +
+                    $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
+                    $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
+                    $"플랫폼 : " + Application.platform + "\n" +
+                    $"현재 씬 : " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + "\n" +
+                    $"내용 : ({((int)m_data)})\n" +
+                    m_data.ToString() + "\n" + m_context;
             }
         }
 
