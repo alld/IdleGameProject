@@ -225,90 +225,80 @@ namespace IdleGame.Core.Panel.DataTable
                     var field = fields.FirstOrDefault(f => f.Name.Equals(header, StringComparison.OrdinalIgnoreCase));
                     if (field != null)
                     {
-                        //if (field.FieldType == typeof(ExactInt))
-                        //{
-                        //    field.SetValue(obj, new ExactInt(new string(value)));
-                        //}
-                        //else if (field.FieldType == typeof(int))
-                        //{
-                        //    field.SetValue(obj, int.Parse(new string(value)));
-                        //}
-                        //else if (field.FieldType == typeof(string))
-                        //{
-                        //    field.SetValue(obj, new string(value));
-                        //}
-
-                        switch (Type.GetTypeCode(field.FieldType))
+                        if (field.FieldType == typeof(ExactInt))
                         {
-                            case TypeCode.Object when field.FieldType == typeof(ExactInt):
-                                field.SetValue(obj, new ExactInt(new string(value)));
-                                break;
-                            case TypeCode.Int32:
-                                field.SetValue(obj, int.Parse(new string(value)));
-                                break;
-                            case TypeCode.Int64:
-                                field.SetValue(obj, long.Parse(new string(value)));
-                                break;
-                            case TypeCode.Boolean:
-                                field.SetValue(obj, bool.Parse(new string(value)));
-                                break;
-                            case TypeCode.Single:
-                                field.SetValue(obj, float.Parse(new string(value)));
-                                break;
-                            case TypeCode.Double:
-                                field.SetValue(obj, double.Parse(new string(value)));
-                                break;
-                            case TypeCode.String:
-                                field.SetValue(obj, new string(value));
-                                break;
-                            case TypeCode.Object when field.FieldType.IsEnum: // enum 처리
-                                var numberString = new string(value).Split(' ')[0]; // 첫 번째 부분을 가져옴
-                                if (int.TryParse(numberString, out int enumValue))
-                                {
-                                    field.SetValue(obj, Enum.ToObject(field.FieldType, enumValue));
-                                }
-                                break;
-                            case TypeCode.Object when field.FieldType.IsArray: // 배열 처리
-                                var arrayValues = new string(value).Split(','); // 콤마로 나누기
-                                var arrayType = field.FieldType.GetElementType(); // 배열의 요소 타입 가져오기
-
-                                Array array = Array.CreateInstance(arrayType, arrayValues.Length); // 배열 생성
-
-                                for (int k = 0; k < arrayValues.Length; k++)
-                                {
-                                    switch (Type.GetTypeCode(arrayType))
-                                    {
-                                        case TypeCode.Int32:
-                                            array.SetValue(int.Parse(arrayValues[k]), k);
-                                            break;
-                                        case TypeCode.Single: // float 처리
-                                            array.SetValue(float.Parse(arrayValues[k]), k);
-                                            break;
-                                        case TypeCode.Int64:
-                                            array.SetValue(long.Parse(arrayValues[k]), k);
-                                            break;
-                                        case TypeCode.Boolean:
-                                            array.SetValue(bool.Parse(arrayValues[k]), k);
-                                            break;
-                                        case TypeCode.Double:
-                                            array.SetValue(double.Parse(arrayValues[k]), k);
-                                            break;
-                                        case TypeCode.String:
-                                            array.SetValue(arrayValues[k], k);
-                                            break;
-                                        // 다른 타입에 대한 처리도 추가 가능
-                                        default:
-                                            throw new InvalidOperationException($"Unsupported array element type: {arrayType}");
-                                    }
-                                }
-
-                                field.SetValue(obj, array);
-                                break;
-
-                            // 필요한 경우 다른 타입을 추가할 수 있습니다.
-                            default:
-                                throw new InvalidOperationException($"Unsupported field type: {field.FieldType}");
+                            field.SetValue(obj, new ExactInt(new string(value)));
                         }
+                        else if (field.FieldType.IsEnum)
+                        {
+                            var numberString = new string(value).Split('.')[0]; // 첫 번째 부분을 가져옴
+                            if (int.TryParse(numberString, out int enumValue))
+                            {
+                                field.SetValue(obj, Enum.ToObject(field.FieldType, enumValue));
+                            }
+                        }
+                        else
+                            switch (Type.GetTypeCode(field.FieldType))
+                            {
+                                case TypeCode.Int32:
+                                    field.SetValue(obj, int.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Int64:
+                                    field.SetValue(obj, long.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Boolean:
+                                    field.SetValue(obj, bool.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Single:
+                                    field.SetValue(obj, float.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Double:
+                                    field.SetValue(obj, double.Parse(new string(value)));
+                                    break;
+                                case TypeCode.String:
+                                    field.SetValue(obj, new string(value));
+                                    break;
+                                case TypeCode.Object when field.FieldType.IsArray: // 배열 처리
+                                    var arrayValues = new string(value).Split(','); // 콤마로 나누기
+                                    var arrayType = field.FieldType.GetElementType(); // 배열의 요소 타입 가져오기
+
+                                    Array array = Array.CreateInstance(arrayType, arrayValues.Length); // 배열 생성
+
+                                    for (int k = 0; k < arrayValues.Length; k++)
+                                    {
+                                        switch (Type.GetTypeCode(arrayType))
+                                        {
+                                            case TypeCode.Int32:
+                                                array.SetValue(int.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Single: // float 처리
+                                                array.SetValue(float.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Int64:
+                                                array.SetValue(long.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Boolean:
+                                                array.SetValue(bool.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Double:
+                                                array.SetValue(double.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.String:
+                                                array.SetValue(arrayValues[k], k);
+                                                break;
+                                            // 다른 타입에 대한 처리도 추가 가능
+                                            default:
+                                                throw new InvalidOperationException($"Unsupported array element type: {arrayType}");
+                                        }
+                                    }
+
+                                    field.SetValue(obj, array);
+                                    break;
+
+                                // 필요한 경우 다른 타입을 추가할 수 있습니다.
+                                default:
+                                    throw new InvalidOperationException($"Unsupported field type: {field.FieldType}");
+                            }
                     }
                 }
 

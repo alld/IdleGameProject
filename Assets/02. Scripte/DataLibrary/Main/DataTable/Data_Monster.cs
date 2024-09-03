@@ -4,6 +4,15 @@ using IdleGame.Data.Numeric;
 namespace IdleGame.Data
 {
     /// <summary>
+    /// [종류] 몬스터 타입을 지정합니다. 
+    /// </summary>
+    public enum eMonsterType
+    {
+        normal,
+        boss
+    }
+
+    /// <summary>
     /// [데이터] 몬스터를 구성하기위한 데이터 구성을 담고 있습니다. 
     /// </summary>
     public class Data_Monster
@@ -36,7 +45,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터의 타입입니다.
         /// </summary>
-        public int monster_type = -1;
+        public eMonsterType monster_type = eMonsterType.normal;
 
         /// <summary>
         /// [데이터] 몬스터의 기본 레벨입니다.
@@ -56,7 +65,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 몬스터의 최대 체력입니다.
         /// </summary>
-        public int mon_max_hp = -1;
+        public ExactInt mon_max_hp = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 공격 범위입니다.
@@ -76,17 +85,17 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 공격 스킬 피해량입니다.
         /// </summary>
-        public float attack_skill = -1;
+        public ExactInt attack_skill = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 보상 경험치입니다.
         /// </summary>
-        public long experience_reward = -1;
+        public ExactInt experience_reward = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 보상 재화입니다..
         /// </summary>
-        public long gold_reward = -1;
+        public ExactInt gold_reward = new ExactInt(0);
 
         /// <summary>
         /// [데이터] 동료 보상유무를 나타냅니다.
