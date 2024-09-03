@@ -1,4 +1,3 @@
-using DG.DemiEditor;
 using IdleGame.Core.Module.DataTable;
 using IdleGame.Core.Procedure;
 using IdleGame.Core.Unit;
@@ -8,7 +7,9 @@ using IdleGame.Data.Common.Log;
 using IdleGame.Data.DataTable;
 using IdleGame.Data.Numeric;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -90,21 +91,45 @@ namespace IdleGame.Core.Panel.DataTable
                         Logic_LoadAllData();
                         break;
                     case eDataTableType.Stage:
-                        Convert_StageTable(m_dataArray);
+                        Library_DataTable.stage.Clear();
+                        var data_stage = Convert_TsvKeyParse<Data_Stage>(m_dataArray);
+                        for (int i = 0; i < data_stage.Count; i++)
+                            Library_DataTable.stage.Add(data_stage[i].stage_id, data_stage[i]);
+                        //Convert_StageTable(m_dataArray);
                         break;
                     case eDataTableType.Monster:
-                        Convert_MonsterTable(m_dataArray);
+                        Library_DataTable.monster.Clear();
+                        var data_monster = Convert_TsvKeyParse<Data_Monster>(m_dataArray);
+                        for (int i = 0; i < data_monster.Count; i++)
+                            Library_DataTable.monster.Add(data_monster[i].monster_id, data_monster[i]);
+                        //Convert_MonsterTable(m_dataArray);
                         break;
                     case eDataTableType.Quest:
-                        Convert_QuestTable(m_dataArray);
+                        Library_DataTable.quest.Clear();
+                        var data_quest = Convert_TsvKeyParse<Data_Quest>(m_dataArray);
+                        for (int i = 0; i < data_quest.Count; i++)
+                            Library_DataTable.quest.Add(data_quest[i].index, data_quest[i]);
+                        //Convert_QuestTable(m_dataArray);
                         break;
                     case eDataTableType.Character:
-                        Convert_CharacterTable(m_dataArray);
+                        Library_DataTable.character.Clear();
+                        var data_char = Convert_TsvKeyParse<Data_Character>(m_dataArray);
+                        for (int i = 0; i < data_char.Count; i++)
+                            Library_DataTable.character.Add(data_char[i].idx, data_char[i]);
+                        //Convert_CharacterTable(m_dataArray);
                         break;
                     case eDataTableType.Item:
-                        Convert_ItemTable(m_dataArray);
+                        Library_DataTable.item.Clear();
+                        var data_item = Convert_TsvKeyParse<Data_Item>(m_dataArray);
+                        for (int i = 0; i < data_item.Count; i++)
+                            Library_DataTable.item.Add(data_item[i].index, data_item[i]);
+                        //Convert_ItemTable(m_dataArray);
                         break;
                     case eDataTableType.Skill:
+                        Library_DataTable.skill.Clear();
+                        var data_skill = Convert_TsvKeyParse<Data_Skill>(m_dataArray);
+                        for (int i = 0; i < data_skill.Count; i++)
+                            Library_DataTable.skill.Add(data_skill[i].index, data_skill[i]);
                         Convert_SkillTable(m_dataArray);
                         break;
                     case eDataTableType.Property:
@@ -152,8 +177,135 @@ namespace IdleGame.Core.Panel.DataTable
                 string[] resultData = m_dataArray[i].Split("\t");
                 if (string.IsNullOrEmpty(resultData[0]))
                     break;
-                Library_DataTable.Info.dataTableList.Add((eDataTableType)(i), (resultData[0], resultData[1]));
+                Library_DataTable.Info.dataTableList.Add((eDataTableType)(i), (Convert_ReplaceGid(resultData[0], resultData[Global_Data.Editor.LocalData_Grid + 2]), resultData[1]));
             }
+        }
+
+        /// <summary>
+        /// [변환] 주소값에서 그리드값을 변경합니다.  
+        /// </summary>
+        static string Convert_ReplaceGid(string m_input, string m_newGid)
+        {
+            if (string.IsNullOrEmpty(m_newGid))
+                return m_input;
+
+            int startIndex = m_input.IndexOf("gid=") + 4;
+            int endIndex = m_input.IndexOf("&", startIndex);
+
+            if (endIndex == -1)
+            {
+                endIndex = m_input.Length;
+            }
+
+            string replaced = m_input.Substring(0, startIndex) + m_newGid + m_input.Substring(endIndex);
+            return replaced;
+        }
+
+        /// <summary>
+        /// [변환] 키값을 기준으로 파싱합니다.
+        /// </summary>
+        public List<T> Convert_TsvKeyParse<T>(string[] m_dataArray) where T : new()
+        {
+            var dataList = new List<T>();
+            var fields = typeof(T).GetFields();
+
+            var headers = m_dataArray[0].Split('\t');
+
+            for (int j = 1; j < m_dataArray.Length; j++)
+            {
+                var values = m_dataArray[j].Split('\t');
+
+                var obj = new T();
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var header = headers[i].Trim();
+                    var value = values[i].Trim().AsSpan();
+
+                    var field = fields.FirstOrDefault(f => f.Name.Equals(header, StringComparison.OrdinalIgnoreCase));
+                    if (field != null)
+                    {
+                        if (field.FieldType == typeof(ExactInt))
+                        {
+                            field.SetValue(obj, new ExactInt(new string(value)));
+                        }
+                        else if (field.FieldType.IsEnum)
+                        {
+                            var numberString = new string(value).Split('.')[0]; // 첫 번째 부분을 가져옴
+                            if (int.TryParse(numberString, out int enumValue))
+                            {
+                                field.SetValue(obj, Enum.ToObject(field.FieldType, enumValue));
+                            }
+                        }
+                        else
+                            switch (Type.GetTypeCode(field.FieldType))
+                            {
+                                case TypeCode.Int32:
+                                    field.SetValue(obj, int.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Int64:
+                                    field.SetValue(obj, long.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Boolean:
+                                    field.SetValue(obj, bool.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Single:
+                                    field.SetValue(obj, float.Parse(new string(value)));
+                                    break;
+                                case TypeCode.Double:
+                                    field.SetValue(obj, double.Parse(new string(value)));
+                                    break;
+                                case TypeCode.String:
+                                    field.SetValue(obj, new string(value));
+                                    break;
+                                case TypeCode.Object when field.FieldType.IsArray: // 배열 처리
+                                    var arrayValues = new string(value).Split(','); // 콤마로 나누기
+                                    var arrayType = field.FieldType.GetElementType(); // 배열의 요소 타입 가져오기
+
+                                    Array array = Array.CreateInstance(arrayType, arrayValues.Length); // 배열 생성
+
+                                    for (int k = 0; k < arrayValues.Length; k++)
+                                    {
+                                        switch (Type.GetTypeCode(arrayType))
+                                        {
+                                            case TypeCode.Int32:
+                                                array.SetValue(int.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Single: // float 처리
+                                                array.SetValue(float.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Int64:
+                                                array.SetValue(long.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Boolean:
+                                                array.SetValue(bool.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.Double:
+                                                array.SetValue(double.Parse(arrayValues[k]), k);
+                                                break;
+                                            case TypeCode.String:
+                                                array.SetValue(arrayValues[k], k);
+                                                break;
+                                            // 다른 타입에 대한 처리도 추가 가능
+                                            default:
+                                                throw new InvalidOperationException($"Unsupported array element type: {arrayType}");
+                                        }
+                                    }
+
+                                    field.SetValue(obj, array);
+                                    break;
+
+                                // 필요한 경우 다른 타입을 추가할 수 있습니다.
+                                default:
+                                    throw new InvalidOperationException($"Unsupported field type: {field.FieldType}");
+                            }
+                    }
+                }
+
+                dataList.Add(obj);
+            }
+
+            return dataList;
         }
 
         /// <summary>
@@ -200,7 +352,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Data_Monster parsingData = new Data_Monster();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.idx, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_id, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_name, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.monster_type, dataSegment[index++]);
@@ -254,7 +406,7 @@ namespace IdleGame.Core.Panel.DataTable
                 Data_Character parsingData = new Data_Character();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.idx, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.player_value, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.defens, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData.character_id, dataSegment[index++]);
@@ -367,7 +519,7 @@ namespace IdleGame.Core.Panel.DataTable
                 int index = 0;
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData[i].index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData[i].idx, dataSegment[index++]);
                 Convert_ParsingData(ref parsingData[i].level, dataSegment[index++]);
                 switch (dataType)
                 {
@@ -375,11 +527,11 @@ namespace IdleGame.Core.Panel.DataTable
                     case eAbilityType.Damage:
                     case eAbilityType.HpRegen:
                     case eAbilityType.CriticalMultiplier:
-                        Convert_ParsingData(ref parsingData[i].value_e, dataSegment[index++]);
+                        Convert_ParsingData(ref parsingData[i].value_exact, dataSegment[index++]);
                         break;
                     case eAbilityType.CriticalChance:
-                        Convert_ParsingData(ref parsingData[i].value_f, dataSegment[index++]);
-                        parsingData[i].value_f /= 100;
+                        Convert_ParsingData(ref parsingData[i].value_float, dataSegment[index++]);
+                        parsingData[i].value_float /= 100;
                         break;
                 }
                 Convert_ParsingData(ref parsingData[i].price, dataSegment[index++]);
@@ -392,7 +544,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData(ref ExactInt m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             m_parsingData = ExactInt.Parse(m_dataSegment);
         }
@@ -402,7 +554,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             m_parsingData = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(m_dataSegment);
         }
@@ -412,7 +564,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             string[] arrayData = m_dataSegment.Split(",");
             m_parsingData = new T[arrayData.Length];
@@ -427,7 +579,7 @@ namespace IdleGame.Core.Panel.DataTable
         /// </summary>
         private void Convert_ParsingData<T>(ref T[][] m_parsingData, string m_dataSegment)
         {
-            if (m_dataSegment.IsNullOrEmpty()) return;
+            if (string.IsNullOrEmpty(m_dataSegment)) return;
 
             string[] arrayData = m_dataSegment.Split("//");
             m_parsingData = new T[arrayData.Length][];

@@ -1,4 +1,3 @@
-using DG.DemiEditor;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,6 +90,14 @@ namespace IdleGame.Data.Numeric
             value[m_scale] = m_value;
             _isUpdated = true;
             quotient = 0;
+        }
+
+        /// <summary>
+        /// [생성자] 텍스트로 입력받아서 숫자를 생성합니다.
+        /// </summary>
+        public ExactInt(string m_text)
+        {
+            this = Parse(m_text);
         }
 
         /// <summary>
@@ -289,7 +296,7 @@ namespace IdleGame.Data.Numeric
         /// </summary>
         public static int Convert_CharToScale(string m_value)
         {
-            if (m_value.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(m_value))
                 return 0;
 
             m_value = m_value.ToUpper();
