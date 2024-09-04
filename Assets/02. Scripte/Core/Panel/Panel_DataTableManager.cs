@@ -79,7 +79,7 @@ namespace IdleGame.Core.Panel.DataTable
         {
             if (m_errorCode < 0)
             {
-                Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
+                Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag + m_type.ToString()));
                 return;
             }
             try
@@ -115,7 +115,7 @@ namespace IdleGame.Core.Panel.DataTable
                         Library_DataTable.character.Clear();
                         var data_char = Convert_TsvKeyParse<Data_Character>(m_dataArray);
                         for (int i = 0; i < data_char.Count; i++)
-                            Library_DataTable.character.Add(data_char[i].idx, data_char[i]);
+                            Library_DataTable.character.Add(data_char[i].character_id, data_char[i]);
                         //Convert_CharacterTable(m_dataArray);
                         break;
                     case eDataTableType.Item:

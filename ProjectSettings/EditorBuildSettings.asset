@@ -5,19 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/60. AutoBuild/01. Scenes/Load_Test.unity
     guid: 926b7bc7d1004a64a8331834576d1197
-  - enabled: 0
+  - enabled: 1
     path: Assets/01. Scenes/Procedure/Load.unity
     guid: e4da8396abdaad947aa05c6c84009b95
-  - enabled: 0
+  - enabled: 1
     path: Assets/01. Scenes/Procedure/Intro.unity
     guid: 75414e16324a6214ea7b15e34f0223e1
-  - enabled: 0
+  - enabled: 1
     path: Assets/01. Scenes/Procedure/Loading.unity
     guid: dafabedce79ec3f4ba8a749e84c5e987
-  - enabled: 0
+  - enabled: 1
     path: Assets/01. Scenes/MainGame/MainGame.unity
     guid: a52814cf571c68744a2a9947a381995b
   m_configObjects:

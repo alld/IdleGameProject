@@ -3,7 +3,6 @@ using IdleGame.Core.Module.EventSystem;
 using IdleGame.Data;
 using IdleGame.Data.Base.Scene;
 using IdleGame.Data.Common.Event;
-using UnityEngine.DedicatedServer;
 namespace IdleGame.Main.Scene.Load
 {
     public class Panel_LoadScene : Base_ScenePanel
@@ -25,6 +24,9 @@ namespace IdleGame.Main.Scene.Load
             string[] args = System.Environment.GetCommandLineArgs();
             string result = null;
 
+            if (args.Length == 0)
+                return;
+
             foreach (string arg in args)
             {
                 if (arg.StartsWith("-idleData"))
@@ -33,6 +35,8 @@ namespace IdleGame.Main.Scene.Load
                 }
             }
 
+            if (string.IsNullOrEmpty(result))
+                return;
             string[] array = result.Split(" .");
 
             for (int i = 0; i < array.Length; i++)

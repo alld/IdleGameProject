@@ -18,7 +18,7 @@ namespace IdleGame.Main.Scene.Load
 {
 
 
-    public class Panel_LoadTestScene : Base_ScenePanel
+    public class Panel_LoadTestScene : Base_Panel
     {
         [System.Serializable]
         private class VersionInfo
@@ -77,6 +77,7 @@ namespace IdleGame.Main.Scene.Load
         [SerializeField] private Toggle _tg_initSave;
 
         [SerializeField] private Button _b_gameStart;
+        [SerializeField] private TMP_Text _t_version;
 
         private (string, string) _cloudeFild;
         private DriveService _driveService;
@@ -92,7 +93,10 @@ namespace IdleGame.Main.Scene.Load
             }
 
             Logic_LoadPrefs();
-            targetFolder = Path.Combine(Application.persistentDataPath, "IdleGamesBuild");
+            if (Application.isEditor)
+                targetFolder = Path.Combine(Application.persistentDataPath, "IdleGamesBuild");
+            else
+                targetFolder = Path.Combine(Application.dataPath, "..", "IdleGamesBuild");
             Logic_Authenticate();
         }
 
@@ -187,7 +191,7 @@ namespace IdleGame.Main.Scene.Load
             if (!m_startCheck)
             {
                 _t_loadInfo.text = "실행 불가";
-                _Log.Logic_PutLog(new Data_Log($"User:{_if_userName.text} + {_t_context.text}"));
+                _Log.Logic_PutLog(new Data_Log($"User:{_if_userName.text} + version:{_t_version}\n {_t_context.text}"));
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_t_context.GetComponentInParent<RectTransform>());
@@ -387,6 +391,8 @@ namespace IdleGame.Main.Scene.Load
 
             string path = Path.Combine(targetFolder, "data.ver");
             File.WriteAllText(path, json); // 파일 작성
+
+            _t_currentVersion.text = Logic_ReadVersionFile().ToString();
         }
 
         /// <summary>
@@ -396,7 +402,7 @@ namespace IdleGame.Main.Scene.Load
         {
             ProcessStartInfo processInfo = new ProcessStartInfo
             {
-                FileName = "IdleGamesBuild/IdleGames.exe", // 실행할 파일 경로
+                FileName = "IdleGamesBuild/IdleGamePorject.exe", // 실행할 파일 경로
                 Arguments = $"-idleData .user:{_if_userName.text} .initsave:{(_tg_initSave ? 1 : 0)} .table:{_dw_tableType.value}", // 매개변수
                 RedirectStandardOutput = true, // 표준 출력 리다이렉트
                 UseShellExecute = false, // 셸을 사용하지 않음
@@ -495,6 +501,8 @@ namespace IdleGame.Main.Scene.Load
             PlayerPrefs.SetInt("load_initsave", _tg_initSave.isOn ? 1 : 0);
 
             _Log.Logic_PutLog(new Data_Log($"테스트용 빌드 시작체크, 시작 타입 : {Global_Data.Editor.LocalData_Grid} + user : {_if_userName.text}"));
+
+            Logic_GameBuildStart();
         }
 
         /// <summary>
