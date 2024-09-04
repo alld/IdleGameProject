@@ -4,15 +4,6 @@ using IdleGame.Data.Numeric;
 namespace IdleGame.Data
 {
     /// <summary>
-    /// [종류] 몬스터 타입을 지정합니다. 
-    /// </summary>
-    public enum eMonsterType
-    {
-        normal,
-        boss
-    }
-
-    /// <summary>
     /// [데이터] 몬스터를 구성하기위한 데이터 구성을 담고 있습니다. 
     /// </summary>
     public class Data_Monster

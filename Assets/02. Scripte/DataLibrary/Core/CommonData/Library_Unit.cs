@@ -15,6 +15,15 @@ namespace IdleGame.Core.Unit
     }
 
     /// <summary>
+    /// [종류] 몬스터 타입을 지정합니다. 
+    /// </summary>
+    public enum eMonsterType
+    {
+        normal,
+        boss,
+    }
+
+    /// <summary>
     /// [종류] 유닛의 속성을 정의합니다.
     /// </summary>
     public enum eUnitProperty

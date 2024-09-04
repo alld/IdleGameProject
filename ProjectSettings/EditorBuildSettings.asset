@@ -5,8 +5,8 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/01. Scenes/Procedure/Load_Test.unity
+  - enabled: 0
+    path: Assets/60. AutoBuild/01. Scenes/Load_Test.unity
     guid: 926b7bc7d1004a64a8331834576d1197
   - enabled: 1
     path: Assets/01. Scenes/Procedure/Load.unity

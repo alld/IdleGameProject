@@ -1,5 +1,6 @@
 using IdleGame.Core;
 using IdleGame.Core.Module.EventSystem;
+using IdleGame.Data;
 using IdleGame.Data.Base.Scene;
 using IdleGame.Data.Common.Event;
 
@@ -17,6 +18,11 @@ namespace IdleGame.Main.Scene.Intro
             Event.RegisterEvent(eSceneEventType_Intro.Act_ChangeScene, Logic_NextScene);
         }
 
+        protected override void Logic_Init_Custom()
+        {
+            if (Global_Data.Editor.isInitSave == false)
+                GameManager.Save.Editor_DeleteSave();
+        }
 
         /// <summary>
         /// [기능] 인게임 씬으로 전환을 시도합니다.

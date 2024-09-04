@@ -1,5 +1,6 @@
 using IdleGame.Core;
 using IdleGame.Core.Module.EventSystem;
+using IdleGame.Data;
 using IdleGame.Data.Base.Scene;
 using IdleGame.Data.Common.Event;
 namespace IdleGame.Main.Scene.Load
@@ -13,7 +14,48 @@ namespace IdleGame.Main.Scene.Load
 
         protected override void Logic_Init_Custom()
         {
+            Logic_LoadSegmentsSetting();
+
             GameManager.Scene.Logic_TryChangeScene(eSceneKind.Intro);
         }
+
+        public void Logic_LoadSegmentsSetting()
+        {
+            string[] args = System.Environment.GetCommandLineArgs();
+            string result = null;
+
+            if (args.Length == 0)
+                return;
+
+            foreach (string arg in args)
+            {
+                if (arg.StartsWith("-idleData"))
+                {
+                    result = arg;
+                }
+            }
+
+            if (string.IsNullOrEmpty(result))
+                return;
+            string[] array = result.Split(" .");
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                string[] seg = array[i].Split(":");
+                switch (seg[0])
+                {
+                    case "user":
+                        Global_Data.Editor.userName = seg[1];
+                        break;
+                    case "initsave":
+                        Global_Data.Editor.isInitSave = int.Parse(seg[1]) == 1;
+                        break;
+                    case "table":
+                        Global_Data.Editor.LocalData_Grid = int.Parse(seg[1]);
+                        break;
+                }
+            }
+        }
+
     }
 }

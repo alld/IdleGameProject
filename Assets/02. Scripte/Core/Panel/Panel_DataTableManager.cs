@@ -79,7 +79,7 @@ namespace IdleGame.Core.Panel.DataTable
         {
             if (m_errorCode < 0)
             {
-                Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag));
+                Base_Engine.Log.Logic_PutLog(new Data_Log($"데이터를 불러오는데 실패하였습니다.\n {m_dataArray[0]}", Data_ErrorType.Error_DataLoadFailed, _tag.tag + m_type.ToString()));
                 return;
             }
             try
@@ -115,7 +115,7 @@ namespace IdleGame.Core.Panel.DataTable
                         Library_DataTable.character.Clear();
                         var data_char = Convert_TsvKeyParse<Data_Character>(m_dataArray);
                         for (int i = 0; i < data_char.Count; i++)
-                            Library_DataTable.character.Add(data_char[i].idx, data_char[i]);
+                            Library_DataTable.character.Add(data_char[i].character_id, data_char[i]);
                         //Convert_CharacterTable(m_dataArray);
                         break;
                     case eDataTableType.Item:
@@ -223,86 +223,98 @@ namespace IdleGame.Core.Panel.DataTable
                     var value = values[i].Trim().AsSpan();
 
                     var field = fields.FirstOrDefault(f => f.Name.Equals(header, StringComparison.OrdinalIgnoreCase));
-                    if (field != null)
+                    try
                     {
-                        if (field.FieldType == typeof(ExactInt))
+                        if (field != null)
                         {
-                            field.SetValue(obj, new ExactInt(new string(value)));
-                        }
-                        else if (field.FieldType.IsEnum)
-                        {
-                            var numberString = new string(value).Split('.')[0]; // 첫 번째 부분을 가져옴
-                            if (int.TryParse(numberString, out int enumValue))
+                            if (field.FieldType == typeof(ExactInt))
                             {
-                                field.SetValue(obj, Enum.ToObject(field.FieldType, enumValue));
+                                field.SetValue(obj, new ExactInt(new string(value)));
                             }
-                        }
-                        else
-                            switch (Type.GetTypeCode(field.FieldType))
+                            else if (field.FieldType.IsEnum)
                             {
-                                case TypeCode.Int32:
-                                    field.SetValue(obj, int.Parse(new string(value)));
-                                    break;
-                                case TypeCode.Int64:
-                                    field.SetValue(obj, long.Parse(new string(value)));
-                                    break;
-                                case TypeCode.Boolean:
-                                    field.SetValue(obj, bool.Parse(new string(value)));
-                                    break;
-                                case TypeCode.Single:
-                                    field.SetValue(obj, float.Parse(new string(value)));
-                                    break;
-                                case TypeCode.Double:
-                                    field.SetValue(obj, double.Parse(new string(value)));
-                                    break;
-                                case TypeCode.String:
-                                    field.SetValue(obj, new string(value));
-                                    break;
-                                case TypeCode.Object when field.FieldType.IsArray: // 배열 처리
-                                    var arrayValues = new string(value).Split(','); // 콤마로 나누기
-                                    var arrayType = field.FieldType.GetElementType(); // 배열의 요소 타입 가져오기
+                                var numberString = new string(value).Split('.')[0]; // 첫 번째 부분을 가져옴
+                                if (int.TryParse(numberString, out int enumValue))
+                                {
+                                    if (Enum.IsDefined(field.FieldType, enumValue))
+                                        field.SetValue(obj, Enum.ToObject(field.FieldType, enumValue));
+                                    else
+                                        throw new InvalidOperationException($"Unsupported enum type: {enumValue}");
+                                }
+                            }
+                            else
+                                switch (Type.GetTypeCode(field.FieldType))
+                                {
+                                    case TypeCode.Int32:
+                                        field.SetValue(obj, int.Parse(new string(value)));
+                                        break;
+                                    case TypeCode.Int64:
+                                        field.SetValue(obj, long.Parse(new string(value)));
+                                        break;
+                                    case TypeCode.Boolean:
+                                        field.SetValue(obj, bool.Parse(new string(value)));
+                                        break;
+                                    case TypeCode.Single:
+                                        field.SetValue(obj, float.Parse(new string(value)));
+                                        break;
+                                    case TypeCode.Double:
+                                        field.SetValue(obj, double.Parse(new string(value)));
+                                        break;
+                                    case TypeCode.String:
+                                        field.SetValue(obj, new string(value));
+                                        break;
+                                    case TypeCode.Object when field.FieldType.IsArray: // 배열 처리
+                                        var arrayValues = new string(value).Split(','); // 콤마로 나누기
+                                        var arrayType = field.FieldType.GetElementType(); // 배열의 요소 타입 가져오기
 
-                                    Array array = Array.CreateInstance(arrayType, arrayValues.Length); // 배열 생성
+                                        Array array = Array.CreateInstance(arrayType, arrayValues.Length); // 배열 생성
 
-                                    for (int k = 0; k < arrayValues.Length; k++)
-                                    {
-                                        switch (Type.GetTypeCode(arrayType))
+                                        for (int k = 0; k < arrayValues.Length; k++)
                                         {
-                                            case TypeCode.Int32:
-                                                array.SetValue(int.Parse(arrayValues[k]), k);
-                                                break;
-                                            case TypeCode.Single: // float 처리
-                                                array.SetValue(float.Parse(arrayValues[k]), k);
-                                                break;
-                                            case TypeCode.Int64:
-                                                array.SetValue(long.Parse(arrayValues[k]), k);
-                                                break;
-                                            case TypeCode.Boolean:
-                                                array.SetValue(bool.Parse(arrayValues[k]), k);
-                                                break;
-                                            case TypeCode.Double:
-                                                array.SetValue(double.Parse(arrayValues[k]), k);
-                                                break;
-                                            case TypeCode.String:
-                                                array.SetValue(arrayValues[k], k);
-                                                break;
-                                            // 다른 타입에 대한 처리도 추가 가능
-                                            default:
-                                                throw new InvalidOperationException($"Unsupported array element type: {arrayType}");
+                                            switch (Type.GetTypeCode(arrayType))
+                                            {
+                                                case TypeCode.Int32:
+                                                    array.SetValue(int.Parse(arrayValues[k]), k);
+                                                    break;
+                                                case TypeCode.Single: // float 처리
+                                                    array.SetValue(float.Parse(arrayValues[k]), k);
+                                                    break;
+                                                case TypeCode.Int64:
+                                                    array.SetValue(long.Parse(arrayValues[k]), k);
+                                                    break;
+                                                case TypeCode.Boolean:
+                                                    array.SetValue(bool.Parse(arrayValues[k]), k);
+                                                    break;
+                                                case TypeCode.Double:
+                                                    array.SetValue(double.Parse(arrayValues[k]), k);
+                                                    break;
+                                                case TypeCode.String:
+                                                    array.SetValue(arrayValues[k], k);
+                                                    break;
+                                                // 다른 타입에 대한 처리도 추가 가능
+                                                default:
+                                                    throw new InvalidOperationException($"Unsupported array element type: {arrayType}");
+                                            }
                                         }
-                                    }
 
-                                    field.SetValue(obj, array);
-                                    break;
+                                        field.SetValue(obj, array);
+                                        break;
 
-                                // 필요한 경우 다른 타입을 추가할 수 있습니다.
-                                default:
-                                    throw new InvalidOperationException($"Unsupported field type: {field.FieldType}");
-                            }
+                                    // 필요한 경우 다른 타입을 추가할 수 있습니다.
+                                    default:
+                                        throw new InvalidOperationException($"Unsupported field type: {field.FieldType}");
+                                }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Base_Engine.Log.Logic_PutLog(new Data_Log(Data_ErrorType.Error_DataParsingFailed, $"name : {field.Name}\ntype : {field.FieldType}, data : {new string(value)}\n {e.ToString()}", _tag));
+                        continue;
                     }
                 }
 
                 dataList.Add(obj);
+
             }
 
             return dataList;
