@@ -7,6 +7,9 @@ namespace IdleGame.Data.EditorSetting
     {
         public bool unityLog = false;
 
+        public string userName = string.Empty;
+
+        public bool isInitSave = false;
 
         public int LocalData_Grid = 0;
     }

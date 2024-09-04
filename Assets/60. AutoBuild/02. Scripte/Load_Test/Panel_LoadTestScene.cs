@@ -6,8 +6,10 @@ using IdleGame.Core.Panel.LogCollector;
 using IdleGame.Data;
 using IdleGame.Data.Common.Log;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -42,8 +44,16 @@ namespace IdleGame.Main.Scene.Load
             NoneLocalAndCloudBuild,
             /// <summary> 공유 빌드의 버전명이 양식에 맞지 않습니다.</summary>
             CloudeVersionMissingFormat,
-
-
+            /// <summary> 다운로드 실패 </summary>
+            DownloadFail,
+            /// <summary> 프로그램 실행 실패 </summary>
+            ProgramStartingFail,
+            /// <summary> 인터넷 연결상태를 확인하는 과정에서 에러가 발생했습니다. </summary>
+            InternetConnectCheckError,
+            /// <summary> 인터넷이 연결되지않은 상태입니다.</summary>
+            InternetNotConnect,
+            /// <summary> 해당 플랫폼은 게임을 실행할수 있는 환경이 아닙니다. </summary>
+            NotMathingPlatform,
 
             /// <summary> 게임 시작이 가능한 상태입니다.</summary>
             PossibleGameStart
@@ -59,7 +69,7 @@ namespace IdleGame.Main.Scene.Load
         [SerializeField] private TMP_Text _t_currentVersion;
         [SerializeField] private Image _i_newVersion;
         [SerializeField] private TMP_Text _t_newVersion;
-        [SerializeField] private TMP_Text _t_Context;
+        [SerializeField] private TMP_Text _t_context;
         [SerializeField] private Button _b_retry;
 
         [SerializeField] private TMP_InputField _if_userName;
@@ -69,15 +79,21 @@ namespace IdleGame.Main.Scene.Load
         [SerializeField] private Button _b_gameStart;
 
         private (string, string) _cloudeFild;
-
-        /// <summary>
-        /// [상태] 빌드가 없음.
-        /// </summary>
-        private bool _check_NonBuild;
+        private DriveService _driveService;
+        public TextAsset serviceAccountJson;
+        private string targetFolder;
 
         protected override void Logic_Init_Custom()
         {
+            if (!Logic_PlatformCheck())
+            {
+                Logic_SetProgeesType(eAutoBuildType.NotMathingPlatform);
+                return;
+            }
+
             Logic_LoadPrefs();
+            targetFolder = Path.Combine(Application.persistentDataPath, "IdleGamesBuild");
+            Logic_Authenticate();
         }
 
         /// <summary>
@@ -90,11 +106,10 @@ namespace IdleGame.Main.Scene.Load
             _tg_initSave.isOn = PlayerPrefs.GetInt("load_initsave") == 1;
         }
 
-
         /// <summary>
         /// [기능] 특정 진행 상황이 변경된 경우 호출합니다. 
         /// </summary>
-        private void Logic_SetProgeesType(eAutoBuildType m_type)
+        private void Logic_SetProgeesType(eAutoBuildType m_type, string m_text = "")
         {
             _b_retry.interactable = true;
 
@@ -106,41 +121,76 @@ namespace IdleGame.Main.Scene.Load
                 case eAutoBuildType.PossibleGameStart:
                     _b_gameStart.interactable = true;
                     _t_loadInfo.text = "게임 시작 가능";
-
+                    break;
+                case eAutoBuildType.InternetNotConnect:
+                case eAutoBuildType.InternetConnectCheckError:
+                    if (IsExistsBuild())
+                    {
+                        _b_gameStart.interactable = true;
+                        _t_loadInfo.text = "로컬 빌드 시작 가능";
+                    }
+                    break;
+                case eAutoBuildType.NotMathingPlatform:
+                    _b_gameStart.interactable = false;
+                    _b_retry.interactable = false;
                     break;
                 default:
                     break;
             }
 
 
-            Logic_SetContext(m_type);
+            Logic_SetContext(m_type, _b_gameStart.interactable);
         }
 
 
         /// <summary>
         /// [기능] 텍스트 타입을 지정합니다. 
         /// </summary>
-        private void Logic_SetContext(eAutoBuildType m_type)
+        private void Logic_SetContext(eAutoBuildType m_type, bool m_startCheck, string m_text = null)
         {
             switch (m_type)
             {
                 case eAutoBuildType.EmptyUserName:
-                    _t_Context.text = "플레이 과정에서 발생하는 로그를 추적하고 관리하기위해서 반드시 유저이름을 입력해주세요.\n\n " +
+                    _t_context.text = "플레이 과정에서 발생하는 로그를 추적하고 관리하기위해서 반드시 유저이름을 입력해주세요.\n\n " +
                         "아무거나 입력해주셔도 상관없습니다.";
                     break;
                 case eAutoBuildType.NoneCloudBuild:
                     break;
                 case eAutoBuildType.NoneLocalAndCloudBuild:
-                    _t_Context.text = "클라우드 및 로컬 모두 실행할 빌드가 존재하지 않습니다. \n 별도의 조치가 필요합니다." +
+                    _t_context.text = "클라우드 및 로컬 모두 실행할 빌드가 존재하지 않습니다. \n 별도의 조치가 필요합니다." +
                         "\n 로그가 Alld에게 전송되었으나, 혹시 모르니 별도로 Alld에게 요청하세요.";
                     break;
                 case eAutoBuildType.CloudeVersionMissingFormat:
-                    _t_Context.text = "클라우드에 지정된 빌드의 버전이 포멧양식과 맞지않습니다. \n" +
+                    _t_context.text = "클라우드에 지정된 빌드의 버전이 포멧양식과 맞지않습니다. \n" +
                         "올드에게 문의하거나, 해당 구글 드라이브에가서 현재 알맞는 버전과 함께 [00000_v] 형태로 양식에 맞게 변경해주세요.";
+                    break;
+                case eAutoBuildType.DownloadFail:
+                    _t_context.text = "받은 데이터를 다운받아서 처리하는 과정에서 문제가 발생했습니다. \n" +
+                        m_text;
+                    break;
+                case eAutoBuildType.ProgramStartingFail:
+                    _t_context.text = "프로그램을 실행시키는 과정에서 문제가 발생했습니다. \n" +
+                        m_text;
+                    break;
+                case eAutoBuildType.InternetConnectCheckError:
+                    _t_context.text = "인터넷 연결상태를 체크하는 과정에서 문제가 발생했습니다. \n" +
+                        m_text;
+                    break;
+                case eAutoBuildType.InternetNotConnect:
+                    _t_context.text = "인터넷이 연결되지않은 상태입니다. 연결상태를 확인해주세요. \n";
+                    break;
+                case eAutoBuildType.NotMathingPlatform:
+                    _t_context.text = "PC에서만 실행이 가능합니다.";
                     break;
             }
 
-            _Log.Logic_PutLog(new Data_Log($"User:{_if_userName.text} + {_t_Context.text}"));
+            if (!m_startCheck)
+            {
+                _t_loadInfo.text = "실행 불가";
+                _Log.Logic_PutLog(new Data_Log($"User:{_if_userName.text} + {_t_context.text}"));
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_t_context.GetComponentInParent<RectTransform>());
         }
 
         /// <summary>
@@ -159,19 +209,7 @@ namespace IdleGame.Main.Scene.Load
 
         #region 통신처리
 
-        private DriveService _driveService;
-        public TextAsset serviceAccountJson;
-        private string targetFolder;
-
-
-        void Start()
-        {
-            targetFolder = Path.Combine(Application.persistentDataPath, "IdleGamesBuild");
-            Authenticate();
-        }
-
-
-        private void Authenticate()
+        private void Logic_Authenticate()
         {
             string[] scopes = { DriveService.Scope.DriveReadonly };
 
@@ -190,11 +228,17 @@ namespace IdleGame.Main.Scene.Load
             });
 
             // 파일 목록 가져오기
-            ListFiles();
+            Logic_ListFiles();
         }
 
-        private void ListFiles()
+        private void Logic_ListFiles()
         {
+            if (!Logic_IsInternetAvailable())
+            {
+                Logic_SetProgeesType(eAutoBuildType.InternetNotConnect);
+                return;
+            }
+
             _b_retry.interactable = false;
             _b_gameStart.interactable = false;
 
@@ -212,6 +256,8 @@ namespace IdleGame.Main.Scene.Load
                     Logic_SetProgeesType(eAutoBuildType.NoneCloudBuild);
                 else
                     Logic_SetProgeesType(eAutoBuildType.NoneLocalAndCloudBuild);
+
+                return;
             }
             else
                 _cloudeFild = new(files.Files[0].Name, files.Files[0].Id);
@@ -303,7 +349,7 @@ namespace IdleGame.Main.Scene.Load
             }
             catch (Exception ex)
             {
-                Debug.LogError("다운로드 중 오류 발생: " + ex.Message);
+                Logic_SetProgeesType(eAutoBuildType.DownloadFail, ex.Message.ToString());
             }
             finally
             {
@@ -341,9 +387,61 @@ namespace IdleGame.Main.Scene.Load
 
             string path = Path.Combine(targetFolder, "data.ver");
             File.WriteAllText(path, json); // 파일 작성
-
-            Debug.Log($"버전 정보가 저장되었습니다: {path}");
         }
+
+        /// <summary>
+        /// [기능] 게임을 시작시킵니다.
+        /// </summary>
+        private void Logic_GameBuildStart()
+        {
+            ProcessStartInfo processInfo = new ProcessStartInfo
+            {
+                FileName = "IdleGamesBuild/IdleGames.exe", // 실행할 파일 경로
+                Arguments = $"-idleData .user:{_if_userName.text} .initsave:{(_tg_initSave ? 1 : 0)} .table:{_dw_tableType.value}", // 매개변수
+                RedirectStandardOutput = true, // 표준 출력 리다이렉트
+                UseShellExecute = false, // 셸을 사용하지 않음
+                CreateNoWindow = true // 창을 열지 않음
+            };
+
+            try
+            {
+                using (Process process = Process.Start(processInfo))
+                {
+                    // 프로세스 종료 코드 확인
+                    if (process != null)
+                        Application.Quit();
+                    else
+                        Logic_SetProgeesType(eAutoBuildType.ProgramStartingFail, $"프로세스가 오류 코드 {process.ExitCode}로 종료되었습니다.");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Logic_SetProgeesType(eAutoBuildType.ProgramStartingFail, $"프로세스 실행 중 오류: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// [기능] 인터넷 연결 상태 체크
+        /// </summary>
+        private bool Logic_IsInternetAvailable()
+        {
+            try
+            {
+                // 네트워크 인터페이스 확인
+                foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (ni.OperationalStatus == OperationalStatus.Up)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logic_SetProgeesType(eAutoBuildType.InternetConnectCheckError, $"프로세스 실행 중 오류: {ex.Message}");
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// [기능] 버전 정보 읽기
@@ -362,9 +460,20 @@ namespace IdleGame.Main.Scene.Load
             }
             else
             {
-                Debug.LogWarning("버전 파일이 존재하지 않습니다.");
                 return 0;
             }
+        }
+
+        /// <summary>
+        /// [기능] 게임이 가능한 플랫폼인지를 검사합니다. 
+        /// </summary>
+        public bool Logic_PlatformCheck()
+        {
+            if (Application.platform != RuntimePlatform.WindowsPlayer &&
+    Application.platform != RuntimePlatform.OSXPlayer)
+                return false;
+
+            return true;
         }
 
         private bool IsExistsBuild() => Directory.Exists(targetFolder);
@@ -385,7 +494,7 @@ namespace IdleGame.Main.Scene.Load
             PlayerPrefs.SetString("load_username", _if_userName.text);
             PlayerPrefs.SetInt("load_initsave", _tg_initSave.isOn ? 1 : 0);
 
-            GameManager.Log.Logic_PutLog(new Data_Log($"테스트용 빌드 시작체크, 시작 타입 : {Global_Data.Editor.LocalData_Grid}"));
+            _Log.Logic_PutLog(new Data_Log($"테스트용 빌드 시작체크, 시작 타입 : {Global_Data.Editor.LocalData_Grid} + user : {_if_userName.text}"));
         }
 
         /// <summary>
@@ -393,7 +502,7 @@ namespace IdleGame.Main.Scene.Load
         /// </summary>
         public void OnClickReTry()
         {
-            ListFiles();
+            Logic_ListFiles();
         }
         #endregion
     }

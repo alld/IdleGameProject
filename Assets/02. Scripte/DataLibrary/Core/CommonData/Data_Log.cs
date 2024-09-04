@@ -44,6 +44,7 @@ namespace IdleGame.Data.Common.Log
             if (string.IsNullOrEmpty(m_tag))
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -55,6 +56,7 @@ namespace IdleGame.Data.Common.Log
             else
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -79,6 +81,7 @@ namespace IdleGame.Data.Common.Log
             if (string.IsNullOrEmpty(m_tag.tag))
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -90,6 +93,7 @@ namespace IdleGame.Data.Common.Log
             else
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "::" + m_tag.tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -113,6 +117,7 @@ namespace IdleGame.Data.Common.Log
             if (string.IsNullOrEmpty(m_tag))
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -126,6 +131,7 @@ namespace IdleGame.Data.Common.Log
             else
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -151,6 +157,7 @@ namespace IdleGame.Data.Common.Log
             if (string.IsNullOrEmpty(m_tag))
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -162,6 +169,7 @@ namespace IdleGame.Data.Common.Log
             else
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
                     $"발생 시간 : " + DateTime.Now.ToString() + "\n" +
@@ -185,6 +193,7 @@ namespace IdleGame.Data.Common.Log
             if (string.IsNullOrEmpty(m_tag))
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
@@ -197,6 +206,7 @@ namespace IdleGame.Data.Common.Log
             else
             {
                 content =
+                    (string.IsNullOrEmpty(Global_Data.Editor.userName) ? string.Empty : $"사용자 : {Global_Data.Editor.userName}\n") +
                     $"예외 발생 \n" +
                     $"발생 지점 : " + Application.productName + "::" + m_tag + "\n" +
                     $"게임 버전 : " + Global_GameInfo.version + "::" + Application.version + "::" + Library_DataTable.Info.version + "v\n" +
