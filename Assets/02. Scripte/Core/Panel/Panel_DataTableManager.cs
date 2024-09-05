@@ -108,7 +108,7 @@ namespace IdleGame.Core.Panel.DataTable
                         Library_DataTable.quest.Clear();
                         var data_quest = Convert_TsvKeyParse<Data_Quest>(m_dataArray);
                         for (int i = 0; i < data_quest.Count; i++)
-                            Library_DataTable.quest.Add(data_quest[i].index, data_quest[i]);
+                            Library_DataTable.quest.Add(data_quest[i].idx, data_quest[i]);
                         //Convert_QuestTable(m_dataArray);
                         break;
                     case eDataTableType.Character:
@@ -122,14 +122,14 @@ namespace IdleGame.Core.Panel.DataTable
                         Library_DataTable.item.Clear();
                         var data_item = Convert_TsvKeyParse<Data_Item>(m_dataArray);
                         for (int i = 0; i < data_item.Count; i++)
-                            Library_DataTable.item.Add(data_item[i].index, data_item[i]);
+                            Library_DataTable.item.Add(data_item[i].idx, data_item[i]);
                         //Convert_ItemTable(m_dataArray);
                         break;
                     case eDataTableType.Skill:
                         Library_DataTable.skill.Clear();
                         var data_skill = Convert_TsvKeyParse<Data_Skill>(m_dataArray);
                         for (int i = 0; i < data_skill.Count; i++)
-                            Library_DataTable.skill.Add(data_skill[i].index, data_skill[i]);
+                            Library_DataTable.skill.Add(data_skill[i].idx, data_skill[i]);
                         Convert_SkillTable(m_dataArray);
                         break;
                     case eDataTableType.Property:
@@ -399,9 +399,9 @@ namespace IdleGame.Core.Panel.DataTable
                 Data_Quest parsingData = new Data_Quest();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.idx, dataSegment[index++]);
 
-                Library_DataTable.quest.Add(parsingData.index, parsingData);
+                Library_DataTable.quest.Add(parsingData.idx, parsingData);
             }
         }
 
@@ -453,9 +453,9 @@ namespace IdleGame.Core.Panel.DataTable
                 Data_Item parsingData = new Data_Item();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.idx, dataSegment[index++]);
 
-                Library_DataTable.item.Add(parsingData.index, parsingData);
+                Library_DataTable.item.Add(parsingData.idx, parsingData);
             }
         }
 
@@ -472,9 +472,9 @@ namespace IdleGame.Core.Panel.DataTable
                 Data_Skill parsingData = new Data_Skill();
                 string[] dataSegment = m_dataArray[i].Split("\t");
 
-                Convert_ParsingData(ref parsingData.index, dataSegment[index++]);
+                Convert_ParsingData(ref parsingData.idx, dataSegment[index++]);
 
-                Library_DataTable.skill.Add(parsingData.index, parsingData);
+                Library_DataTable.skill.Add(parsingData.idx, parsingData);
             }
         }
 
