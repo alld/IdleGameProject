@@ -104,6 +104,14 @@ namespace IdleGame.Main
         {
             return stage.Logic_TryNextLevel();
         }
+
+        /// <summary>
+        /// [기능] 진행중인 게임이 실패했을때 호출됩니다. 
+        /// </summary>
+        public void Logic_GameFail()
+        {
+            stage.Logic_GameFail();
+        }
         #endregion
 
         private void OnApplicationQuit()

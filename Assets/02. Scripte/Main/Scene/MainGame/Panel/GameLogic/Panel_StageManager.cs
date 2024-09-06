@@ -12,6 +12,7 @@ using IdleGame.Main.Unit;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace IdleGame.Main.GameLogic
 {
@@ -260,6 +261,15 @@ namespace IdleGame.Main.GameLogic
             {
                 Base_Engine.Log.Logic_PutLog(new Data_Log(e, _tag.tag));
             }
+        }
+
+        /// <summary>
+        /// [기능] 유저가 게임에 진경우 호출됩니다. 패배에 관련된 행동을 정의합니다. 
+        /// </summary>
+        public void Logic_GameFail()
+        {
+            Logic_StagePause();
+
         }
 
         /// <summary>
