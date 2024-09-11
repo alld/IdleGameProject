@@ -95,6 +95,8 @@ namespace IdleGame.Data.Common.Event
         Act_GameStart,
         /// <summary> [메인게임] 게임의 진행을 중단시킵니다. </summary>
         Act_GameStop,
+        /// <summary> [메인게임] 게임에서 패배한 경우에 호출됩니다. </summary>
+        On_GameFail,
 
         /// <summary> [백사이드] 화면 연출을 중지하여 밧데리 소모를 감소시킵니다. </summary>
         BackSide_On,
@@ -105,7 +107,5 @@ namespace IdleGame.Data.Common.Event
         Act_BGMoveStart,
         /// <summary> [배경컨트롤러] 배경의 움직임을 멈춥니다. </summary>
         Act_BGMoveStop,
-
-
     }
 }

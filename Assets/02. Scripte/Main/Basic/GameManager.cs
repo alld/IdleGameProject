@@ -106,7 +106,7 @@ namespace IdleGame.Main
         }
 
         /// <summary>
-        /// [기능] 진행중인 게임이 실패했을때 호출됩니다. 
+        /// [기능] 진행중인 게임을 패배 처리합니다. 
         /// </summary>
         public void Logic_GameFail()
         {

@@ -12,7 +12,6 @@ using IdleGame.Main.Unit;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace IdleGame.Main.GameLogic
 {
@@ -74,6 +73,11 @@ namespace IdleGame.Main.GameLogic
         private Graphic_StageBord _bord;
 
         /// <summary>
+        /// [상태] 현재 유닛을 회수중인지 상태를 표시하는 값입니다. 
+        /// </summary>
+        private bool _isReturning = false;
+
+        /// <summary>
         /// [데이터] 현재 진행중인 스테이지의 id를 반환합니다.
         /// </summary>
         public int currnetStageID => _mainStage.stage_id;
@@ -122,6 +126,7 @@ namespace IdleGame.Main.GameLogic
         {
             if (Application.exitCancellationToken.IsCancellationRequested) return false;
             if (Unit_Monsters.Count != 0) return false;
+            if (_isReturning) return false;
 
             Logic_NextLevel();
 
@@ -184,6 +189,24 @@ namespace IdleGame.Main.GameLogic
         }
 
         /// <summary>
+        /// [기능] 모든 유닛들을 회수합니다. 
+        /// </summary>
+        public void Logic_ReturnAllUnit()
+        {
+            _isReturning = true;
+
+            if (Unit_Player != null)
+                Unit_Player.Pool_Return_Base();
+
+            for (int i = Unit_Monsters.Count - 1; i >= 0; i--)
+            {
+                Unit_Monsters[i].Pool_Return_Base();
+            }
+
+            _isReturning = false;
+        }
+
+        /// <summary>
         /// [기능] 플레이어를 셋팅합니다. 복수의 스테이지에 별도의 캐릭터가 존재할 수 있습니다. 
         /// </summary>
         private void Logic_PlayerSetting()
@@ -239,9 +262,11 @@ namespace IdleGame.Main.GameLogic
         /// </summary>
         private void Logic_NoMoreStages()
         {
-            Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+            Logic_ReStartStage();
 
-            Logic_StageStart();
+            //Logic_SetStage(Library_DataTable.stage[Global_Data.PlayProgress.stage_curIndex]);
+            //
+            //Logic_StageStart();
         }
 
         /// <summary>
@@ -270,6 +295,28 @@ namespace IdleGame.Main.GameLogic
         {
             Logic_StagePause();
 
+            Panel_MainGameScene.Event.CallEvent(Data.Common.Event.eSceneEventType_MainGame.On_GameFail);
+        }
+
+        /// <summary>
+        /// [기능] 해당 스테이지를 처음부터 진행시킵니다. 
+        /// </summary>
+        public void Logic_ReStartStage()
+        {
+            Logic_ResetStage();
+
+            Logic_StageStart();
+        }
+
+        /// <summary>
+        /// [기능] 스테이지를 1웨이브 상태로 되돌립니다. 
+        /// </summary>
+        private void Logic_ResetStage()
+        {
+            _mainStage.currentWave = 0;
+            Logic_SetStage(_mainStage);
+
+            Logic_ReturnAllUnit();
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
 using IdleGame.Core.Popup;
+using IdleGame.Data.Common.Event;
+using IdleGame.Main.Scene.Main;
 
 namespace IdleGame.Main.UI
 {
@@ -10,13 +12,13 @@ namespace IdleGame.Main.UI
     {
         protected override void Logic_RegisterEvent_Custom()
         {
-
+            Panel_MainGameScene.Event.RegisterEvent(eSceneEventType_MainGame.On_GameFail, Logic_OpenPopup);
         }
 
 
         public void Logic_OpenPopup()
         {
-
+            Logic_Open_Base();
         }
 
 
@@ -26,7 +28,8 @@ namespace IdleGame.Main.UI
         /// </summary>
         public void OnClickReTryGame()
         {
-
+            GameManager.Main.stage.Logic_ReStartStage();
+            Logic_Close_Base();
         }
 
         #endregion
