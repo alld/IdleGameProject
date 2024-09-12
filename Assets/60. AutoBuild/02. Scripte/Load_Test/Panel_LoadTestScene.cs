@@ -3,9 +3,13 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using IdleGame.Core;
 using IdleGame.Core.Panel.LogCollector;
+using IdleGame.Core.Procedure;
 using IdleGame.Data;
+using IdleGame.Data.Common.Event;
 using IdleGame.Data.Common.Log;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -13,11 +17,11 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
-namespace IdleGame.Main.Scene.Load
+using static UnityEngine.InputManagerEntry;
+namespace IdleGame.Main.Scene.AutoBuild
 {
-
-
     public class Panel_LoadTestScene : Base_Panel
     {
         [System.Serializable]
@@ -79,10 +83,14 @@ namespace IdleGame.Main.Scene.Load
         [SerializeField] private Button _b_gameStart;
         [SerializeField] private TMP_Text _t_version;
 
+        [Header("업데이트팝업")]
+        [SerializeField] private Panel_UpdatePopup _updatePopup;
+
         private (string, string) _cloudeFild;
         private DriveService _driveService;
         public TextAsset serviceAccountJson;
         private string targetFolder;
+        private int currentVersion = 0;
 
         protected override void Logic_Init_Custom()
         {
@@ -98,6 +106,8 @@ namespace IdleGame.Main.Scene.Load
             else
                 targetFolder = Path.Combine(Application.dataPath, "..", "IdleGamesBuild");
             Logic_Authenticate();
+
+            StartCoroutine(Logic_LoadVersionInfo());
         }
 
         /// <summary>
@@ -462,11 +472,13 @@ namespace IdleGame.Main.Scene.Load
                 string json = File.ReadAllText(path); // 파일 내용 읽기
                 VersionInfo versionInfo = JsonUtility.FromJson<VersionInfo>(json); // JSON을 객체로 변환
 
-                return int.Parse(versionInfo.version);
+                int.TryParse(versionInfo.version, out currentVersion);
+                return currentVersion;
             }
             else
             {
-                return 0;
+                currentVersion = 0;
+                return currentVersion;
             }
         }
 
@@ -483,6 +495,57 @@ namespace IdleGame.Main.Scene.Load
         }
 
         private bool IsExistsBuild() => Directory.Exists(targetFolder);
+
+
+        private string DefaultURL = "https://docs.google.com/spreadsheets/d/1xVP1PT_xdm_GWn5_hVe3_m_eymSgrm04ZmbDAxrHXcU/export?format=tsv&gid=2127233085&range=A1:B100";
+        private Dictionary<int, string> versionInfo = new Dictionary<int, string>();
+
+        public IEnumerator Logic_LoadVersionInfo()
+        {
+            string returnData = string.Empty;
+
+            using (UnityWebRequest www = UnityWebRequest.Get(DefaultURL))
+            {
+                yield return www.SendWebRequest();
+                returnData = www.downloadHandler.text;
+                string[] dataArray = null;
+                switch (www.result)
+                {
+                    case UnityWebRequest.Result.Success:
+                        returnData = returnData.Replace("\r\n", "\n");
+
+                        dataArray = returnData.Split("\n");
+                        break;
+                    default:
+                        dataArray = new string[] { www.result.ToString() };
+                        break;
+                }
+
+
+                versionInfo.Clear();
+                if (dataArray.Length != 0)
+                {
+                    for (int i = 0; i < dataArray.Length; i++)
+                    {
+                        string[] result = dataArray[i].Split("\t");
+                        int index;
+                        if (int.TryParse(result[0], out index))
+                        {
+                            if (string.IsNullOrWhiteSpace(result[1]))
+                                continue;
+
+                            if (!versionInfo.ContainsKey(index))
+                            {
+                                string info = result[1].Replace("-", "\n-");
+                                versionInfo.Add(index, info);
+                            }
+                        }
+                        else
+                            continue;
+                    }
+                }
+            }
+        }
 
         #endregion
 
@@ -503,6 +566,21 @@ namespace IdleGame.Main.Scene.Load
             _Log.Logic_PutLog(new Data_Log($"테스트용 빌드 시작체크, 시작 타입 : {Global_Data.Editor.LocalData_Grid} + user : {_if_userName.text}"));
 
             Logic_GameBuildStart();
+        }
+
+        /// <summary>
+        /// [버튼콜백] 업데이트 내역 확인 버튼이 눌린 경우 호출됩니다. 
+        /// </summary>
+        public void OnClickUpdateButton()
+        {
+            if (versionInfo.Count == 0)
+                return;
+
+            if (currentVersion == 0)
+                return;
+
+
+            _updatePopup.Logic_OpenPopup(versionInfo, currentVersion);
         }
 
         /// <summary>
