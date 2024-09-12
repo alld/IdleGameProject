@@ -244,7 +244,7 @@ namespace IdleGame.Core.Unit
             if (_target == null)
                 if (!Logic_SearchTarget_Base())
                 {
-                    Logic_SetAction(eUnitState.Idle);
+                    Logic_SetAction(eUnitState.Idle, 0.5f);
                     return;
                 }
 
@@ -294,7 +294,7 @@ namespace IdleGame.Core.Unit
         /// <summary>
         /// [기능] 입력된 상태값에 맞쳐서 특정 행위를 실행하도록 합니다. 
         /// </summary>
-        protected void Logic_SetAction(eUnitState m_state)
+        protected void Logic_SetAction(eUnitState m_state, float m_value = 0)
         {
             if (_state.cur == m_state) return;
             Logic_StopAction();
@@ -302,7 +302,7 @@ namespace IdleGame.Core.Unit
             switch (m_state)
             {
                 case eUnitState.Idle:
-                    _stateAction = StartCoroutine(Logic_Action_Idle());
+                    _stateAction = StartCoroutine(Logic_Action_Idle(m_value));
                     break;
                 case eUnitState.Die:
                     Logic_Action_Die();
@@ -347,6 +347,7 @@ namespace IdleGame.Core.Unit
 
             yield return Utility_Common.WaitForSeconds(m_delayTime);
 
+            Logic_ChangeState(eUnitState.None);
             StartCoroutine(Logic_OperatorAct());
         }
 

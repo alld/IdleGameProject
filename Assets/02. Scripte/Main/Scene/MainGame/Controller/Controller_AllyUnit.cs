@@ -3,6 +3,7 @@ using IdleGame.Core.Utility;
 using IdleGame.Data.Adrees;
 using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
+using UnityEngine.Rendering.UI;
 
 namespace IdleGame.Main.Unit
 {
@@ -33,10 +34,8 @@ namespace IdleGame.Main.Unit
             else if (Panel_StageManager.Unit_Monsters.Count == 1)
             {
                 if (Panel_StageManager.Unit_Monsters[0].isDie)
-                {
-                    Logic_SetAction(eUnitState.Idle);
                     return false;
-                }
+
                 _target = Panel_StageManager.Unit_Monsters[0];
             }
             else
@@ -62,12 +61,13 @@ namespace IdleGame.Main.Unit
 
                 _target = compareUnit;
 
-                if (_target == null)
-                {
-                    Logic_SetAction(eUnitState.Idle);
-                    return false;
-                }
             }
+
+            if (_target != null && _target.transform.position.x > transform.position.x + ((ability.attackRange / 200)))
+                _target = null;
+
+            if (_target == null)
+                return false;
 
             return base.Logic_SearchTarget_Base();
         }

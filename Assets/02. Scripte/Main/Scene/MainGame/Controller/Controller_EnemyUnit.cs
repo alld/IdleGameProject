@@ -57,10 +57,7 @@ namespace IdleGame.Main.Unit
         protected override bool Logic_SearchTarget_Base()
         {
             if (Panel_StageManager.Unit_Player.isDie)
-            {
-                Logic_SetAction(eUnitState.Idle);
                 return false;
-            }
 
             _target = Panel_StageManager.Unit_Player;
             float range = _target.transform.position.x + ((ability.attackRange / 200));
