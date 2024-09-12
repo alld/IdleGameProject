@@ -8,6 +8,6 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 퀘스트 고유 인덱스입니다.
         /// </summary>
-        public int index = -1;
+        public int idx = -1;
     }
 }
