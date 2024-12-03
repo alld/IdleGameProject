@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8e92b8bc14cb8854c97a74561646557d
+guid: 00b0700adf04b7b408bddbb27c092a3f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7956536047216594247
-    second: HUD_StatTitle_Bg_0
+      213: -2631566481373386207
+    second: HUD_StatLv_BG_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HUD_StatTitle_Bg_0
+      name: HUD_StatLv_BG_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 291
-        height: 63
+        width: 129
+        height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 74d8fe0216b4b6e60800000000000000
-      internalID: 7956536047216594247
+      spriteID: 12a2ae25a3cca7bd0800000000000000
+      internalID: -2631566481373386207
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HUD_StatTitle_Bg_0: 7956536047216594247
+      HUD_StatLv_BG_0: -2631566481373386207
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
