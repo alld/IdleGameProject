@@ -1740,7 +1740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6427706893392548219
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1918,6 +1918,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4475182659459157459}
+  - component: {fileID: 4496375631132339931}
   m_Layer: 0
   m_Name: Graphic_QuestInfo
   m_TagString: Untagged
@@ -1949,6 +1950,18 @@ RectTransform:
   m_AnchoredPosition: {x: -200, y: 230.56}
   m_SizeDelta: {x: 400, y: 130.88}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4496375631132339931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2967850996414181936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b1b12d06c02024f9950a5edd5d0951, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2972310084841577223
 GameObject:
   m_ObjectHideFlags: 0
@@ -2307,6 +2320,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5953444885642841506}
+  - component: {fileID: 6043415016818042209}
   m_Layer: 0
   m_Name: Graphic_SkillBord
   m_TagString: Untagged
@@ -2339,6 +2353,18 @@ RectTransform:
   m_AnchoredPosition: {x: 71.59, y: 96.34}
   m_SizeDelta: {x: 768.41, y: 108.51}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6043415016818042209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310026165250196039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73bb113771bfdd24c90886b12a13e443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3337140036340871682
 GameObject:
   m_ObjectHideFlags: 0
@@ -4388,6 +4414,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7187898086856702831}
+  - component: {fileID: 9186318892387911429}
   m_Layer: 0
   m_Name: Graphic_UserInfo
   m_TagString: Untagged
@@ -4417,6 +4444,20 @@ RectTransform:
   m_AnchoredPosition: {x: 232.5, y: -70}
   m_SizeDelta: {x: 465, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &9186318892387911429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6073210006013903408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2394579cb6abc843ab8508652b45bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  i_expImage: {fileID: 850744986362506720}
+  t_level: {fileID: 8061960930656662641}
 --- !u!1 &6097300170289965002
 GameObject:
   m_ObjectHideFlags: 0

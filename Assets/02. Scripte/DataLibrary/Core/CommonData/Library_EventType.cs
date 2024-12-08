@@ -62,6 +62,9 @@ namespace IdleGame.Data.Common.Event
         /// <summary> 언어 설정이 변경된 경우 호출됩니다. </summary>
         Option_OnChangeLanguage,
         #endregion
+
+        On_UpdateExp,
+
     }
 
     /// <summary>

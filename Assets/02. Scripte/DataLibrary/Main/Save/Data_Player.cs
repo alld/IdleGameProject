@@ -30,6 +30,16 @@ namespace IdleGame.Data
         public ExactInt cc_Gold = new ExactInt(0);
 
         /// <summary>
+        /// [데이터] 현재 보유한 경험치량 
+        /// </summary>
+        public int cur_Exp = 0;
+
+        /// <summary>
+        /// [데이터] 현재 레벨
+        /// </summary>
+        public int level = 1;
+
+        /// <summary>
         /// [데이터] 특성 포인트 보유량입니다. 
         /// </summary>
         public ExactInt cc_Ability = new ExactInt(0);
