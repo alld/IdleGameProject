@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -169,6 +170,34 @@ PrefabInstance:
     - target: {fileID: 2847970657547929615, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[1].ani
+      value: 
+      objectReference: {fileID: 22100000, guid: 55e831cea07f2a64f811a75a92045444, type: 2}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[2].ani
+      value: 
+      objectReference: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[1].name
+      value: "\uD574\uACE8\uC804\uC0AC"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[2].name
+      value: "\uD574\uACE8\uC804\uC0AC"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[1].index
+      value: 1001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[2].index
+      value: 1001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

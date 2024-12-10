@@ -53,7 +53,6 @@ namespace IdleGame.Core.Panel
                 });
         }
 
-
         /// <summary>
         /// [기능] 경험치를 획득 시킵니다. (마무리)
         /// </summary>
@@ -75,6 +74,5 @@ namespace IdleGame.Core.Panel
             Global_Data.Player.cur_Exp -= 100;
             Global_Data.Player.level++;
         }
-
     }
 }
