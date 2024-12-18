@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -170,6 +171,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[2].ani
+      value: 
+      objectReference: {fileID: 22100000, guid: 83ded276557415140937a463994d4da0, type: 2}
+    - target: {fileID: 4420668061703818550, guid: 06138f87245971243a60c2f5d22f2731, type: 3}
+      propertyPath: monsters.Array.data[3].ani
+      value: 
+      objectReference: {fileID: 22100000, guid: ae76d7d3afc2bed46b61249552b0fa57, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

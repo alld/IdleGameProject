@@ -3,7 +3,6 @@ using IdleGame.Core.Utility;
 using IdleGame.Data.Adrees;
 using IdleGame.Data.DataTable;
 using IdleGame.Main.GameLogic;
-using UnityEngine.Rendering.UI;
 
 namespace IdleGame.Main.Unit
 {
@@ -63,7 +62,7 @@ namespace IdleGame.Main.Unit
 
             }
 
-            if (_target != null && _target.transform.position.x > transform.position.x + ((ability.attackRange / 200)))
+            if (_target != null && _target.transform.position.x > transform.position.x + ((ability.attackRange * 5)))
                 _target = null;
 
             if (_target == null)

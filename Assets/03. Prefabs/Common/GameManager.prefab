@@ -568,6 +568,15 @@ MonoBehaviour:
   - name: "\uD574\uACE8\uC804\uC0AC"
     ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
     index: 1001
+  - name: "\uD574\uACE8\uB3C4\uC801"
+    ani: {fileID: 22100000, guid: 55e831cea07f2a64f811a75a92045444, type: 2}
+    index: 1002
+  - name: "\uD574\uACE8\uB9C8\uBC95\uC0AC"
+    ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
+    index: 1003
+  - name: "\uD574\uACE8\uCC3D\uBCD1"
+    ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
+    index: 1004
 --- !u!1 &1685466652029311280
 GameObject:
   m_ObjectHideFlags: 0
@@ -2777,7 +2786,7 @@ MonoBehaviour:
     procedure: 0
   sprite_reward:
   - {fileID: 21300000, guid: 3f6d4ea63227240d6972e5c357631504, type: 3}
-  - {fileID: 21300000, guid: c94dca990a5ef4deaa28ddccb1acee25, type: 3}
+  - {fileID: 21300000, guid: b411d8973c92f6947b3a3b4d3f9cbbaf, type: 3}
   - {fileID: 21300000, guid: 2fe39c13ea10645d5a864779736c9fc8, type: 3}
 --- !u!1 &8217942239724210348
 GameObject:

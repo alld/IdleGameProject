@@ -20,6 +20,8 @@ namespace IdleGame.Main.Unit
         protected override void Logic_Action_Die()
         {
             Base_Engine.Reward.Logic_SendCurrency(eCurrencyType.Gold, Library_DataTable.monster[ability.Id].gold_reward, transform.position);
+            //Base_Engine.Reward.Logic_AddExp(Library_DataTable.monster[ability.Id].experience_reward);
+            Base_Engine.Reward.Logic_AddExp(1);
 
             base.Logic_Action_Die();
         }

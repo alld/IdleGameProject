@@ -1,7 +1,9 @@
 using DG.Tweening;
 using IdleGame.Core.Pool;
 using IdleGame.Core.Procedure;
+using IdleGame.Data;
 using IdleGame.Data.Common;
+using IdleGame.Data.Common.Event;
 using IdleGame.Data.Numeric;
 using IdleGame.Data.Pool;
 using UnityEngine;
@@ -51,6 +53,28 @@ namespace IdleGame.Core.Panel
                 });
         }
 
+        /// <summary>
+        /// [기능] 경험치를 획득 시킵니다. (마무리)
+        /// </summary>
+        public void Logic_AddExp(int exp)
+        {
+            Global_Data.Player.cur_Exp = exp;
 
+            if (Global_Data.Player.cur_Exp >= 100)
+            {
+                LevelUp();
+            }
+
+
+            Base_Engine.Event.CallEvent(eGlobalEventType.On_UpdateExp);
+        }
+
+        public void LevelUp()
+        {
+            Global_Data.Player.cur_Exp -= 100;
+            Global_Data.Player.level++;
+
+            Base_Engine.Event.CallEvent(eGlobalEventType.On_LevelUp);
+        }
     }
 }

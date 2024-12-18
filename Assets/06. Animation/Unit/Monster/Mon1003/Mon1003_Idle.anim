@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mon1000_Idle
+  m_Name: Mon1003_Idle
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,7 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 3563159308183436035, guid: 0405446395059af4f972c207ef2261b8, type: 3}
+      value: {fileID: 21300000, guid: 7bb04a2d3d086b14dbfe3ae863e309e2, type: 3}
     attribute: m_Sprite
     path: Circle
     classID: 212
@@ -44,7 +44,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 3563159308183436035, guid: 0405446395059af4f972c207ef2261b8, type: 3}
+    - {fileID: 21300000, guid: 7bb04a2d3d086b14dbfe3ae863e309e2, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
