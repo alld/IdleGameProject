@@ -568,6 +568,15 @@ MonoBehaviour:
   - name: "\uD574\uACE8\uC804\uC0AC"
     ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
     index: 1001
+  - name: "\uD574\uACE8\uB3C4\uC801"
+    ani: {fileID: 22100000, guid: 55e831cea07f2a64f811a75a92045444, type: 2}
+    index: 1002
+  - name: "\uD574\uACE8\uB9C8\uBC95\uC0AC"
+    ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
+    index: 1003
+  - name: "\uD574\uACE8\uCC3D\uBCD1"
+    ani: {fileID: 22100000, guid: ad2d4b7681b4070458e585ca5ba00d7c, type: 2}
+    index: 1004
 --- !u!1 &1685466652029311280
 GameObject:
   m_ObjectHideFlags: 0

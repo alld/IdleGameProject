@@ -275,7 +275,6 @@ namespace IdleGame.Main.GameLogic
         public void Logic_SetLevel(int m_level)
         {
             Logic_StageUIUpdate();
-            _bord.Logic_SetLevel(m_level);
 
             try
             {
@@ -286,6 +285,8 @@ namespace IdleGame.Main.GameLogic
             {
                 Base_Engine.Log.Logic_PutLog(new Data_Log(e, _tag.tag));
             }
+            _bord.Logic_SetLevel(m_level);
+
         }
 
         /// <summary>
