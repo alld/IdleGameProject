@@ -73,6 +73,8 @@ namespace IdleGame.Core.Panel
         {
             Global_Data.Player.cur_Exp -= 100;
             Global_Data.Player.level++;
+
+            Base_Engine.Event.CallEvent(eGlobalEventType.On_LevelUp);
         }
     }
 }

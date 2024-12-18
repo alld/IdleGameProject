@@ -153,6 +153,22 @@ namespace IdleGame.Core.Panel.Sound
             Logic_PlayBGM(m_fade);
         }
 
+        public void MusicMute(bool active)
+        {
+            for (int i = 0; i < _audio.bgm.Length; i++)
+            {
+                _audio.bgm[i].mute = active;
+            }
+        }
+
+        public void SoundMute(bool active)
+        {
+            for (int i = 0; i < _audio.sfx.Length; i++)
+            {
+                _audio.sfx[i].mute = active;
+            }
+        }
+
         /// <summary>
         /// [기능] BGM을 즉시 실행시킵니다.
         /// </summary>

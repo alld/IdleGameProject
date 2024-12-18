@@ -66,7 +66,7 @@ namespace IdleGame.Data
         /// <summary>
         /// [데이터] 공격 속도입니다.
         /// </summary>
-        public int attack_speed = -1;
+        public float attack_speed = -1;
 
         /// <summary>
         /// [데이터] 일반 공격 피해량입니다.

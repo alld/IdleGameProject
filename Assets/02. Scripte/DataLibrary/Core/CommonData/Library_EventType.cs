@@ -65,6 +65,8 @@ namespace IdleGame.Data.Common.Event
 
         On_UpdateExp,
 
+        On_LevelUp,
+
     }
 
     /// <summary>
@@ -100,6 +102,8 @@ namespace IdleGame.Data.Common.Event
         Act_GameStop,
         /// <summary> [메인게임] 게임에서 패배한 경우에 호출됩니다. </summary>
         On_GameFail,
+
+        On_GameOption,
 
         /// <summary> [백사이드] 화면 연출을 중지하여 밧데리 소모를 감소시킵니다. </summary>
         BackSide_On,
